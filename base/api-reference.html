@@ -37,7 +37,8 @@
         <a href="../index.html" class="version-link" style="background:#2c3e50;color:white;margin-right:12px;">All Docs</a>
         <span class="version-switcher-label">Documentation Version:</span>
         <span class="version-link current">Base (Free)</span>
-        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+        <a href="../influence/index.html" class="version-link ultimate">Influence System</a>
+        <a href="../modifiers/index.html" class="version-link ultimate">Modifier System</a>
     </div>
 
   <!-- Header Image -->
@@ -159,8 +160,7 @@ public interface ISimpleAttributeDataSource
     SimpleRuntimeAttribute GetRuntimeAttribute(string attributeName);
     SimpleRuntimeAttribute GetRuntimeAttribute(System.Enum attributeEnum);
     Dictionary&lt;string, SimpleRuntimeAttribute&gt; GetAllRuntimeAttributes();
-    void InitializeAttributes();
-    
+
     // Definition access
     SimpleAttributeValue[] GetAttributeDefinitions();
     string[] GetAttributeNames();
