@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influence Wizard Guide - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html" class="active">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Influence Wizard Guide
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Influence Wizard Guide</h1>
+        <p>Complete guide to the visual formula editor</p>
+    </div>
+
+    <!-- Wizard Overview -->
+    <div class="section">
+        <h2>Wizard Overview</h2>
+        <p>The Influence Wizard is the primary tool for creating, editing, and managing formula systems. It provides a visual interface for complex mathematical relationships without requiring code.</p>
+        
+        <h3>Opening the Wizard</h3>
+        <p><strong>Menu Path:</strong> Window → Simple Attribute Forge → Influence Wizard</p>
+        
+        <h3>4-Tab Workflow</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>1. Setup Tab</h4>
+                <p>Connect to your attribute system and verify configuration</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>2. Formulas Tab</h4>
+                <p>Create and edit formula relationships with live testing</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>3. Configuration Tab</h4>
+                <p>Set system name, paths, and performance options</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>4. Generate Tab</h4>
+                <p>Create orchestrator code and formula assets</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Tab -->
+    <div class="section">
+        <h2>Setup Tab</h2>
+        <p>The Setup tab connects the wizard to your existing attribute system.</p>
+        
+        <h3>Required Configuration</h3>
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Attribute Data Source</strong>
+        </div>
+        <p>Select your AttributeData ScriptableObject (created with the base system wizard).</p>
+        
+        <div class="code-block">Required: An AttributeData asset containing your attribute definitions
+Location: Usually in Assets/Generated/AttributeData/
+Example: CharacterAttributeData.asset</div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Verify Available Attributes</strong>
+        </div>
+        <p>The wizard displays all attributes from your selected data source:</p>
+        
+        <div class="code-block">Available Attributes Display:
+Health (Vital) - Can be formula target or source
+Mana (Vital) - Can be formula target or source
+Strength (Basic) - Can be formula target or source
+Intelligence (Basic) - Can be formula target or source
+Level (Resource) - Can be formula target or source</div>
+
+        <h3>Common Setup Issues</h3>
+        <div class="warning">
+            <strong>No AttributeData Found:</strong>
+            <ul>
+                <li>Ensure you've created an attribute system with the base wizard</li>
+                <li>Check that AttributeData assets exist in your project</li>
+                <li>Verify the asset is not corrupted</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <strong>Ready to Proceed:</strong> When attributes are displayed correctly, you can move to the Formulas tab.
+        </div>
+    </div>
+
+    <!-- Formulas Tab -->
+    <div class="section">
+        <h2>Formulas Tab</h2>
+        <p>The core of the wizard - create and edit formula relationships with real-time testing.</p>
+        
+        <h3>Interface Layout</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Left Panel: Formula List</h4>
+                <ul>
+                    <li>List of all created formulas</li>
+                    <li>Add/Remove/Duplicate buttons</li>
+                    <li>Formula validation indicators</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Center Panel: Formula Editor</h4>
+                <ul>
+                    <li>Complete formula configuration</li>
+                    <li>7-step pipeline setup</li>
+                    <li>Breakpoint configuration</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Right Panel: Test Preview</h4>
+                <ul>
+                    <li>Live calculation testing</li>
+                    <li>Step-by-step breakdown</li>
+                    <li>Value adjustment sliders</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Creating a New Formula</h3>
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Add Formula</strong>
+        </div>
+        <p>Click <strong>Add Formula</strong> in the left panel to create a new formula.</p>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Basic Configuration</strong>
+        </div>
+        <div class="code-block">Formula Name: Unique identifier (e.g., "StrengthDamage")
+Target Attribute: Which attribute to modify (e.g., "Damage")
+Target Property: What to modify on the attribute:
+  • AttributeValue (default) - Sets the attribute's base value
+  • RegenerationRate - Sets regen per second (Vital attributes only)
+  • RegenerationDelay - Sets delay before regen starts (Vital attributes only)
+Execution Order: Calculation priority (0 = first, higher = later)
+Enabled: Toggle to enable/disable formula</div>
+
+        <div class="info">
+            <strong>Regen Targeting:</strong> The RegenerationRate and RegenerationDelay options only appear for Vital-type attributes (Health, Stamina, Mana, etc.). This allows formulas like "Health regen rate increases by 0.5 per Level".
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Pipeline Configuration</strong>
+        </div>
+        <div class="code-block">Start Mode: Zero or TargetBase
+Apply Mode: Override/Add/Subtract result
+Also Update Current: Update currentValue for Vitals (health/mana)</div>
+
+        <h3>Pipeline Step Configuration</h3>
+        <p>Each step has its own configuration section in the center panel:</p>
+
+        <h4>Step 2: Flat Bonuses</h4>
+        <div class="code-block">Add Row: Creates new flat bonus entry
+Source: Attribute to read from (dropdown)
+Operation: Add or Subtract
+Value: Multiplier (e.g., 2.0 for "2 per point")
+
+Example: Strength Add 2.0 = "Each STR point adds 2 to the calculation"</div>
+
+        <h4>Step 3: Additive Percentages</h4>
+        <div class="code-block">Add Row: Creates new percentage bonus entry  
+Source: Attribute to read from
+Operation: Add (percentages are positive values)
+Value: Percentage per point (e.g., 1.5 for "1.5% per point")
+
+Example: Intelligence Add 2.0 = "Each INT point adds 2% to the calculation"</div>
+
+        <h4>Step 4: Subtractive Percentages</h4>
+        <div class="code-block">Add Row: Creates new percentage penalty entry
+Source: Attribute to read from  
+Operation: Add (value represents penalty magnitude)
+Value: Percentage per point
+
+Example: Encumbrance Add 0.8 = "Each encumbrance point reduces by 0.8%"</div>
+
+        <h4>Step 5: Multipliers</h4>
+        <div class="code-block">Add Row: Creates new multiplier entry
+Label: Description (e.g., "Equipment Bonus")
+Factor: Multiplication value (e.g., 1.2 for 20% increase)
+
+Example: "Class Bonus" 1.25 = "25% class specialization bonus"</div>
+
+        <h4>Step 6: Post-Flat Bonuses</h4>
+        <div class="code-block">Add Row: Creates new post-flat entry
+Label: Description (e.g., "Base Damage")
+Amount: Flat value to add
+Is Additive: true = add, false = subtract
+
+Example: "Weapon Base" 15 true = "Add 15 base weapon damage"</div>
+    </div>
+
+    <!-- Test Preview Panel -->
+    <div class="section">
+        <h2>Test Preview Panel</h2>
+        <p>The right panel provides real-time formula testing and validation.</p>
+        
+        <h3>Test Value Controls</h3>
+        <div class="code-block">Attribute Sliders:
+• Set test values for all attributes
+• Adjust in real-time to see calculation changes
+• Use realistic value ranges for testing
+
+Formula Selection:
+• Choose which formula to test
+• View step-by-step calculation breakdown
+• See active breakpoints highlighted</div>
+
+        <h3>Calculation Breakdown Display</h3>
+        <div class="formula-container">
+            <div class="formula-header">Example Test Preview Output</div>
+            <div class="code-block">Testing Formula: StrengthDamage
+Test Values: STR 25, Level 10
+
+Step 1 (Start): 0
+Step 2 (Flat): Strength(25) × 2.0 = 50
+Step 3 (Add%): Level(10) × 1.5% = 15% → ×1.15  
+Step 4 (Sub%): None
+Step 5 (Mul): Class Bonus ×1.2
+Step 6 (PostFlat): Base Damage +12
+Step 7 (Apply): Add to Base
+
+Calculation: 12 + ((0 + 50) × 1.15 × 1.2) = 12 + 69 = 81
+Result: +81 damage bonus</div>
+        </div>
+
+        <h3>Testing Best Practices</h3>
+        <ul>
+            <li><strong>Test Edge Cases:</strong> Try zero values, maximum values, and negative values</li>
+            <li><strong>Test Breakpoints:</strong> Adjust values around breakpoint thresholds</li>
+            <li><strong>Test Combinations:</strong> Use realistic stat combinations for different builds</li>
+            <li><strong>Validate Results:</strong> Ensure calculated values make sense for your game</li>
+        </ul>
+    </div>
+
+    <!-- Breakpoint Configuration -->
+    <div class="section">
+        <h2>Breakpoint Configuration</h2>
+        <p>The Breakpoints section allows adding conditional effects to formulas.</p>
+        
+        <h3>Adding Breakpoints</h3>
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Add Breakpoint</strong>
+        </div>
+        <p>Click <strong>Add Breakpoint</strong> in the Breakpoints section.</p>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Primary Condition</strong>
+        </div>
+        <div class="code-block">Attribute: Which attribute to check (dropdown)
+Comparison: How to compare (≥, ≤, =, >, <, ≠)
+Value: Threshold value (e.g., 30 for "when STR ≥ 30")</div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Additional Conditions (Optional)</strong>
+        </div>
+        <div class="code-block">Has Additional Conditions: Enable multiple conditions
+Global Logical Op: AND (all must be true) or OR (any can be true)
+Additional Conditions: List of extra requirements</div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Effect Configuration</strong>
+        </div>
+        <div class="code-block">Type: Threshold (once) or Step (recurring)
+Effect Type: Which pipeline step to modify (Flat/Percent/Multiplier/PostFlat)
+Effect Value: Magnitude of the effect
+Operation: Add or Subtract the effect</div>
+
+        <h3>Breakpoint Visual Indicators</h3>
+        <div class="info">
+            <strong>Test Preview Integration:</strong> Active breakpoints are highlighted in the test preview panel, showing exactly when and how they affect calculations.
+        </div>
+    </div>
+
+    <!-- Formula Management -->
+    <div class="section">
+        <h2>Formula Management</h2>
+        
+        <h3>Formula List Operations</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Add Formula</h4>
+                <p>Creates new formula with default configuration</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Duplicate Formula</h4>
+                <p>Copies selected formula as starting point for variations</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Remove Formula</h4>
+                <p>Deletes selected formula with confirmation dialog</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Reorder Formulas</h4>
+                <p>Drag formulas to change execution order (affects generation)</p>
+            </div>
+        </div>
+
+        <h3>Formula Validation</h3>
+        <p>The wizard validates formulas in real-time:</p>
+        
+        <div class="code-block">Valid Formula:
+  • Target attribute exists
+  • All source attributes exist  
+  • No circular dependencies
+  • Reasonable value ranges
+
+Warning Indicators:
+  • Missing attribute references
+  • Potential balance issues
+  • Performance concerns
+
+Error Indicators:  
+  • Invalid configuration
+  • Circular dependencies
+  • Missing required fields</div>
+
+        <h3>Import/Export Formulas</h3>
+        <div class="code-block">Export Options:
+• Export Current Formula: Single formula to JSON
+• Export All Formulas: Complete system to JSON
+• Copy Formula: To clipboard for sharing
+
+Import Options:
+• Import Formula: Single formula from JSON
+• Import System: Complete system from JSON  
+• Paste Formula: From clipboard</div>
+    </div>
+
+    <!-- Configuration Tab -->
+    <div class="section">
+        <h2>Configuration Tab</h2>
+        <p>System-wide settings and generation configuration.</p>
+        
+        <h3>System Identity</h3>
+        <div class="code-block">System Name: Name for generated orchestrator class (e.g., "CharacterInfluence")
+Namespace: Optional namespace prefix (e.g., "MyGame")
+Description: Optional system description for documentation</div>
+
+        <h3>File Paths</h3>
+        <div class="code-block">Output Path: Where to generate orchestrator code
+Formula Path: Where to store formula assets  
+Export Path: Where to save JSON backups
+
+Default Paths:
+• Code: Assets/Generated/InfluenceSystem/
+• Assets: Assets/Generated/InfluenceSystem/Formulas/
+• Export: Assets/Generated/InfluenceSystem/Exports/</div>
+
+        <h3>Performance Settings</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Update Mode</h4>
+                <ul>
+                    <li><strong>Smart:</strong> Event-driven (recommended)</li>
+                    <li><strong>Interval:</strong> Fixed time updates</li>
+                    <li><strong>Manual:</strong> Explicit control</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Recalculation Mode</h4>
+                <ul>
+                    <li><strong>Auto:</strong> Automatic when values change</li>
+                    <li><strong>Manual:</strong> Only when explicitly called</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="code-block">Advanced Options:
+• Interval Update Rate: Seconds between updates (Interval mode)
+• Enable Caching: Improves performance for complex systems
+• Enable Debug Mode: Adds detailed logging to generated code</div>
+    </div>
+
+    <!-- Generate Tab -->
+    <div class="section">
+        <h2>Generate Tab</h2>
+        <p>Final step - generate the orchestrator code and formula assets.</p>
+        
+        <h3>Pre-Generation Validation</h3>
+        <p>The wizard performs final validation before generation:</p>
+        
+        <div class="code-block">Validation Checks:
+All formulas are valid
+No circular dependencies detected
+All output paths are writable
+System name is valid C# identifier
+No duplicate formula names</div>
+
+        <h3>Generation Process</h3>
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Review Generation Summary</strong>
+        </div>
+        <p>The wizard shows what will be generated:</p>
+        
+        <div class="code-block">Generation Summary:
+Orchestrator: CharacterInfluence.cs
+Formula Assets: 5 formula ScriptableObjects
+Export Backup: CharacterInfluence_backup.json
+Target GameObject: [Optional] Existing GameObject with attribute system</div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Generate System</strong>
+        </div>
+        <p>Click <strong>Generate System</strong> to create all files.</p>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Wait for Compilation</strong>
+        </div>
+        <p>Unity compiles the generated code automatically.</p>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Verify Generation</strong>
+        </div>
+        <p>Check that all files were created successfully:</p>
+        
+        <div class="file-tree">Assets/Generated/InfluenceSystem/
+├── CharacterInfluence.cs (orchestrator)
+├── Formulas/
+│   ├── StrengthDamage.asset
+│   ├── LevelHealth.asset
+│   └── IntelligenceMana.asset
+└── Exports/
+    └── CharacterInfluence_backup.json</div>
+    </div>
+
+    <!-- Wizard Tips & Shortcuts -->
+    <div class="section">
+        <h2>Tips & Shortcuts</h2>
+        
+        <h3>Keyboard Shortcuts</h3>
+        <div class="code-block">Formula Management:
+• Ctrl+N: Add new formula
+• Ctrl+D: Duplicate selected formula  
+• Delete: Remove selected formula
+• Ctrl+↑/↓: Reorder formulas
+
+Row Management:
+• Enter: Add new row to current section
+• Ctrl+Enter: Add row and focus next field
+• Delete: Remove selected row
+
+Testing:
+• Space: Refresh test calculation
+• Ctrl+T: Focus test panel
+• Ctrl+R: Reset test values to defaults</div>
+
+        <h3>Workflow Tips</h3>
+        <ul>
+            <li><strong>Start Simple:</strong> Create basic formulas first, add complexity gradually</li>
+            <li><strong>Test Frequently:</strong> Use the test panel after each change</li>
+            <li><strong>Save Often:</strong> Export JSON backups during complex editing sessions</li>
+            <li><strong>Use Descriptive Names:</strong> Clear formula names help with organization</li>
+        </ul>
+
+        <h3>Common Workflow</h3>
+        <div class="code-block">Typical Formula Creation Workflow:
+1. Plan the relationship (STR affects Damage)
+2. Create formula with basic flat bonus
+3. Test with realistic values  
+4. Add percentage bonuses if needed
+5. Test again with edge cases
+6. Add breakpoints for milestones
+7. Final testing with multiple scenarios
+8. Generate and integrate</div>
+    </div>
+
+    <!-- Error Handling -->
+    <div class="section">
+        <h2>Error Handling & Validation</h2>
+        
+        <h3>Common Validation Errors</h3>
+        <div class="warning">
+            <strong>Missing Attribute References:</strong>
+            <ul>
+                <li>Source attribute doesn't exist in your attribute data</li>
+                <li>Target attribute name is misspelled</li>
+                <li>Attribute was renamed after formula creation</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>Circular Dependencies:</strong>
+            <ul>
+                <li>Formula A affects B, Formula B affects A</li>
+                <li>Complex chains that eventually loop back</li>
+                <li>Use execution order to break dependency chains</li>
+            </ul>
+        </div>
+
+        <h3>Validation Solutions</h3>
+        <div class="code-block">Missing Attributes:
+• Check spelling in formula configuration
+• Verify attribute exists in AttributeData asset
+• Update formula after changing attribute names
+
+Circular Dependencies:
+• Review formula dependency chains
+• Use execution order to establish calculation sequence  
+• Split complex formulas into simpler ones
+• Consider using intermediary attributes</div>
+
+        <h3>Generation Errors</h3>
+        <div class="info">
+            <strong>File Permission Issues:</strong> Ensure output directories are writable and not locked by Unity or version control.
+        </div>
+        
+        <div class="info">
+            <strong>Compilation Errors:</strong> Check Console for C# compilation errors. Usually caused by invalid system names or namespace conflicts.
+        </div>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="section">
+        <h2>Advanced Wizard Features</h2>
+        
+        <h3>Formula Templates</h3>
+        <p>The wizard includes common formula templates for quick setup:</p>
+        
+        <div class="code-block">Available Templates:
+• Basic Stat Scaling (STR → Damage)
+• Level Health Scaling (Level → Health)  
+• Percentage Bonuses (INT → Spell%)
+• Multi-Source Combination
+• Breakpoint Milestone System</div>
+
+        <h3>Batch Operations</h3>
+        <div class="code-block">Batch Formula Operations:
+• Apply Settings to All: Update common settings across formulas
+• Bulk Validation: Check all formulas for errors
+• Mass Export: Export all formulas to individual JSON files
+• Template Application: Apply template to multiple formulas</div>
+
+        <h3>System Analysis</h3>
+        <div class="code-block">Wizard Analysis Tools:
+• Dependency Graph: Visual representation of formula relationships
+• Performance Estimate: Calculation complexity analysis
+• Balance Review: Stat effectiveness comparison
+• Missing Coverage: Attributes not used in any formulas</div>
+    </div>
+
+    <!-- Integration Workflow -->
+    <div class="section">
+        <h2>Integration Workflow</h2>
+        
+        <h3>After Generation</h3>
+        <ol>
+            <li><strong>Find Your GameObject:</strong> The one with your attribute system component</li>
+            <li><strong>Add Orchestrator:</strong> Add the generated orchestrator component</li>
+            <li><strong>Assign References:</strong> Set the Attribute System field</li>
+            <li><strong>Verify Formula Assets:</strong> Check that formulas are assigned</li>
+            <li><strong>Test in Play Mode:</strong> Verify calculations work correctly</li>
+        </ol>
+
+        <h3>Updating Existing Systems</h3>
+        <div class="warning">
+            <strong>Regeneration Process:</strong>
+            <ol>
+                <li>Back up current formula assets (if customized)</li>
+                <li>Run wizard with updated configuration</li>
+                <li>Re-apply any manual formula asset customizations</li>
+                <li>Test thoroughly after regeneration</li>
+            </ol>
+        </div>
+
+        <h3>Version Control Integration</h3>
+        <div class="code-block">Files to Track:
+Generated orchestrator code (.cs)
+Formula assets (.asset)
+JSON export backups (.json)
+Wizard configuration (if saving state)
+
+Files to Ignore:
+• Temporary wizard state files
+• Test preview cache files</div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="section">
+        <h2>Wizard Troubleshooting</h2>
+        
+        <h3>Common Issues</h3>
+        <div class="warning">
+            <strong>Wizard Won't Open:</strong>
+            <ul>
+                <li>Check Unity Console for errors</li>
+                <li>Verify base Simple Attribute Forge is installed</li>
+                <li>Try Window → General → Console to clear errors</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>Attributes Don't Appear:</strong>
+            <ul>
+                <li>Ensure AttributeData asset is selected in Setup tab</li>
+                <li>Check that base system is properly configured</li>
+                <li>Verify AttributeData contains valid attribute definitions</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>Test Preview Not Working:</strong>
+            <ul>
+                <li>Check that a formula is selected in the formula list</li>
+                <li>Verify test values are set to reasonable ranges</li>
+                <li>Look for validation errors in the formula configuration</li>
+            </ul>
+        </div>
+
+        <h3>Reset Options</h3>
+        <div class="code-block">Wizard Reset Functions:
+• Reset Current Formula: Clear formula configuration
+• Reset All Formulas: Clear all formula data (with confirmation)
+• Reset Test Values: Return test panel to defaults
+• Reset Paths: Restore default generation paths</div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="breakpoints.html">← Breakpoint System</a>
+        <a href="orchestrator-setup.html">Orchestrator Setup →</a>
+    </div>
+</body>
+</html>

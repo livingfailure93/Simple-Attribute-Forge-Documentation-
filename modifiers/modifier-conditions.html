@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditions System - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html" class="active">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Conditions System</h1>
+        <p>Create modifiers that only activate when specific criteria are met.</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="section">
+        <h2>Overview</h2>
+        <p>The Conditions System allows you to create modifiers with conditional activation. A modifier can have multiple conditions that must be satisfied before its effects apply.</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>AttributeCondition</h4>
+                <p>Check attribute values: "Health < 50%", "Mana >= 100". Supports absolute values and percentages.</p>
+            </div>
+            <div class="feature-card">
+                <h4>ModifierCondition</h4>
+                <p>Check modifier presence: "Has Burning debuff", "Does NOT have Shield buff".</p>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Condition Evaluation:</strong> Conditions are evaluated when the modifier is applied. Generated Helper classes include <code>CanApply[ModifierName]()</code> methods that check conditions before application.
+        </div>
+    </div>
+
+    <!-- AttributeCondition -->
+    <div class="section">
+        <h2>AttributeCondition</h2>
+        <p>Evaluates conditions based on attribute values. Supports both absolute value comparisons and percentage-based comparisons.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>attributeName</td><td>string</td><td>Name of the attribute to check</td></tr>
+                <tr><td>comparison</td><td>ComparisonType</td><td>How to compare the value</td></tr>
+                <tr><td>threshold</td><td>float</td><td>Value to compare against</td></tr>
+                <tr><td>logicOperator</td><td>LogicOperator</td><td>How to combine with other conditions</td></tr>
+            </table>
+        </div>
+
+        <h3>ComparisonType Enum</h3>
+        <p>12 comparison types are available, split between absolute and percentage modes:</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Absolute Comparisons</h4>
+                <ul>
+                    <li><strong>GreaterThan</strong> - value > threshold</li>
+                    <li><strong>LessThan</strong> - value < threshold</li>
+                    <li><strong>EqualTo</strong> - value == threshold</li>
+                    <li><strong>GreaterOrEqual</strong> - value >= threshold</li>
+                    <li><strong>LessOrEqual</strong> - value <= threshold</li>
+                    <li><strong>NotEqual</strong> - value != threshold</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>Percentage Comparisons</h4>
+                <ul>
+                    <li><strong>GreaterThanPercent</strong> - % > threshold</li>
+                    <li><strong>LessThanPercent</strong> - % < threshold</li>
+                    <li><strong>EqualToPercent</strong> - % == threshold</li>
+                    <li><strong>GreaterOrEqualPercent</strong> - % >= threshold</li>
+                    <li><strong>LessOrEqualPercent</strong> - % <= threshold</li>
+                    <li><strong>NotEqualPercent</strong> - % != threshold</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Percentage Mode:</strong> Percentage comparisons use the attribute's <code>GetPercentage()</code> method, which returns <code>(currentValue / maxValue) * 100</code>. A threshold of 25 means 25% of max.
+        </div>
+
+        <h3>Examples</h3>
+        <div class="code-block">// Berserker Rage: Activate when Health < 25%
+new AttributeCondition
+{
+    attributeName = "Health",
+    comparison = ComparisonType.LessThanPercent,
+    threshold = 25f,
+    logicOperator = LogicOperator.And
+}
+
+// Execute: Activate when Health == 0 (absolute value)
+new AttributeCondition
+{
+    attributeName = "Health",
+    comparison = ComparisonType.EqualTo,
+    threshold = 0f,
+    logicOperator = LogicOperator.And
+}
+
+// Full Mana Bonus: Activate when Mana >= 100%
+new AttributeCondition
+{
+    attributeName = "Mana",
+    comparison = ComparisonType.GreaterOrEqualPercent,
+    threshold = 100f,
+    logicOperator = LogicOperator.And
+}
+
+// High Level Bonus: Activate when Level > 50
+new AttributeCondition
+{
+    attributeName = "Level",
+    comparison = ComparisonType.GreaterThan,
+    threshold = 50f,
+    logicOperator = LogicOperator.And
+}</div>
+    </div>
+
+    <!-- ModifierCondition -->
+    <div class="section">
+        <h2>ModifierCondition</h2>
+        <p>Evaluates conditions based on whether specific modifiers are active on the target. Essential for synergy effects and combo systems.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>conditionType</td><td>ModifierConditionType</td><td>Type of modifier check</td></tr>
+                <tr><td>targetModifierName</td><td>string</td><td>Specific modifier name to check</td></tr>
+                <tr><td>targetModifierTag</td><td>string</td><td>Modifier tag to check</td></tr>
+                <tr><td>logicOperator</td><td>LogicOperator</td><td>How to combine with other conditions</td></tr>
+            </table>
+        </div>
+
+        <h3>ModifierConditionType Enum</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>HasModifier</h4>
+                <p>Target has a specific modifier by exact name.</p>
+                <div class="code-block">// Requires "Burning" modifier
+conditionType = HasModifier
+targetModifierName = "Burning"</div>
+            </div>
+            <div class="feature-card">
+                <h4>DoesNotHaveModifier</h4>
+                <p>Target does NOT have a specific modifier by name.</p>
+                <div class="code-block">// Requires NO "Shield" modifier
+conditionType = DoesNotHaveModifier
+targetModifierName = "Shield"</div>
+            </div>
+            <div class="feature-card">
+                <h4>HasModifierTag</h4>
+                <p>Target has ANY modifier with the specified tag.</p>
+                <div class="code-block">// Requires any "curse" tagged modifier
+conditionType = HasModifierTag
+targetModifierTag = "curse"</div>
+            </div>
+            <div class="feature-card">
+                <h4>DoesNotHaveModifierTag</h4>
+                <p>Target does NOT have any modifier with the specified tag.</p>
+                <div class="code-block">// Requires NO "buff" tagged modifiers
+conditionType = DoesNotHaveModifierTag
+targetModifierTag = "buff"</div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>Name vs Tag:</strong> Specify either <code>targetModifierName</code> OR <code>targetModifierTag</code>, not both. Name-based conditions check exact matches; tag-based conditions check any modifier with that tag.
+        </div>
+
+        <h3>Examples</h3>
+        <div class="code-block">// Fire Mastery: +50% damage when target has "Burning"
+new ModifierCondition
+{
+    conditionType = ModifierConditionType.HasModifier,
+    targetModifierName = "Burning",
+    logicOperator = LogicOperator.And
+}
+
+// Expose Weakness: Only applies if target has no "Shield"
+new ModifierCondition
+{
+    conditionType = ModifierConditionType.DoesNotHaveModifier,
+    targetModifierName = "Shield",
+    logicOperator = LogicOperator.And
+}
+
+// Curse Amplifier: +25% curse damage when target has any curse
+new ModifierCondition
+{
+    conditionType = ModifierConditionType.HasModifierTag,
+    targetModifierTag = "curse",
+    logicOperator = LogicOperator.And
+}
+
+// Pure State: Bonus when target has no debuffs
+new ModifierCondition
+{
+    conditionType = ModifierConditionType.DoesNotHaveModifierTag,
+    targetModifierTag = "debuff",
+    logicOperator = LogicOperator.And
+}</div>
+    </div>
+
+    <!-- Logic Operators -->
+    <div class="section">
+        <h2>Logic Operators</h2>
+        <p>Combine multiple conditions using logic operators to create complex activation requirements.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">LogicOperator Enum</div>
+            <table>
+                <tr><th>Operator</th><th>Description</th><th>Example</th></tr>
+                <tr><td><strong>And</strong></td><td>Both this AND previous must be true</td><td>Health < 25% AND Mana > 50%</td></tr>
+                <tr><td><strong>Or</strong></td><td>Either this OR previous can be true</td><td>Health < 25% OR Stamina < 25%</td></tr>
+                <tr><td><strong>Not</strong></td><td>Inverts the condition result</td><td>NOT (Health > 90%)</td></tr>
+            </table>
+        </div>
+
+        <h3>Evaluation Order</h3>
+        <p>Conditions are evaluated in order, applying logic operators left to right:</p>
+
+        <div class="code-block">Conditions: [A, B, C]
+Logic:      [And, Or, And]
+
+Evaluation: ((A AND B) OR C)</div>
+
+        <h3>Complex Condition Example</h3>
+        <div class="modifier-container">
+            <div class="modifier-header">Desperate Measures</div>
+            <p>Activate when: (Health < 25% AND has "Burning") OR (Stamina < 10%)</p>
+            <div class="code-block">// Condition 1: Health < 25%
+new AttributeCondition
+{
+    attributeName = "Health",
+    comparison = ComparisonType.LessThanPercent,
+    threshold = 25f,
+    logicOperator = LogicOperator.And  // Start of chain
+}
+
+// Condition 2: Has "Burning" modifier
+new ModifierCondition
+{
+    conditionType = ModifierConditionType.HasModifier,
+    targetModifierName = "Burning",
+    logicOperator = LogicOperator.And  // Health < 25% AND Burning
+}
+
+// Condition 3: OR Stamina < 10%
+new AttributeCondition
+{
+    attributeName = "Stamina",
+    comparison = ComparisonType.LessThanPercent,
+    threshold = 10f,
+    logicOperator = LogicOperator.Or   // (Health < 25% AND Burning) OR Stamina < 10%
+}</div>
+        </div>
+    </div>
+
+    <!-- Real-World Patterns -->
+    <div class="section">
+        <h2>Real-World Condition Patterns</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Low Health Trigger</h4>
+                <p>Common pattern for "last stand" abilities.</p>
+                <div class="code-block">Health < 25% (percentage)</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Resource Threshold</h4>
+                <p>Activate when you have enough resources.</p>
+                <div class="code-block">Mana >= 50 (absolute)</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Full Resource Bonus</h4>
+                <p>Bonus when at full capacity.</p>
+                <div class="code-block">Stamina >= 100% (percentage)</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Status Effect Synergy</h4>
+                <p>Bonus damage against burning targets.</p>
+                <div class="code-block">Target HasModifier "Burning"</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Combo Finisher</h4>
+                <p>Requires combo stacks to activate.</p>
+                <div class="code-block">HasModifier "Combo" (x3 stacks)</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Clean State Requirement</h4>
+                <p>Only works without debuffs.</p>
+                <div class="code-block">DoesNotHaveModifierTag "debuff"</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Level Gate</h4>
+                <p>High-level ability requirement.</p>
+                <div class="code-block">Level >= 30 (absolute)</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Dual Threshold</h4>
+                <p>Multiple resource conditions.</p>
+                <div class="code-block">Health < 50% AND Stamina > 75%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generated Code -->
+    <div class="section">
+        <h2>Generated Condition Checking</h2>
+        <p>When you create a conditional modifier in the wizard, the generated Helper class includes automatic condition checking:</p>
+
+        <div class="code-block">// Generated in BerserkerRageHelper.cs
+public static bool CanApplyBerserkerRage(GameObject target)
+{
+    if (target == null) return false;
+
+    var container = target.GetComponent&lt;ISimpleAttributeDataSource&gt;();
+    if (container == null) return false;
+
+    // Check attribute conditions
+    var healthAttr = GetAttributeHybrid(container, "Health");
+    if (healthAttr == null) return false;
+
+    // Condition: Health < 25%
+    if (!(healthAttr.GetPercentage() < 25f)) return false;
+
+    // Check modifier conditions
+    if (!SimpleModifierTracker.HasModifierByName(container, "Burning")) return false;
+
+    return true;
+}</div>
+
+        <p>Use this method to check conditions before applying:</p>
+        <div class="code-block">if (BerserkerRageHelper.CanApplyBerserkerRage(player))
+{
+    BerserkerRageHelper.ApplyBerserkerRage(player);
+}</div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Best Practices</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Use Percentage for Health/Mana</h4>
+                <p>Percentage comparisons scale with max values. "Health < 25%" works regardless of max health.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Use Absolute for Levels/Counts</h4>
+                <p>Levels, stack counts, and currency should use absolute comparisons. "Level >= 30" not "Level >= 30%".</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Tag-Based for Categories</h4>
+                <p>Use HasModifierTag for category checks: "any curse", "any buff". Use HasModifier for specific effects.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Keep Conditions Simple</h4>
+                <p>Complex condition chains are hard to debug. Consider splitting into multiple modifiers if logic gets complicated.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="modifier-wizard.html">Modifier Wizard</a>
+        <a href="regen-modifiers.html">Regen Modifiers</a>
+    </div>
+</body>
+</html>

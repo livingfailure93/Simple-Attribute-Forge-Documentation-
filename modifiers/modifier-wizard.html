@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Wizard - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html" class="active">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Modifier Wizard Guide</h1>
+        <p>Complete walkthrough of the 4-step modifier creation wizard.</p>
+    </div>
+
+    <div class="section">
+        <h2>Opening the Wizard</h2>
+        <p>Go to <code>Window > Simple Attribute Forge > Modifier Wizard</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Step 1: Choose Attribute Data</h2>
+        <p>Select your generated AttributeData ScriptableObject. This determines which attributes are available for modification.</p>
+        <ul>
+            <li>Click the object picker button</li>
+            <li>Select your AttributeData asset (e.g., SoulslikeCharacterAttributeData)</li>
+            <li>Available attributes will populate automatically</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Step 2: Configure Modifiers</h2>
+        <p>Define your modifiers with all their properties.</p>
+
+        <h3>Adding a Modifier</h3>
+        <ol>
+            <li>Click "Add Modifier"</li>
+            <li>Set name, description, and tag</li>
+            <li>Configure duration, priority, and stacking</li>
+            <li>Set behavior flags (isDebuff, canBeDispelled, etc.)</li>
+            <li>Configure requirements (level, incompatible modifiers)</li>
+        </ol>
+
+        <h3>Adding Modifications</h3>
+        <ol>
+            <li>Click "Add Modification"</li>
+            <li>Select target attribute</li>
+            <li>Choose modifier type (Flat, Percentage, Multiply)</li>
+            <li>Set the value</li>
+            <li>Optionally enable conditions</li>
+        </ol>
+
+        <h3>JSON Import/Export</h3>
+        <ul>
+            <li><strong>Import JSON:</strong> Load modifiers from a JSON file</li>
+            <li><strong>Export Schema:</strong> Generate JSON schema for AI-assisted creation</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Step 3: Script Settings</h2>
+        <p>Configure how code is generated.</p>
+        <ul>
+            <li><strong>Namespace:</strong> C# namespace for generated code</li>
+            <li><strong>Save Path:</strong> Where to save generated .cs files</li>
+            <li><strong>Component Subfolder:</strong> Folder for MonoBehaviour components</li>
+            <li><strong>Helper Subfolder:</strong> Folder for static helper classes</li>
+            <li><strong>Asset Subfolder:</strong> Folder for ScriptableObject assets</li>
+            <li><strong>CreateAssetMenu Path:</strong> Menu path for asset creation</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Step 4: Generate</h2>
+        <p>Generate all code and assets.</p>
+        <ol>
+            <li>Click "Generate All Scripts"</li>
+            <li>Wait for Unity to compile</li>
+            <li>ScriptableObject assets are auto-created after compilation</li>
+        </ol>
+        <div class="success">
+            <strong>Auto-Creation:</strong> The wizard automatically creates .asset instances after scripts compile, populated with your configured values.
+        </div>
+    </div>
+
+    <div class="page-nav">
+        <a href="modifier-system.html">Modifier System</a>
+        <a href="modifier-conditions.html">Conditions</a>
+    </div>
+</body>
+</html>

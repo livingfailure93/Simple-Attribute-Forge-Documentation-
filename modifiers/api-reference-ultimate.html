@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html" class="active">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>API Reference</h1>
+        <p>Complete API documentation for all Ultimate tier classes.</p>
+    </div>
+
+    <div class="section">
+        <h2>Namespace: SimpleForgeFramework</h2>
+
+        <h3>SimpleAttributeModifierGroup</h3>
+        <p>Main modifier container class.</p>
+        <div class="code-block">// Identity Properties
+string name
+string description
+string tag
+
+// Timing Properties
+float duration                    // 0 or negative = permanent
+int priority                      // Higher priority applies first
+bool stackable
+int maxStacks
+
+// Behavior Flags
+bool isDebuff                     // Mark as negative effect
+bool isHidden                     // Hide from UI
+bool canBeDispelled               // Can be removed by dispel effects
+bool persistsThroughDeath         // Survives death/respawn
+bool refreshOnReapply             // Reset duration on reapplication
+
+// Requirements
+int requiredLevel
+string category
+List&lt;string&gt; incompatibleModifiers
+List&lt;string&gt; requiredModifiers
+
+// Modifications
+List&lt;AttributeModification&gt; modifications
+
+// Regeneration Modification (ARPG)
+bool modifyRegenRate
+ModifierType regenRateType
+float regenRateValue
+bool modifyRegenDelay
+ModifierType regenDelayType
+float regenDelayValue
+bool disableRegeneration
+
+// Runtime Properties (non-serialized)
+string id                         // Unique instance ID
+float timeRemaining
+int currentStacks
+bool isActive
+object source                     // Optional reference to modifier source
+
+// Events
+UnityEvent onApply                // Fired when modifier is applied
+UnityEvent onRemove               // Fired when modifier is removed
+UnityEvent onExpire               // Fired when modifier expires (duration ends)
+UnityEvent&lt;float&gt; onTick          // Fired each tick (for DoT/HoT effects)
+
+// Methods
+bool ApplyTo(ISimpleAttributeDataSource target)
+bool RemoveFrom(ISimpleAttributeDataSource target)
+bool UpdateTime(float deltaTime)  // Returns true if expired
+bool IsPermanent()                // Returns true if duration &lt;= 0
+bool IsExpired()                  // Returns true if timeRemaining &lt;= 0
+
+// Nested Enum (access as SimpleAttributeModifierGroup.ModifierType)
+enum ModifierType { Flat, Percentage, Multiply }</div>
+
+        <h3>AttributeModification</h3>
+        <p>Individual attribute change within a modifier group.</p>
+        <div class="code-block">// Constructors
+AttributeModification()
+AttributeModification(string target, ModifierType modType, float modValue)
+
+// Properties
+string targetAttribute
+ModifierType type                 // Flat, Percentage, or Multiply
+float value
+
+// Value Targeting (reserved for future use)
+bool modifyBaseValue
+bool modifyCurrentValue
+bool modifyMinValue
+bool modifyMaxValue
+
+// Over-Time Settings
+bool isPermanent
+bool applyOverTime
+float tickInterval
+bool removeWhenConditionsMet
+
+// Conditions
+bool enableConditions
+List&lt;AttributeCondition&gt; conditions
+List&lt;ModifierCondition&gt; modifierConditions
+
+// Methods
+bool IsValidForProgression()
+bool ValidateConfiguration(string[] attrs, out List&lt;string&gt; errors)
+string GetDisplayDescription()
+override string ToString()        // Returns GetDisplayDescription()</div>
+
+        <div class="info">
+            <strong>Note:</strong> Currently all modifications affect the <code>modifierBonus</code> property of the target attribute. The value targeting flags (modifyBaseValue, etc.) are defined but reserved for future implementation.
+        </div>
+
+        <h3>AttributeCondition</h3>
+        <p>Attribute-based condition for modifier activation.</p>
+        <div class="code-block">// Constructors
+AttributeCondition()
+AttributeCondition(string attribute, ComparisonType comp, float thresh, LogicOperator logic)
+
+// Properties
+string attributeName
+ComparisonType comparison
+float threshold                   // For percentage comparisons: 0-100 (not 0-1)
+LogicOperator logicOperator
+
+// Nested Enums (access as AttributeCondition.ComparisonType)
+enum ComparisonType {
+    // Absolute comparisons (compare against currentValue)
+    GreaterThan, LessThan, EqualTo,
+    GreaterOrEqual, LessOrEqual, NotEqual,
+
+    // Percentage comparisons (compare against currentValue/maxValue * 100)
+    GreaterThanPercent, LessThanPercent, EqualToPercent,
+    GreaterOrEqualPercent, LessOrEqualPercent, NotEqualPercent
+}
+
+enum LogicOperator { And, Or, Not }
+
+// Methods
+bool IsPercentageComparison()     // Returns true for *Percent comparison types
+string GetDescription()           // Human-readable condition description
+string GetFieldName()             // Clean identifier for code generation
+bool ValidateConfiguration(string[] attrs, out string error)
+override string ToString()        // Returns GetDescription()</div>
+
+        <h3>ModifierCondition</h3>
+        <p>Modifier presence condition - checks if target has/doesn't have specific modifiers.</p>
+        <div class="code-block">// Constructors
+ModifierCondition()
+ModifierCondition(ModifierConditionType type, string name = "", string tag = "",
+                  AttributeCondition.LogicOperator logic = LogicOperator.And)
+
+// Properties
+ModifierConditionType conditionType
+string targetModifierName         // For HasModifier/DoesNotHaveModifier
+string targetModifierTag          // For HasModifierTag/DoesNotHaveModifierTag
+LogicOperator logicOperator       // Uses AttributeCondition.LogicOperator
+
+// Nested Enum (access as ModifierCondition.ModifierConditionType)
+enum ModifierConditionType {
+    HasModifier,                  // Target has modifier with exact name
+    DoesNotHaveModifier,          // Target does NOT have modifier with exact name
+    HasModifierTag,               // Target has any modifier with this tag
+    DoesNotHaveModifierTag        // Target does NOT have any modifier with this tag
+}
+
+// Methods
+string GetDescription()           // Human-readable condition description
+bool ValidateConfiguration(out string error)
+override string ToString()        // Returns GetDescription()</div>
+
+        <h3>SimpleModifierTracker (static)</h3>
+        <p>Static utility for tracking active modifiers.</p>
+        <div class="code-block">// Methods
+static void RegisterModifier(ISimpleAttributeDataSource target, SimpleAttributeModifierGroup modifier)
+static void UnregisterModifier(ISimpleAttributeDataSource target, SimpleAttributeModifierGroup modifier)
+static bool HasModifierByName(ISimpleAttributeDataSource target, string name)
+static bool HasModifierByTag(ISimpleAttributeDataSource target, string tag)
+static List&lt;SimpleAttributeModifierGroup&gt; GetActiveModifiers(ISimpleAttributeDataSource target)
+static List&lt;SimpleAttributeModifierGroup&gt; GetModifiersByName(ISimpleAttributeDataSource target, string name)
+static List&lt;SimpleAttributeModifierGroup&gt; GetModifiersByTag(ISimpleAttributeDataSource target, string tag)
+static int RemoveModifiersByName(ISimpleAttributeDataSource target, string name)
+static int RemoveModifiersByTag(ISimpleAttributeDataSource target, string tag)
+static void RemoveAllModifiers(ISimpleAttributeDataSource target)
+static void ClearAll()
+static int GetActiveModifierCount(ISimpleAttributeDataSource target)</div>
+    </div>
+
+    <div class="section">
+        <h2>Namespace: SimpleAttributeForge.CharacterTemplate</h2>
+
+        <h3>SimpleCharacterTemplateData</h3>
+        <p>ScriptableObject for character template configuration.</p>
+        <div class="code-block">// Properties
+string systemName
+string templateName
+string description
+Sprite templateIcon
+List&lt;AttributeValueOverride&gt; baseAttributeOverrides
+
+// Methods
+bool IsValid(out List&lt;string&gt; errors)</div>
+
+        <h3>SimpleCharacterClass</h3>
+        <p>Individual character class configuration.</p>
+        <div class="code-block">// Properties
+string ClassName
+string Description
+Sprite ClassIcon
+List&lt;AttributeValueOverride&gt; BaseAttributeOverrides
+
+// Methods
+bool IsValid(List&lt;string&gt; attrs, out List&lt;string&gt; errors)</div>
+
+        <h3>AttributeValueOverride</h3>
+        <p>Per-attribute override for templates.</p>
+        <div class="code-block">// Constructors
+AttributeValueOverride()
+AttributeValueOverride(string attributeName, float value, bool useOverride = true)
+
+// Properties
+string AttributeName
+float OverrideValue
+bool UseOverride</div>
+    </div>
+
+    <div class="section">
+        <h2>Generated Classes (per system)</h2>
+        <p>These classes are generated by the wizards and named based on your system name (e.g., "Soulslike").</p>
+
+        <h3>[SystemName]CharacterTemplatesHelper (static)</h3>
+        <p>Static utility class for template operations. Generated by Character Template Wizard.</p>
+        <div class="code-block">// Template Discovery
+static List&lt;SimpleCharacterTemplateData&gt; GetAllTemplates()
+static SimpleCharacterTemplateData FindTemplateByName(string templateName)
+
+// Template Application
+static bool ApplyTemplateToGameObject(GameObject target, SimpleCharacterTemplateData template)
+static int ApplyTemplateToGameObjects(GameObject[] targets, SimpleCharacterTemplateData template)
+static int ApplyTemplates(GameObject[] targets, SimpleCharacterTemplateData[] templates)
+
+// Validation
+static bool IsTemplateCompatible(SimpleCharacterTemplateData template, ISimpleAttributeDataSource source)
+static List&lt;string&gt; GetMissingAttributes(SimpleCharacterTemplateData template, ISimpleAttributeDataSource source)
+
+// Template Analysis
+static float GetAttributeValue(SimpleCharacterTemplateData template, string attributeName)
+static float GetTotalAttributePoints(SimpleCharacterTemplateData template)
+static bool HasCustomAttributes(SimpleCharacterTemplateData template)
+static Dictionary&lt;string, float&gt; GetAttributeDifferences(SimpleCharacterTemplateData a, SimpleCharacterTemplateData b)
+
+// Runtime Switching
+static SimpleCharacterTemplateData GetCurrentTemplate(GameObject target, List&lt;SimpleCharacterTemplateData&gt; templates)
+static bool SwitchTemplate(GameObject target, SimpleCharacterTemplateData newTemplate, bool preserveValues = true)</div>
+
+        <h3>[SystemName]CharacterTemplateManager : MonoBehaviour</h3>
+        <p>Optional component for Inspector-based template management. Attach to a GameObject.</p>
+        <div class="code-block">// Inspector Properties
+List&lt;SimpleCharacterTemplateData&gt; availableTemplates
+SimpleCharacterTemplateData defaultTemplate
+bool autoApplyDefaultOnStart
+bool allowRuntimeTemplateChange
+bool autoDiscoverTemplates
+
+// Read-only Properties
+List&lt;SimpleCharacterTemplateData&gt; AvailableTemplates { get; }
+SimpleCharacterTemplateData DefaultTemplate { get; }
+bool AllowRuntimeTemplateChange { get; }
+
+// Methods
+bool ApplyTemplate(SimpleCharacterTemplateData template)
+bool ApplyTemplate(string templateName)
+SimpleCharacterTemplateData GetTemplateByName(string templateName)
+SimpleCharacterTemplateData GetCurrentTemplate()
+bool SwitchTemplate(SimpleCharacterTemplateData newTemplate, bool preserveCurrentValues = true)
+bool ValidateTemplate(SimpleCharacterTemplateData template)
+void AutoDiscoverTemplates()
+void RefreshTemplateList()</div>
+
+        <h3>[SystemName]CharacterTemplatesValidator (static)</h3>
+        <p>Static validation utilities for templates.</p>
+        <div class="code-block">// Methods
+static bool ValidateTemplate(SimpleCharacterTemplateData template,
+                             ISimpleAttributeDataSource attributeSource,
+                             out List&lt;string&gt; errors)
+
+static bool ValidateAllTemplates(List&lt;SimpleCharacterTemplateData&gt; templates,
+                                  ISimpleAttributeDataSource attributeSource)</div>
+
+        <h3>[SystemName]CharacterTemplateEnum</h3>
+        <p>Type-safe enum for character template identifiers.</p>
+        <div class="code-block">// Example for Soulslike system
+enum SoulslikeCharacterTemplateEnum {
+    AshKnight,
+    BlightRogue,
+    BloodHerald,
+    // ... etc
+}</div>
+    </div>
+
+    <div class="page-nav">
+        <a href="character-templates.html">Templates</a>
+        <a href="import-export.html">Import/Export</a>
+    </div>
+</body>
+</html>

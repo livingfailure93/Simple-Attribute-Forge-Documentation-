@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakpoint System - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html" class="active">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Breakpoint System
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Breakpoint System</h1>
+        <p>Advanced conditional effects and threshold bonuses</p>
+    </div>
+
+    <!-- Introduction -->
+    <div class="section">
+        <h2>What Are Breakpoints?</h2>
+        <p>Breakpoints are conditional effects that modify formula calculations based on attribute values. They enable complex game mechanics like threshold bonuses, milestone rewards, and conditional modifiers without coding.</p>
+        
+        <div class="info">
+            <strong>Key Feature:</strong> Breakpoints can affect any step of the 7-step formula pipeline, allowing precise control over when and how bonuses are applied.
+        </div>
+
+        <h3>Breakpoint Types</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Threshold Breakpoints</h4>
+                <p>Activate once when a condition is met and remain active.</p>
+                <ul>
+                    <li>Level 25 unlocks elite bonuses</li>
+                    <li>STR ≥ 30 grants strength mastery</li>
+                    <li>Health &lt; 25% triggers desperate measures</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Step Breakpoints</h4>
+                <p>Activate multiple times at regular intervals.</p>
+                <ul>
+                    <li>Every 5 STR points adds +10 damage</li>
+                    <li>Every 10 levels increases base health</li>
+                    <li>Every 25 skill points unlocks new abilities</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Basic Breakpoint Usage -->
+    <div class="section">
+        <h2>Basic Breakpoint Usage</h2>
+        
+        <h3>Simple Threshold Example</h3>
+        <div class="formula-container">
+            <div class="formula-header">Level 20 Elite Bonus</div>
+            <div class="code-block">Formula: Elite Health Scaling
+Target: Health
+Base Calculation: Level × 15
+
+Breakpoint Configuration:
+• Condition: Level ≥ 20
+• Effect Type: Multiplier  
+• Effect Value: 1.5
+• Operation: Add
+
+Result:
+• Level 19: 19×15 = 285 health
+• Level 20: 20×15×1.5 = 450 health (Elite bonus activated!)</div>
+        </div>
+
+        <h3>Step-Based Example</h3>
+        <div class="formula-container">
+            <div class="formula-header">Strength Milestone Rewards</div>
+            <div class="code-block">Formula: Strength Damage
+Target: Damage  
+Base Calculation: Strength × 2.0
+
+Step Breakpoint Configuration:
+• Condition: Every 5 Strength points
+• Effect Type: Flat
+• Effect Value: 12
+• Operation: Add
+
+Result:
+• STR 14: 14×2 = 28 damage
+• STR 15: (15×2) + 12 = 42 damage (first milestone!)
+• STR 20: (20×2) + 24 = 64 damage (second milestone!)
+• STR 25: (25×2) + 36 = 86 damage (third milestone!)</div>
+        </div>
+    </div>
+
+    <!-- Breakpoint Configuration -->
+    <div class="section">
+        <h2>Breakpoint Configuration</h2>
+        
+        <h3>Core Properties</h3>
+        <div class="code-block">public class Breakpoint
+{
+    [Header("Primary Condition")]
+    public string attribute;          // Attribute to check (e.g., "Level")
+    public ComparisonOp comparison;   // How to compare (≥, ≤, =, etc.)
+    public float value;               // Threshold value (e.g., 20)
+    
+    [Header("Effect")]
+    public BreakpointType type;       // Threshold or Step
+    public BreakpointEffect effectType; // Which pipeline step to modify
+    public float effectValue;         // Magnitude of the effect
+    public MathOperation operation;   // Add or Subtract the effect
+}</div>
+
+        <h3>Comparison Operators</h3>
+        <div class="code-block">public enum ComparisonOp
+{
+    Equal,             // attribute == value
+    NotEqual,          // attribute != value  
+    Greater,           // attribute > value
+    GreaterOrEqual,    // attribute ≥ value (most common)
+    Less,              // attribute < value
+    LessOrEqual        // attribute ≤ value
+}</div>
+
+        <h3>Effect Types</h3>
+        <div class="code-block">public enum BreakpointEffect
+{
+    Flat,         // Affects Step 2: Flat bonuses
+    AddPercent,   // Affects Step 3: Additive percentages  
+    SubPercent,   // Affects Step 4: Subtractive percentages
+    Multiplier,   // Affects Step 5: Multipliers
+    PostFlat      // Affects Step 6: Post-flat bonuses
+}</div>
+    </div>
+
+    <!-- Multiple Conditions -->
+    <div class="section">
+        <h2>Multiple Conditions</h2>
+        <p>Breakpoints can have complex conditional logic with multiple requirements.</p>
+        
+        <h3>Additional Conditions Structure</h3>
+        <div class="code-block">public class Breakpoint
+{
+    // ... primary condition fields ...
+    
+    [Header("Multiple Conditions")]
+    public bool hasAdditionalConditions;
+    public LogicalOperator globalLogicalOp;    // AND/OR
+    public List&lt;BreakpointCondition&gt; additionalConditions;
+}</div>
+
+        <h3>Logical Operators</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>AND Logic</h4>
+                <p>ALL conditions must be true</p>
+                <div class="code-block">Level ≥ 25 AND Strength ≥ 30
+Both requirements must be met</div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>OR Logic</h4>
+                <p>ANY condition can be true</p>
+                <div class="code-block">Strength ≥ 40 OR Intelligence ≥ 40
+Either high STR or high INT works</div>
+            </div>
+        </div>
+
+        <h3>Complex Condition Examples</h3>
+        <div class="formula-container">
+            <div class="formula-header">Hybrid Class Mastery</div>
+            <div class="code-block">Primary Condition: Level ≥ 30
+Additional Conditions (AND):
+  • Strength ≥ 25
+  • Intelligence ≥ 25  
+  • TotalSkills ≥ 200
+
+Effect: ×2.0 damage multiplier
+
+Only activates for high-level characters who have invested in both physical and magical capabilities plus skill training.</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Emergency Survival Bonuses</div>
+            <div class="code-block">Primary Condition: Health ≤ 25%
+Additional Conditions (OR):
+  • Mana ≤ 10%
+  • Enemies ≥ 3
+
+Effect: ×1.8 damage multiplier + 50 flat damage
+
+Activates when health is low AND either mana is depleted or outnumbered.</div>
+        </div>
+    </div>
+
+    <!-- Breakpoint Examples by Type -->
+    <div class="section">
+        <h2>Breakpoint Examples by Type</h2>
+        
+        <h3>Threshold Breakpoints</h3>
+        <p>One-time activation effects that remain active once triggered.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Strength Master Bonus</div>
+            <div class="code-block">Condition: Strength ≥ 50
+Type: Threshold
+Effect Type: Multiplier
+Effect Value: 1.4
+Operation: Add
+
+Grants 40% damage multiplier to all strength-based damage when STR reaches 50.
+Effect persists as long as STR ≥ 50.</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Legendary Status</div>
+            <div class="code-block">Condition: Level ≥ 60
+Type: Threshold  
+Effect Type: PostFlat
+Effect Value: 500
+Operation: Add
+
+Adds 500 flat health when reaching legendary status (level 60).
+Represents the character transcending mortal limitations.</div>
+        </div>
+
+        <h3>Step Breakpoints</h3>
+        <p>Recurring effects that activate at regular intervals.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Constitution Health Scaling</div>
+            <div class="code-block">Condition: Every 3 Constitution points
+Type: Step
+Effect Type: Flat
+Effect Value: 15
+Operation: Add
+
+Calculation Examples:
+• CON 8: 2 steps × 15 = +30 health
+• CON 11: 3 steps × 15 = +45 health  
+• CON 14: 4 steps × 15 = +60 health
+• CON 17: 5 steps × 15 = +75 health</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Spell School Mastery</div>
+            <div class="code-block">Condition: Every 20 Fire Magic skill points
+Type: Step
+Effect Type: AddPercent
+Effect Value: 8
+Operation: Add
+
+Progressive mastery bonuses:
+• Fire Magic 19: No bonus
+• Fire Magic 20: +8% spell damage
+• Fire Magic 40: +16% spell damage
+• Fire Magic 60: +24% spell damage</div>
+        </div>
+    </div>
+
+    <!-- Advanced Breakpoint Patterns -->
+    <div class="section">
+        <h2>Advanced Breakpoint Patterns</h2>
+        
+        <h3>Conditional Scaling</h3>
+        <p>Breakpoints that change formula behavior based on character build or situation.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Mage vs Warrior Scaling</div>
+            <div class="code-block">Base Formula: Damage = Strength × 1.5
+
+Breakpoint 1 (Warrior Path):
+• Condition: Strength ≥ 35 AND Intelligence &lt; 20
+• Effect: ×1.6 multiplier (pure warrior bonus)
+
+Breakpoint 2 (Battle Mage Path):  
+• Condition: Strength ≥ 25 AND Intelligence ≥ 25
+• Effect: +25 flat damage (hybrid efficiency)
+
+Different bonuses for different character builds.</div>
+        </div>
+
+        <h3>Dynamic Difficulty Scaling</h3>
+        <div class="formula-container">
+            <div class="formula-header">Player Power Level Adjustments</div>
+            <div class="code-block">Base Formula: Enemy Health = Level × 50
+
+Breakpoint 1 (Power Spike):
+• Condition: PlayerTotalPower ≥ 1000
+• Effect: ×1.3 enemy health multiplier
+
+Breakpoint 2 (Overpowered):
+• Condition: PlayerTotalPower ≥ 2500  
+• Effect: ×1.8 enemy health multiplier
+
+Automatically scales enemy difficulty based on player power.</div>
+        </div>
+
+        <h3>Resource Management</h3>
+        <div class="formula-container">
+            <div class="formula-header">Mana Efficiency Scaling</div>
+            <div class="code-block">Base Formula: Spell Cost = SpellLevel × 8
+
+Breakpoint 1 (Apprentice):
+• Condition: Intelligence ≥ 20
+• Effect Type: SubPercent
+• Effect: 15% cost reduction
+
+Breakpoint 2 (Archmage):
+• Condition: Intelligence ≥ 40 AND Wisdom ≥ 30
+• Effect Type: SubPercent  
+• Effect: Additional 25% cost reduction
+
+Intelligent mages cast spells more efficiently.</div>
+        </div>
+    </div>
+
+    <!-- Breakpoint Effect Types -->
+    <div class="section">
+        <h2>Breakpoint Effect Types</h2>
+        
+        <h3>Flat Effects</h3>
+        <p>Modify Step 2 (Flat Bonuses) of the pipeline.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Milestone Damage Bonuses</div>
+            <div class="code-block">Base: Strength × 2.0
+Breakpoint: Every 10 STR → +20 flat damage
+
+STR 25 calculation:
+• Base flat: 25×2 = 50
+• Breakpoint flat: 2 milestones × 20 = +40
+• Total flat: 50 + 40 = 90 damage</div>
+        </div>
+
+        <h3>Percentage Effects</h3>
+        <p>Modify Steps 3 & 4 (Additive/Subtractive Percentages).</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Critical Hit Mastery</div>
+            <div class="code-block">Base: Dexterity × 0.5% crit chance
+Breakpoint: When DEX ≥ 40 → +15% additive percentage
+
+DEX 45 calculation:
+• Base percentage: 45×0.5% = 22.5%
+• Breakpoint percentage: +15%
+• Total: 22.5% + 15% = 37.5% crit chance</div>
+        </div>
+
+        <h3>Multiplier Effects</h3>
+        <p>Modify Step 5 (Multipliers) for equipment and class bonuses.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Class Specialization Bonus</div>
+            <div class="code-block">Base: Weapon damage formula
+Breakpoint: When Class = "Berserker" AND Level ≥ 15 → ×1.4 multiplier
+
+All damage calculations get 40% multiplier for high-level berserkers.</div>
+        </div>
+
+        <h3>Post-Flat Effects</h3>
+        <p>Modify Step 6 (Post-Flat Bonuses) for guaranteed additions.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Set Bonus Effects</div>
+            <div class="code-block">Base: Defense calculation  
+Breakpoint: When ArmorSetPieces ≥ 5 → +100 post-flat defense
+
+Adds flat 100 defense after all other calculations when wearing complete armor set.</div>
+        </div>
+    </div>
+
+    <!-- Multiple Condition Examples -->
+    <div class="section">
+        <h2>Multiple Condition Examples</h2>
+        
+        <h3>AND Conditions (All Must Be True)</h3>
+        <div class="formula-container">
+            <div class="formula-header">Master Craftsman Requirements</div>
+            <div class="code-block">Primary: CraftingSkill ≥ 75
+Additional (AND):
+  • Intelligence ≥ 25 (planning ability)
+  • Dexterity ≥ 30 (fine motor control)  
+  • TotalItemsCrafted ≥ 1000 (experience)
+
+Effect: ×2.5 crafting success multiplier
+
+Only master craftsmen with high stats and experience get the bonus.</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Arcane Warrior Hybrid</div>
+            <div class="code-block">Primary: Level ≥ 30
+Additional (AND):
+  • Strength ≥ 35 (warrior capability)
+  • Intelligence ≥ 35 (mage capability)
+  • SwordSkill ≥ 50 (weapon mastery)
+  • SpellSkill ≥ 50 (magic mastery)
+
+Effect: +200 flat damage + ×1.8 multiplier
+
+Rewards the extremely difficult hybrid warrior-mage build path.</div>
+        </div>
+
+        <h3>OR Conditions (Any Can Be True)</h3>
+        <div class="formula-container">
+            <div class="formula-header">Leadership Bonuses</div>
+            <div class="code-block">Primary: Charisma ≥ 25
+Additional (OR):
+  • Leadership ≥ 50 (trained leader)
+  • Noble ≥ 1 (born leader)
+  • CommanderRank ≥ 5 (military leader)
+
+Effect: +30% experience gain for all party members
+
+Multiple paths to leadership - training, birth, or military service.</div>
+        </div>
+    </div>
+
+    <!-- Pipeline Integration -->
+    <div class="section">
+        <h2>Pipeline Integration</h2>
+        <p>Understanding how breakpoints integrate with each pipeline step.</p>
+        
+        <h3>Effect Application Order</h3>
+        <ol>
+            <li>Calculate base pipeline values</li>
+            <li>Evaluate all breakpoint conditions</li>
+            <li>Apply breakpoint effects to their respective pipeline steps</li>
+            <li>Recalculate pipeline with modified values</li>
+        </ol>
+
+        <h3>Complex Integration Example</h3>
+        <div class="formula-container">
+            <div class="formula-header">Multi-Breakpoint Damage Formula</div>
+            <div class="code-block">Base Formula: Weapon Damage
+Target: Damage
+Flat: Strength × 2.0
+Add%: WeaponSkill × 1.5%
+Multiplier: Weapon Quality ×1.2
+
+Breakpoint 1 (Affects Flat):
+• Condition: STR ≥ 30 → +25 flat damage
+
+Breakpoint 2 (Affects Percentage):  
+• Condition: WeaponSkill ≥ 75 → +20% additive
+
+Breakpoint 3 (Affects Multiplier):
+• Condition: Level ≥ 40 → ×1.5 additional multiplier
+
+Example with STR 35, WeaponSkill 80, Level 45:
+Step 2 Flat: (35×2) + 25 = 95 (breakpoint added +25)
+Step 3 Add%: (80×1.5%) + 20% = 32% (breakpoint added +20%)  
+Step 5 Multiplier: 1.2×1.5 = 1.8 (breakpoint added ×1.5)
+Result: 95 × 1.32 × 1.8 = 225.7 damage</div>
+        </div>
+    </div>
+
+    <!-- Practical Applications -->
+    <div class="section">
+        <h2>Practical Applications</h2>
+        
+        <h3>Character Progression Milestones</h3>
+        <div class="formula-container">
+            <div class="formula-header">Progression Tier System</div>
+            <div class="code-block">Novice Tier (Level 1-19):
+• Base progression only
+
+Veteran Tier (Level 20-39):
+• Breakpoint: Level ≥ 20 → ×1.25 all stats
+
+Elite Tier (Level 40-59):  
+• Breakpoint: Level ≥ 40 → ×1.6 all stats
+
+Legendary Tier (Level 60+):
+• Breakpoint: Level ≥ 60 → ×2.2 all stats + 200 flat health
+
+Creates clear power tiers with significant advancement rewards.</div>
+        </div>
+
+        <h3>Equipment Mastery Systems</h3>
+        <div class="formula-container">
+            <div class="formula-header">Weapon Type Specialization</div>
+            <div class="code-block">Sword Mastery Breakpoints:
+• SwordSkill ≥ 25: +15% damage (Adept)
+• SwordSkill ≥ 50: ×1.3 multiplier (Expert)
+• SwordSkill ≥ 75: +30 flat damage (Master)
+• SwordSkill = 100: ×2.0 multiplier (Grandmaster)
+
+Each weapon type has its own progression path with unique bonuses.</div>
+        </div>
+
+        <h3>Situational Combat Bonuses</h3>
+        <div class="formula-container">
+            <div class="formula-header">Desperate Measures System</div>
+            <div class="code-block">Low Health Bonuses:
+• Health ≤ 50%: +10% damage (adrenaline)
+• Health ≤ 25%: +25% damage (desperation)  
+• Health ≤ 10%: ×2.0 damage multiplier (last stand)
+
+Risk/reward mechanics that make low health dangerous but powerful.</div>
+        </div>
+    </div>
+
+    <!-- Design Patterns -->
+    <div class="section">
+        <h2>Breakpoint Design Patterns</h2>
+        
+        <h3>Progressive Mastery</h3>
+        <p>Multiple threshold breakpoints that build on each other.</p>
+        
+        <div class="code-block">Mastery Path Example:
+Skill 25: +10% effectiveness (Apprentice)
+Skill 50: +25% effectiveness (Journeyman)  
+Skill 75: +50% effectiveness (Expert)
+Skill 100: ×2.0 effectiveness (Master)
+
+Each tier provides meaningful advancement.</div>
+
+        <h3>Milestone Rewards</h3>
+        <p>Step breakpoints that provide regular progression feedback.</p>
+        
+        <div class="code-block">Level Milestone Example:
+Every 5 levels: +25 health, +15 mana
+Every 10 levels: +5% to all primary stats
+Every 25 levels: Unlock new ability tier
+
+Regular rewards maintain engagement throughout progression.</div>
+
+        <h3>Build Validation</h3>
+        <p>Breakpoints that reward specific character build choices.</p>
+        
+        <div class="code-block">Pure Mage Validation:
+STR ≤ 15 AND INT ≥ 40: ×1.8 spell damage
+(Rewards focusing on magic over physical combat)
+
+Pure Warrior Validation:  
+STR ≥ 40 AND INT ≤ 15: ×1.8 melee damage
+(Rewards focusing on combat over magic)</div>
+
+        <h3>Emergency Mechanics</h3>
+        <p>Breakpoints that activate in crisis situations.</p>
+        
+        <div class="code-block">Crisis Response Examples:
+Health ≤ 20%: +50% damage, -50% defense (berserker mode)
+Mana ≤ 10%: Spell costs reduced by 75% (conservation)
+Outnumbered 3:1: +100% movement speed (tactical retreat)</div>
+    </div>
+
+    <!-- Testing Breakpoints -->
+    <div class="section">
+        <h2>Testing Breakpoints</h2>
+        
+        <h3>Boundary Testing</h3>
+        <p>Always test values around breakpoint thresholds:</p>
+        
+        <div class="code-block">// Test threshold breakpoint activation
+Test: STR 29 vs STR 30 (threshold at 30)
+Expected: No bonus at 29, bonus active at 30
+
+// Test step breakpoint intervals  
+Test: Skill 24, 25, 26 (step every 5 points)
+Expected: Same bonus at 24 and 26, new bonus at 25
+
+// Test multiple condition logic
+Test: All conditions true, one condition false
+Expected: Effect only when all conditions met (AND logic)</div>
+
+        <h3>Using the Test Preview</h3>
+        <ol>
+            <li>Set test values in the Influence Wizard</li>
+            <li>Adjust values around breakpoint thresholds</li>
+            <li>Watch the calculation breakdown update in real-time</li>
+            <li>Verify active breakpoints are highlighted</li>
+        </ol>
+
+        <h3>Runtime Verification</h3>
+        <div class="code-block">// Debug breakpoint activation
+orchestrator.debugMode = true;
+
+// Console output shows active breakpoints:
+[Breakpoint] StrengthMaster activated: STR 32 ≥ 30
+[Breakpoint] LevelTier skipped: Level 18 &lt; 20
+[Pipeline] Final damage: 145.6 (includes breakpoint effects)</div>
+    </div>
+
+    <!-- Common Patterns -->
+    <div class="section">
+        <h2>Common Breakpoint Patterns</h2>
+        
+        <h3>Level-Based Tiers</h3>
+        <div class="code-block">// Standard RPG level tiers
+Level 10: Apprentice bonuses
+Level 20: Journeyman bonuses  
+Level 30: Expert bonuses
+Level 40: Master bonuses
+Level 50: Grandmaster bonuses</div>
+
+        <h3>Stat Investment Rewards</h3>
+        <div class="code-block">// Reward focused builds
+STR 25/50/75: Physical damage milestones
+INT 25/50/75: Magical power milestones
+AGI 25/50/75: Speed and precision milestones
+CON 25/50/75: Survivability milestones</div>
+
+        <h3>Situational Modifiers</h3>
+        <div class="code-block">// Context-sensitive bonuses
+Health &lt; 25%: Desperation bonuses
+Mana &gt; 90%: Overflow efficiency  
+Multiple enemies: Crowd control bonuses
+Solo combat: Focus bonuses</div>
+
+        <h3>Equipment Synergies</h3>
+        <div class="code-block">// Equipment combination rewards
+Full armor set: Defense bonus
+Weapon + Shield: Balanced combat bonus
+Dual weapons: Offense bonus
+Staff + Orb: Magical focus bonus</div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Breakpoint Best Practices</h2>
+        
+        <h3>Design Guidelines</h3>
+        <ul>
+            <li><strong>Clear Thresholds:</strong> Use round numbers (25, 50, 75) for easy player understanding</li>
+            <li><strong>Meaningful Rewards:</strong> Breakpoint bonuses should feel significant and worth pursuing</li>
+            <li><strong>Multiple Paths:</strong> Provide different breakpoints for different character builds</li>
+            <li><strong>Logical Conditions:</strong> Breakpoint requirements should make thematic sense</li>
+        </ul>
+
+        <h3>Balance Considerations</h3>
+        <ul>
+            <li><strong>Avoid Breakpoint Dominance:</strong> Don't make breakpoints so powerful they overshadow base progression</li>
+            <li><strong>Test Edge Cases:</strong> Verify behavior at exact threshold values</li>
+            <li><strong>Plan for Min-Maxing:</strong> Consider how players might exploit breakpoint thresholds</li>
+            <li><strong>Provide Alternatives:</strong> Multiple viable paths to similar power levels</li>
+        </ul>
+
+        <h3>Performance Tips</h3>
+        <ul>
+            <li>Limit breakpoints per formula (3-5 maximum recommended)</li>
+            <li>Use simple conditions when possible (single attribute checks)</li>
+            <li>Avoid complex mathematical expressions in conditions</li>
+            <li>Group related breakpoints in the same formula</li>
+        </ul>
+
+        <h3>Common Mistakes</h3>
+        <div class="warning">
+            <strong>Avoid These Issues:</strong>
+            <ul>
+                <li>Breakpoints that reference non-existent attributes</li>
+                <li>Conflicting breakpoint effects that cancel each other</li>
+                <li>Overly complex condition logic that's hard to understand</li>
+                <li>Breakpoint thresholds that are impossible to reach</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Advanced Topics -->
+    <div class="section">
+        <h2>Advanced Breakpoint Topics</h2>
+        
+        <h3>Dynamic Breakpoint Values</h3>
+        <p>While breakpoint thresholds are static, you can create dynamic effects by referencing other attributes:</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Scaled Difficulty Breakpoints</div>
+            <div class="code-block">Enemy Scaling Formula:
+Primary: PlayerLevel ≥ DifficultyThreshold
+Effect: Scale enemy stats based on player progression
+
+Different breakpoint values for different difficulty settings.</div>
+        </div>
+
+        <h3>Conditional Formula Disabling</h3>
+        <div class="formula-container">
+            <div class="formula-header">Class-Restricted Formulas</div>
+            <div class="code-block">Spell Damage Formula:
+Primary: Class = "Mage"  
+Effect: Enable the entire formula
+Otherwise: Formula result = 0
+
+Only mages benefit from spell damage calculations.</div>
+        </div>
+
+        <h3>Breakpoint Combinations</h3>
+        <p>Multiple breakpoints in the same formula create complex progression curves:</p>
+        
+        <div class="code-block">Complex Progression Example:
+STR 20: +×1.2 multiplier (competent)
+STR 30: +25 flat damage (strong)  
+STR 40: +×1.5 multiplier (powerful)
+STR 50: +×2.0 multiplier (legendary)
+
+Creates exponential growth at high investment levels.</div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="formula-examples.html">← Formula Examples</a>
+        <a href="influence-wizard.html">Influence Wizard →</a>
+    </div>
+</body>
+</html>

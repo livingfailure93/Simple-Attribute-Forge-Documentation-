@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formula Examples - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html" class="active">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Formula Examples
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Formula Examples</h1>
+        <p>Extensive collection of real-world formula patterns</p>
+    </div>
+
+    <!-- Basic Examples -->
+    <div class="section">
+        <h2>Basic Formula Patterns</h2>
+        
+        <h3>1. Simple Stat Scaling</h3>
+        <p>The most common pattern - one attribute affects another linearly.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Strength → Melee Damage</div>
+            <div class="code-block">Name: StrengthDamage
+Target: Damage
+Start Mode: Zero
+Flat Bonuses: Strength × 2.0
+Apply Mode: Add to Base
+
+Result: Each STR point adds 2 damage
+STR 15 = 30 bonus damage</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Intelligence → Mana</div>
+            <div class="code-block">Name: IntelligenceMana  
+Target: Mana
+Start Mode: Zero
+Flat Bonuses: Intelligence × 5.0
+Post-Flat: Base Mana +25
+Apply Mode: Add to Base
+
+Result: Each INT point adds 5 mana, +25 base mana
+INT 12 = (12 × 5) + 25 = 85 bonus mana</div>
+        </div>
+
+        <h3>2. Level-Based Scaling</h3>
+        <p>Character progression formulas that scale attributes with level.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Level → Health Scaling</div>
+            <div class="code-block">Name: LevelHealth
+Target: Health  
+Start Mode: TargetBase
+Flat Bonuses: Level × 15.0
+Apply Mode: Override Base
+Also Update Current: true
+
+Result: Total health = base health + (level × 15)
+Base Health 100, Level 8 = 100 + (8 × 15) = 220 total health</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Level → Experience Requirement</div>
+            <div class="code-block">Name: ExperienceRequired
+Target: ExpToNext
+Start Mode: Zero
+Flat Bonuses: Level × 100.0
+Multipliers: Difficulty Scaling ×1.2  
+Post-Flat: Base XP +500
+Apply Mode: Override Base
+
+Result: XP needed = ((level × 100) × 1.2) + 500
+Level 5 = ((5 × 100) × 1.2) + 500 = 1100 XP needed</div>
+        </div>
+    </div>
+
+    <!-- Intermediate Examples -->
+    <div class="section">
+        <h2>Intermediate Formula Patterns</h2>
+        
+        <h3>3. Multi-Source Combinations</h3>
+        <p>Formulas that combine multiple attributes for complex relationships.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Physical Defense Calculation</div>
+            <div class="code-block">Name: PhysicalDefense
+Target: Defense
+Start Mode: Zero
+Flat Bonuses: 
+  • Strength × 0.5 (muscle provides some protection)
+  • Endurance × 1.0 (toughness and resilience)
+  • Level × 2.0 (experience in avoiding hits)
+Post-Flat: Base Defense +5
+Apply Mode: Add to Base
+
+Result: Defense = (STR×0.5 + END×1.0 + Level×2.0) + 5
+STR 20, END 15, Level 8 = (10 + 15 + 16) + 5 = 46 defense</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Spell Effectiveness</div>
+            <div class="code-block">Name: SpellPower
+Target: SpellDamage
+Start Mode: Zero
+Flat Bonuses: Intelligence × 2.5
+Additive %: Wisdom × 1.5% (spell efficiency)
+Subtractive %: Encumbrance × 0.8% (armor interferes)
+Multipliers: Staff Bonus ×1.25
+Apply Mode: Add to Base
+
+Result: Complex spell damage with multiple factors
+INT 20, WIS 18, Encumbrance 10:
+• Flat: 20 × 2.5 = 50
+• Add%: 18 × 1.5% = 27%
+• Sub%: 10 × 0.8% = 8%  
+• Net%: 1 + 0.27 - 0.08 = 1.19
+• Multiplier: ×1.25
+• Final: 50 × 1.19 × 1.25 = 74.4 spell damage</div>
+        </div>
+
+        <h3>4. Percentage-Based Calculations</h3>
+        <p>Using percentages for proportional effects and scaling.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Critical Hit Chance</div>
+            <div class="code-block">Name: CriticalChance
+Target: CritChance
+Start Mode: Zero
+Additive %: 
+  • Dexterity × 0.3% (per point)
+  • Luck × 0.8% (per point)
+Post-Flat: Base Crit +5%
+Apply Mode: Add to Base
+
+Result: Crit% = (DEX×0.3% + LUCK×0.8%) + 5%
+DEX 25, LUCK 15 = (7.5% + 12%) + 5% = 24.5% crit chance</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Movement Speed with Penalties</div>
+            <div class="code-block">Name: MovementSpeed
+Target: Speed
+Start Mode: TargetBase
+Additive %: Agility × 1.0% (speed increase per AGI)
+Subtractive %: 
+  • Weight × 0.5% (encumbrance penalty)
+  • Armor × 0.3% (mobility reduction)
+Apply Mode: Override Base
+
+Result: Speed = baseSpeed × (1 + AGI% - Weight% - Armor%)
+Base 100, AGI 20, Weight 30, Armor 25:
+Speed = 100 × (1 + 0.20 - 0.15 - 0.075) = 100 × 0.975 = 97.5</div>
+        </div>
+    </div>
+
+    <!-- Advanced Examples -->
+    <div class="section">
+        <h2>Advanced Formula Patterns</h2>
+        
+        <h3>5. Equipment and Set Bonuses</h3>
+        <p>Complex formulas incorporating equipment effects and set bonuses.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Weapon Damage with Specialization</div>
+            <div class="code-block">Name: WeaponDamage
+Target: WeaponDamage
+Start Mode: Zero
+Flat Bonuses:
+  • Strength × 1.8 (primary damage stat)
+  • Dexterity × 0.6 (weapon control)
+Additive %: WeaponSkill × 2.0% (mastery bonus)
+Multipliers:
+  • Weapon Quality ×1.0-2.0 (based on item tier)
+  • Class Specialization ×1.15 (if specialized weapon type)
+  • Set Bonus ×1.1 (if wearing matching armor)
+Post-Flat: Weapon Base Damage (varies by weapon)
+Apply Mode: Override Base
+
+Example with Legendary Sword:
+STR 25, DEX 18, WeaponSkill 40:
+• Flat: (25×1.8) + (18×0.6) = 45 + 10.8 = 55.8
+• Add%: 40×2% = 80% = 0.8
+• Multipliers: 1.8×1.15×1.1 = 2.277
+• Post-Flat: +35 (legendary sword base)
+• Result: (55.8×1.8×2.277) + 35 = 263.4 weapon damage</div>
+        </div>
+
+        <h3>6. Diminishing Returns</h3>
+        <p>Simulating diminishing returns through percentage calculations.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Armor Damage Reduction</div>
+            <div class="code-block">Name: DamageReduction  
+Target: DamageReduction
+Start Mode: Zero
+Additive %: Armor × 0.8% (each point = 0.8% reduction)
+Subtractive %: ArmorPenetration × 1.0% (enemy can reduce effectiveness)
+Multipliers: Material Quality ×0.9-1.3 (based on armor material)
+Apply Mode: Add to Base
+
+Creates natural diminishing returns:
+• 50 Armor = 40% reduction
+• 100 Armor = 80% reduction  
+• 125 Armor = 100% reduction (damage immunity)</div>
+        </div>
+
+        <h3>7. Resource Management</h3>
+        <p>Formulas for managing consumable resources and costs.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Spell Mana Cost</div>
+            <div class="code-block">Name: SpellCost
+Target: ManaCost
+Start Mode: Zero
+Flat Bonuses: SpellLevel × 8.0 (base cost scaling)
+Subtractive %: Intelligence × 1.2% (efficiency reduces cost)
+Multipliers: 
+  • Staff Quality ×0.7-1.0 (better staff = lower cost)
+  • Spell School Mastery ×0.8 (specialization discount)
+Post-Flat: Minimum Cost +3 (spells always cost something)
+Apply Mode: Override Base
+
+Example - Level 5 Fireball:
+INT 22, Legendary Staff (×0.7), Fire Mastery (×0.8):
+• Flat: 5×8 = 40 base cost
+• Sub%: 22×1.2% = 26.4% reduction = 0.736 multiplier
+• Multipliers: 0.7×0.8 = 0.56
+• Result: (40×0.736×0.56) + 3 = 19.5 mana cost</div>
+        </div>
+    </div>
+
+    <!-- RPG System Examples -->
+    <div class="section">
+        <h2>Complete RPG System Examples</h2>
+        
+        <h3>8. Character Progression System</h3>
+        <p>A complete set of formulas for an RPG character progression system.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Health Scaling (Tank Build)</div>
+            <div class="code-block">Name: TankHealth
+Target: Health
+Start Mode: TargetBase
+Flat Bonuses:
+  • Level × 25.0 (primary scaling)
+  • Constitution × 8.0 (health stat)
+  • Strength × 2.0 (warrior toughness)
+Multipliers: Tank Specialization ×1.4
+Post-Flat: Racial Bonus +50
+Apply Mode: Override Base
+Also Update Current: true
+
+Creates tanky characters with high health pools.</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Mage Mana System</div>
+            <div class="code-block">Name: MageMana
+Target: Mana
+Start Mode: TargetBase  
+Flat Bonuses:
+  • Level × 12.0 (base progression)
+  • Intelligence × 6.0 (primary mana stat)
+  • Wisdom × 3.0 (secondary mana stat)
+Additive %: MagicAffinity × 2.5% (talent bonus)
+Multipliers: Arcane Focus ×1.3 (class bonus)
+Apply Mode: Override Base
+Also Update Current: true
+
+Example Calculation:
+Level 10, INT 25, WIS 18, Affinity 20:
+• Flat: (10×12) + (25×6) + (18×3) = 120+150+54 = 324
+• Add%: 20×2.5% = 50% = 1.5 multiplier
+• Result: 324×1.5×1.3 = 631.8 total mana</div>
+        </div>
+
+        <h3>9. Combat Effectiveness</h3>
+        <p>Formulas for damage calculation and combat mechanics.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Two-Handed Weapon Mastery</div>
+            <div class="code-block">Name: TwoHandedDamage
+Target: Damage
+Start Mode: Zero
+Flat Bonuses:
+  • Strength × 2.2 (primary damage stat)
+  • Level × 3.0 (experience bonus)
+Additive %: TwoHandedSkill × 1.8% (skill mastery)
+Multipliers:
+  • Weapon Quality ×1.0-2.5 (weapon tier)
+  • Berserker Mode ×1.6 (when health &lt; 30%)
+  • Two-Handed Specialization ×1.25
+Post-Flat: Weapon Base Damage (varies)
+Apply Mode: Override Base
+
+High damage output for specialized two-handed builds.</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Spell Critical Damage</div>
+            <div class="code-block">Name: SpellCritDamage
+Target: SpellCritDamage
+Start Mode: Zero
+Flat Bonuses: Intelligence × 1.5
+Additive %: 
+  • CriticalMastery × 3.0% (specialization)
+  • Wisdom × 0.8% (spell control)
+Multipliers: Focus Crystal ×1.4
+Post-Flat: Base Critical Power +20
+Apply Mode: Add to Base
+
+Calculates bonus damage for spell critical hits.</div>
+        </div>
+    </div>
+
+    <!-- Conditional Examples -->
+    <div class="section">
+        <h2>Conditional Formula Examples</h2>
+        
+        <h3>10. Breakpoint-Based Bonuses</h3>
+        <p>Formulas with threshold and step-based conditional bonuses.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Elite Level Bonuses</div>
+            <div class="code-block">Name: EliteHealth
+Target: Health
+Start Mode: TargetBase
+Flat Bonuses: Level × 18.0
+Breakpoints:
+  • When Level ≥ 25: Add ×1.5 multiplier (elite tier)
+  • When Level ≥ 50: Add ×2.0 multiplier (legendary tier)
+  • When Level ≥ 75: Add +500 post-flat (god tier)
+Apply Mode: Override Base
+Also Update Current: true
+
+Progressive power scaling with major breakpoints:
+• Level 24: 24×18 = 432 health
+• Level 25: 25×18×1.5 = 675 health (elite bonus!)
+• Level 50: 50×18×1.5×2.0 = 2700 health (legendary!)
+• Level 75: 75×18×1.5×2.0 + 500 = 4550 health (god tier!)</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Step-Based Strength Bonuses</div>
+            <div class="code-block">Name: StrengthMilestones
+Target: Damage
+Start Mode: Zero
+Flat Bonuses: Strength × 1.8
+Breakpoints:
+  • Every 5 STR points: Add +8 flat damage (step breakpoint)
+  • When STR ≥ 30: Add ×1.3 multiplier (strength master)
+Apply Mode: Add to Base
+
+Rewards focused strength investment:
+• STR 14: 14×1.8 = 25.2 damage
+• STR 15: (15×1.8) + 8 = 35.0 damage (milestone!)
+• STR 20: (20×1.8) + 16 = 52.0 damage (2 milestones)
+• STR 30: ((30×1.8) + 24) × 1.3 = 109.2 damage (master!)</div>
+        </div>
+
+        <h3>11. Complex Conditional Logic</h3>
+        <p>Advanced breakpoints with multiple conditions.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Hybrid Warrior-Mage Build</div>
+            <div class="code-block">Name: HybridPower
+Target: HybridDamage
+Start Mode: Zero
+Flat Bonuses:
+  • Strength × 1.2
+  • Intelligence × 1.2
+Breakpoints:
+  • When STR ≥ 20 AND INT ≥ 20: Add ×1.5 multiplier (true hybrid)
+  • When STR ≥ 30 OR INT ≥ 30: Add +25 flat damage (mastery)
+  • When Level ≥ 25 AND (STR+INT) ≥ 60: Add ×2.0 multiplier (apex hybrid)
+Apply Mode: Add to Base
+
+Rewards balanced stat investment with exponential growth.</div>
+        </div>
+    </div>
+
+    <!-- Specialized Examples -->
+    <div class="section">
+        <h2>Specialized Formula Examples</h2>
+        
+        <h3>12. Regeneration Rate Formulas</h3>
+        <p>Calculating regeneration effectiveness for vital attributes.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Health Regeneration Rate</div>
+            <div class="code-block">Name: HealthRegenRate
+Target: HealthRegenRate
+Start Mode: Zero
+Flat Bonuses:
+  • Constitution × 0.3 (base regeneration)
+  • Level × 0.1 (experience helps)
+Additive %: Regeneration × 5.0% (regeneration skill)
+Post-Flat: Base Regen +1.0
+Apply Mode: Override Base
+
+Higher Constitution and skills = faster health recovery.</div>
+        </div>
+
+        <h3>13. Skill System Integration</h3>
+        <p>Formulas that incorporate skill levels and masteries.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Weapon Skill Effectiveness</div>
+            <div class="code-block">Name: SwordMastery
+Target: SwordDamage
+Start Mode: Zero
+Flat Bonuses:
+  • Strength × 1.5
+  • SwordSkill × 2.0 (skill directly affects damage)
+Additive %: SwordSkill × 1.5% (efficiency bonus)
+Breakpoints:
+  • When SwordSkill ≥ 25: Add ×1.2 multiplier (adept)
+  • When SwordSkill ≥ 50: Add ×1.4 multiplier (expert)  
+  • When SwordSkill ≥ 75: Add ×1.6 multiplier (master)
+  • When SwordSkill = 100: Add +100 flat damage (grandmaster)
+Apply Mode: Add to Base
+
+Progression curve that rewards skill specialization.</div>
+        </div>
+
+        <h3>14. Resource Efficiency</h3>
+        <p>Formulas for managing resource consumption and efficiency.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Crafting Success Rate</div>
+            <div class="code-block">Name: CraftingSuccess
+Target: SuccessRate
+Start Mode: Zero
+Flat Bonuses: CraftingSkill × 0.8 (primary factor)
+Additive %:
+  • Intelligence × 0.5% (planning and precision)
+  • Dexterity × 0.3% (hand coordination)
+  • Tools × 2.0% (quality tools help)
+Multipliers: Workshop Quality ×1.0-1.5
+Post-Flat: Base Success +10%
+Apply Mode: Override Base
+
+Higher skills and better tools = higher success rates.</div>
+        </div>
+    </div>
+
+    <!-- Economic Examples -->
+    <div class="section">
+        <h2>Economic & Social Examples</h2>
+        
+        <h3>15. Trading and Commerce</h3>
+        <p>Formulas for economic systems and NPC interactions.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Merchant Prices</div>
+            <div class="code-block">Name: BuyPrice
+Target: ItemCost  
+Start Mode: TargetBase
+Subtractive %:
+  • Charisma × 1.5% (charm reduces prices)
+  • TradingSkill × 2.0% (negotiation expertise)
+  • Reputation × 0.8% (known customers get discounts)
+Multipliers: Regional Economy ×0.8-1.4 (market conditions)
+Apply Mode: Override Base
+
+Better social stats = better prices.</div>
+        </div>
+
+        <h3>16. Experience and Learning</h3>
+        <p>Dynamic learning rates and experience bonuses.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Skill Learning Rate</div>
+            <div class="code-block">Name: LearningRate
+Target: ExpGain
+Start Mode: TargetBase
+Additive %:
+  • Intelligence × 2.0% (faster learning)
+  • Wisdom × 1.0% (retention and understanding)
+  • Focus × 1.5% (concentration skill)
+Subtractive %: Fatigue × 3.0% (tiredness slows learning)
+Multipliers: Teacher Quality ×0.9-1.8
+Apply Mode: Override Base
+
+Smart, focused characters learn skills faster.</div>
+        </div>
+    </div>
+
+    <!-- Edge Case Examples -->
+    <div class="section">
+        <h2>Edge Case & Special Examples</h2>
+        
+        <h3>17. Inverse Relationships</h3>
+        <p>Formulas where higher stats can sometimes reduce effectiveness.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Stealth vs Strength</div>
+            <div class="code-block">Name: StealthPenalty
+Target: Stealth
+Start Mode: TargetBase
+Flat Bonuses: Dexterity × 2.0 (agility helps stealth)
+Subtractive %: Strength × 1.0% (muscle makes noise)
+Subtractive %: Armor × 2.0% (heavy armor clanks)
+Post-Flat: Stealth Training +15
+Apply Mode: Override Base
+
+Balances stealth vs combat effectiveness.</div>
+        </div>
+
+        <h3>18. Transformation Effects</h3>
+        <p>Formulas that dramatically alter character capabilities.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Berserker Rage Mode</div>
+            <div class="code-block">Name: BerserkerDamage
+Target: Damage
+Start Mode: TargetBase
+Flat Bonuses: Strength × 1.0 (normal scaling)
+Multipliers: Rage Intensity ×1.8 (massive damage boost)
+Subtractive %: CurrentHealth × -2.0% (more damage when injured)
+Breakpoints:
+  • When CurrentHealth ≤ 25%: Add ×2.5 multiplier (desperate fury)
+  • When CurrentHealth ≤ 10%: Add +100 flat damage (last stand)
+Apply Mode: Override Base
+
+Risk/reward system - more damage when near death.</div>
+        </div>
+
+        <h3>19. Environmental Effects</h3>
+        <p>Formulas that respond to environmental conditions and temporary states.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Weather-Affected Movement</div>
+            <div class="code-block">Name: WeatherMovement
+Target: MovementSpeed
+Start Mode: TargetBase
+Additive %: Agility × 1.2% (agility always helps)
+Subtractive %:
+  • RainIntensity × 5.0% (slippery surfaces)
+  • SnowDepth × 3.0% (harder to move)
+  • MudLevel × 8.0% (very difficult terrain)
+Multipliers: Appropriate Gear ×0.9-1.1 (boots, clothing)
+Apply Mode: Override Base
+
+Environmental conditions affect character movement.</div>
+        </div>
+    </div>
+
+    <!-- Formula Combinations -->
+    <div class="section">
+        <h2>Multi-Formula Systems</h2>
+        
+        <h3>20. Interconnected Formulas</h3>
+        <p>Multiple formulas working together to create complex systems.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Comprehensive Defense System</div>
+            <div class="code-block">Formula 1 - Physical Defense:
+Name: PhysicalDefense
+Target: PhysicalDef
+Flat: Strength×0.8 + Endurance×1.5 + Armor×2.0
+Execution Order: 0
+
+Formula 2 - Magical Defense:  
+Name: MagicalDefense
+Target: MagicalDef
+Flat: Intelligence×0.6 + Wisdom×1.2 + MagicResist×2.5
+Execution Order: 0
+
+Formula 3 - Total Defense Rating:
+Name: TotalDefense
+Target: DefenseRating
+Flat: PhysicalDef×0.6 + MagicalDef×0.4 + Level×1.0
+Execution Order: 1 (runs after defense calculations)
+
+Creates layered defense system with physical/magical components.</div>
+        </div>
+    </div>
+
+    <!-- Testing Examples -->
+    <div class="section">
+        <h2>Testing Your Formulas</h2>
+        
+        <h3>Validation Examples</h3>
+        <p>Use these test cases to verify your formulas work correctly:</p>
+        
+        <div class="code-block">// Test extreme values
+Test Values: STR 1, Level 1 → Should give reasonable minimum
+Test Values: STR 100, Level 50 → Should not break the game
+Test Values: STR 0, Level 0 → Should handle gracefully
+
+// Test breakpoint boundaries  
+Test Values: Level 24 vs Level 25 → Verify breakpoint activation
+Test Values: STR 29 vs STR 30 → Check threshold effects
+
+// Test formula interactions
+Test Multiple: Change STR → Verify all STR-dependent formulas update
+Test Performance: 100 rapid changes → Should remain smooth</div>
+
+        <h3>Common Test Scenarios</h3>
+        <ul>
+            <li><strong>New Character:</strong> Level 1, basic stats - should have playable values</li>
+            <li><strong>Mid Game:</strong> Level 25, moderate stats - balanced progression</li>
+            <li><strong>End Game:</strong> Level 50+, high stats - powerful but not broken</li>
+            <li><strong>Edge Cases:</strong> Zero stats, maximum stats, negative values</li>
+        </ul>
+    </div>
+
+    <!-- Regeneration Targeting -->
+    <div class="section">
+        <h2>Regeneration Rate Formulas</h2>
+        <p>Formulas can target RegenerationRate or RegenerationDelay for Vital attributes, enabling dynamic regen systems.</p>
+
+        <h3>Regen Rate Examples</h3>
+
+        <div class="formula-container">
+            <div class="formula-header">Level → Health Regen Rate</div>
+            <div class="code-block">Name: LevelHealthRegen
+Target: Health
+Target Property: RegenerationRate
+Start Mode: Zero
+Flat Bonuses: Level × 0.5
+Post-Flat: Base Regen +1.0
+Apply Mode: Add
+
+Result: Health regenerates faster at higher levels
+Level 10 = (10 × 0.5) + 1.0 = 6.0 HP/second</div>
+        </div>
+
+        <div class="formula-container">
+            <div class="formula-header">Endurance → Stamina Regen Rate</div>
+            <div class="code-block">Name: EnduranceStaminaRegen
+Target: Stamina
+Target Property: RegenerationRate
+Start Mode: Zero
+Flat Bonuses: Endurance × 0.8
+Apply Mode: Add
+
+Result: Each Endurance point adds 0.8 stamina/second
+END 20 = 16.0 stamina/second</div>
+        </div>
+
+        <h3>Regen Delay Examples</h3>
+
+        <div class="formula-container">
+            <div class="formula-header">Vigor → Reduced Health Regen Delay</div>
+            <div class="code-block">Name: VigorRegenDelay
+Target: Health
+Target Property: RegenerationDelay
+Start Mode: Zero
+Flat Bonuses: Vigor × -0.1
+Post-Flat: Base Delay +3.0
+Apply Mode: Override
+
+Result: Higher Vigor = faster recovery after damage
+Vigor 15 = 3.0 + (15 × -0.1) = 1.5 second delay
+Vigor 30 = 3.0 + (30 × -0.1) = 0 second delay (instant)</div>
+        </div>
+
+        <div class="info">
+            <strong>Property Targeting:</strong> The RegenerationRate and RegenerationDelay options only appear for Vital-type attributes in the wizard. You can have multiple formulas targeting the same attribute with different properties (e.g., one formula for Health value, another for Health regen rate).
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Formula Design Best Practices</h2>
+        
+        <h3>Start Simple</h3>
+        <ul>
+            <li>Begin with basic flat bonuses (STR → Damage)</li>
+            <li>Add complexity gradually</li>
+            <li>Test each addition thoroughly</li>
+            <li>Use the Test Preview panel extensively</li>
+        </ul>
+
+        <h3>Maintain Balance</h3>
+        <ul>
+            <li>Consider all character build paths</li>
+            <li>Avoid making any single stat overpowered</li>
+            <li>Test with extreme stat distributions</li>
+            <li>Plan for player min-maxing</li>
+        </ul>
+
+        <h3>Performance Considerations</h3>
+        <ul>
+            <li>Group related calculations in single formulas</li>
+            <li>Use execution order for dependent formulas</li>
+            <li>Limit the number of formulas per attribute</li>
+            <li>Consider Manual mode for turn-based games</li>
+        </ul>
+
+        <h3>Documentation</h3>
+        <div class="info">
+            <strong>Document Your Formulas:</strong> Use clear names and export to JSON for version control. Include comments explaining the design intent and expected value ranges.
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="formula-pipeline.html">← Formula Pipeline</a>
+        <a href="breakpoints.html">Breakpoint System →</a>
+    </div>
+</body>
+</html>

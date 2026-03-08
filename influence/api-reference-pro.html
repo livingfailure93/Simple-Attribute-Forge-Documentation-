@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html" class="active">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / API Reference
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>API Reference</h1>
+        <p>Complete Ultimate system API documentation</p>
+    </div>
+
+    <!-- Core Interfaces -->
+    <div class="section">
+        <h2>Core Interfaces</h2>
+        
+        <h3>IAttributeProvider</h3>
+        <p>Interface implemented by the generated orchestrator for attribute access during formula calculations.</p>
+        
+        <div class="code-block">public interface IAttributeProvider
+{
+    // Primary attribute access - used by formulas
+    SimpleRuntimeAttribute GetAttribute(string attributeName);
+    IEnumerable&lt;SimpleRuntimeAttribute&gt; GetAllAttributes();
+    
+    // Value access - returns baseValue for formula calculations
+    float GetAttributeValue(string attributeName);
+    
+    // Attribute existence check
+    bool HasAttribute(string attributeName);
+}</div>
+
+        <div class="info">
+            <strong>Critical:</strong> GetAttributeValue() returns baseValue, not totalValue, to prevent feedback loops in formula calculations.
+        </div>
+    </div>
+
+    <!-- FormulaAsset Class -->
+    <div class="section">
+        <h2>FormulaAsset Class</h2>
+        <p>ScriptableObject that defines a single formula with its complete configuration.</p>
+        
+        <h3>Core Properties</h3>
+        <div class="code-block">public class FormulaAsset : ScriptableObject
+{
+    [Header("Basic Configuration")]
+    public string formulaName;           // Unique identifier
+    public string targetAttribute;       // Attribute to modify
+    public int executionOrder;           // Calculation priority
+    public bool enabled;                 // Enable/disable toggle
+    
+    [Header("Pipeline Configuration")]
+    public StartMode startMode;          // Zero or TargetBase
+    public ApplyMode applyMode;          // How to apply result
+    public bool alsoUpdateCurrent;       // Update currentValue for Vitals
+    
+    [Header("Formula Steps")]
+    public List&lt;FormulaRow&gt; flatRows;     // Step 2: Flat bonuses
+    public List&lt;FormulaRow&gt; addPctRows;   // Step 3: Additive percentages
+    public List&lt;FormulaRow&gt; subPctRows;   // Step 4: Subtractive percentages
+    public List&lt;MultiplierRow&gt; mulRows;  // Step 5: Multipliers
+    public List&lt;PostFlatRow&gt; postFlatRows; // Step 6: Post-flat bonuses
+    public List&lt;Breakpoint&gt; breakpoints; // Conditional effects
+    
+    // Calculation method
+    public float Calculate(IAttributeProvider attributes);
+}</div>
+
+        <h3>Enums</h3>
+        <div class="code-block">public enum StartMode
+{
+    Zero,        // Start calculation from 0
+    TargetBase   // Start from target's baseValue
+}
+
+public enum ApplyMode
+{
+    OverrideBase,      // Replace baseValue with result
+    AddToBase,         // Add result to baseValue  
+    SubtractFromBase   // Subtract result from baseValue
+}</div>
+    </div>
+
+    <!-- Formula Row Types -->
+    <div class="section">
+        <h2>Formula Row Types</h2>
+        
+        <h3>FormulaRow (Flat and Percentage Bonuses)</h3>
+        <div class="code-block">public class FormulaRow
+{
+    public string source;               // Source attribute name
+    public MathOperation operation;     // Add or Subtract
+    public float value;                 // Multiplier/percentage value
+}
+
+public enum MathOperation
+{
+    Add,      // Positive contribution
+    Subtract  // Negative contribution
+}</div>
+
+        <h3>MultiplierRow (Step 5)</h3>
+        <div class="code-block">public class MultiplierRow
+{
+    public string label;    // Description/identifier
+    public float factor;    // Multiplication value
+}</div>
+
+        <h3>PostFlatRow (Step 6)</h3>
+        <div class="code-block">public class PostFlatRow
+{
+    public string label;        // Description/identifier
+    public float amount;        // Flat value to add/subtract
+    public bool isAdditive;     // true = add, false = subtract
+}</div>
+    </div>
+
+    <!-- Breakpoint System -->
+    <div class="section">
+        <h2>Breakpoint System</h2>
+        
+        <h3>Breakpoint Class</h3>
+        <div class="code-block">public class Breakpoint
+{
+    [Header("Primary Condition")]
+    public string attribute;              // Attribute to check
+    public ComparisonOp comparison;       // Comparison operator
+    public float value;                   // Threshold value
+    
+    [Header("Multiple Conditions")]
+    public bool hasAdditionalConditions;
+    public LogicalOperator globalLogicalOp;  // AND/OR
+    public List&lt;BreakpointCondition&gt; additionalConditions;
+    
+    [Header("Effect")]
+    public BreakpointType type;           // Threshold or Step
+    public BreakpointEffect effectType;   // Which pipeline step to affect
+    public float effectValue;             // Magnitude of effect
+    public MathOperation operation;       // Add or subtract effect
+}</div>
+
+        <h3>Breakpoint Enums</h3>
+        <div class="code-block">public enum BreakpointType
+{
+    Threshold,  // Activates once when condition met
+    Step        // Activates multiple times at intervals
+}
+
+public enum BreakpointEffect
+{
+    Flat,         // Affects Step 2 (flat bonuses)
+    AddPercent,   // Affects Step 3 (additive percentages)
+    SubPercent,   // Affects Step 4 (subtractive percentages)
+    Multiplier,   // Affects Step 5 (multipliers)
+    PostFlat      // Affects Step 6 (post-flat bonuses)
+}
+
+public enum ComparisonOp
+{
+    Equal,
+    NotEqual,
+    Greater,
+    GreaterOrEqual,
+    Less,
+    LessOrEqual
+}
+
+public enum LogicalOperator
+{
+    And,  // All conditions must be true
+    Or    // Any condition can be true
+}</div>
+    </div>
+
+    <!-- Generated Orchestrator -->
+    <div class="section">
+        <h2>Generated Orchestrator</h2>
+        <p>The wizard generates a complete MonoBehaviour orchestrator that manages all formula execution.</p>
+        
+        <h3>Core Properties</h3>
+        <div class="code-block">public class [SystemName] : MonoBehaviour, IAttributeProvider
+{
+    [Header("System Configuration")]
+    [SerializeField] private MonoBehaviour attributeSystem;  // ISimpleAttributeDataSource
+    [SerializeField] private List&lt;FormulaAsset&gt; formulas;     // Formula assets
+    
+    [Header("Update Configuration")]
+    [SerializeField] private UpdateMode updateMode;
+    [SerializeField] private RecalculationMode recalculationMode;
+    [SerializeField] private float intervalUpdateRate;
+    [SerializeField] private bool enableCaching;
+    [SerializeField] private bool debugMode;
+}</div>
+
+        <h3>Public Methods</h3>
+        <div class="code-block">// Primary recalculation methods
+public void RecalculateAll();                    // Recalculate all formulas
+public void RecalculateAttribute(string name);   // Recalculate specific attribute
+public void RecalculateFormula(string name);     // Recalculate specific formula
+
+// Formula management
+public void AddFormula(FormulaAsset formula);     // Add formula at runtime
+public void RemoveFormula(string formulaName);   // Remove formula at runtime
+public void ClearFormulas();                     // Clear all formulas
+
+// State queries
+public bool HasFormula(string name);             // Check formula existence
+public FormulaAsset GetFormula(string name);     // Get formula asset
+public string[] GetFormulaNames();               // Get all formula names
+
+// IAttributeProvider implementation
+public SimpleRuntimeAttribute GetAttribute(string attributeName);
+public float GetAttributeValue(string attributeName);
+public bool HasAttribute(string attributeName);</div>
+
+        <h3>Configuration Enums</h3>
+        <div class="code-block">public enum UpdateMode
+{
+    Smart,      // Event-driven updates (recommended)
+    Interval,   // Fixed time interval updates
+    Manual      // Only on explicit RecalculateAll() calls
+}
+
+public enum RecalculationMode
+{
+    Auto,       // Recalculate when attribute values change
+    Manual      // Only when explicitly called
+}</div>
+    </div>
+
+    <!-- FormulaCalculator Static Class -->
+    <div class="section">
+        <h2>FormulaCalculator</h2>
+        <p>Static utility class that performs the actual mathematical calculations.</p>
+        
+        <div class="code-block">public static class FormulaCalculator
+{
+    // Main calculation pipeline
+    public static float CalculatePipeline(
+        float startValue,
+        List&lt;FormulaRow&gt; flatRows,
+        List&lt;FormulaRow&gt; addPctRows,
+        List&lt;FormulaRow&gt; subPctRows,
+        List&lt;MultiplierRow&gt; mulRows,
+        List&lt;PostFlatRow&gt; postFlatRows,
+        List&lt;Breakpoint&gt; breakpoints,
+        IAttributeProvider attributes,
+        float? levelOverride = null
+    );
+    
+    // Individual step calculations
+    public static float CalculateFlatBonuses(
+        List&lt;FormulaRow&gt; rows, IAttributeProvider attributes);
+    
+    public static float CalculatePercentageBonuses(
+        List&lt;FormulaRow&gt; rows, IAttributeProvider attributes);
+    
+    public static float CalculateMultipliers(
+        List&lt;MultiplierRow&gt; rows);
+    
+    public static float CalculatePostFlatBonuses(
+        List&lt;PostFlatRow&gt; rows);
+    
+    // Breakpoint evaluation
+    public static List&lt;Breakpoint&gt; GetActiveBreakpoints(
+        List&lt;Breakpoint&gt; breakpoints, IAttributeProvider attributes);
+    
+    public static bool EvaluateBreakpoint(
+        Breakpoint breakpoint, IAttributeProvider attributes);
+}</div>
+    </div>
+
+    <!-- Extension Methods -->
+    <div class="section">
+        <h2>Extension Methods</h2>
+        <p>Utility extensions for easier integration with existing code.</p>
+        
+        <h3>SimpleAttributeSystemExtensions</h3>
+        <div class="code-block">public static class SimpleAttributeSystemExtensions
+{
+    // Find attribute system on GameObject (compatibility layer)
+    public static MonoBehaviour FindAttributeSystem(this GameObject gameObject);
+    
+    // Get runtime attribute (works with any ISimpleAttributeDataSource)
+    public static SimpleRuntimeAttribute GetRuntimeAttribute(
+        this MonoBehaviour component, string attributeName);
+    
+    // Get all runtime attributes
+    public static Dictionary&lt;string, SimpleRuntimeAttribute&gt; GetAllRuntimeAttributes(
+        this MonoBehaviour component);
+    
+    // Check if component implements ISimpleAttributeDataSource
+    public static bool IsAttributeSystem(this MonoBehaviour component);
+    
+    // Convenience value access with default fallback
+    public static float GetAttributeValue(
+        this MonoBehaviour component, string attributeName, float defaultValue = 0f);
+    
+    // Set attribute value (baseValue modification)
+    public static bool SetAttributeValue(
+        this MonoBehaviour component, string attributeName, float value);
+}</div>
+
+        <h3>Usage Examples</h3>
+        <div class="code-block">// Extension method usage
+var health = gameObject.GetRuntimeAttribute("Health");
+float healthValue = gameObject.GetAttributeValue("Health", 100f);
+
+// Direct component access
+var attributes = GetComponent&lt;CharacterAttributes&gt;();
+float damage = attributes.strength.totalValue;</div>
+    </div>
+
+    <!-- Formula Data Classes -->
+    <div class="section">
+        <h2>Formula Data Classes</h2>
+        
+        <h3>SimpleInfluenceData</h3>
+        <p>Container for complete influence system configuration, used by the wizard.</p>
+        
+        <div class="code-block">public class SimpleInfluenceData : ScriptableObject
+{
+    [Header("System Configuration")]
+    public string systemName;
+    public string namespacePrefix;
+    public string exportPath;
+    
+    [Header("Update Settings")]
+    public UpdateMode updateMode;
+    public RecalculationMode recalculationMode;
+    public float intervalUpdateRate;
+    public bool enableCaching;
+    public bool enableDebugMode;
+    
+    [Header("Formula Data")]
+    public List&lt;SimpleFormulaData&gt; formulas;
+    
+    // Validation and utility methods
+    public bool ValidateConfiguration(out List&lt;string&gt; errors);
+    public string[] GetAllDependencies();
+    public bool HasCircularDependencies();
+}</div>
+
+        <h3>SimpleFormulaData</h3>
+        <p>Individual formula configuration data used by the wizard and code generation.</p>
+        
+        <div class="code-block">public class SimpleFormulaData
+{
+    [Header("Identity")]
+    public string Name;
+    public string TargetAttribute;
+    public int ExecutionOrder;
+    public bool Enabled;
+    
+    [Header("Calculation Settings")]
+    public StartMode StartMode;
+    public ApplyMode ApplyMode;
+    public bool AlsoUpdateCurrent;
+    
+    [Header("Pipeline Steps")]
+    public List&lt;SimpleInfluenceRow&gt; FlatRows;
+    public List&lt;SimpleInfluenceRow&gt; AddPctRows;
+    public List&lt;SimpleInfluenceRow&gt; SubPctRows;
+    public List&lt;SimpleInfluenceRow&gt; MulRows;
+    public List&lt;SimpleInfluenceRow&gt; PostFlatRows;
+    public List&lt;SimpleInfluenceRow&gt; Breakpoints;
+    
+    // Utility methods
+    public string[] GetSourceAttributes();
+    public bool ContainsSelfReference();
+    public float CalculateTestValue(Dictionary&lt;string, float&gt; testValues);
+}</div>
+    </div>
+
+    <!-- Generated Orchestrator Methods -->
+    <div class="section">
+        <h2>Generated Orchestrator Methods</h2>
+        <p>The code generator creates specific methods for each formula in your system.</p>
+        
+        <h3>Per-Formula Methods</h3>
+        <div class="code-block">// Generated for each formula (example: "StrengthDamage")
+private float Calculate_StrengthDamage()
+{
+    // Implements complete 7-step pipeline
+    // Returns calculated result
+}
+
+private void Apply_StrengthDamage(float value)
+{
+    // Applies result to target attribute's formulaBonus
+    // Handles ApplyMode logic
+    // Manages currentValue updates for Vitals
+}</div>
+
+        <h3>Lifecycle Methods</h3>
+        <div class="code-block">void Awake()
+{
+    // Initialize caching system
+    // Validate configuration
+    // Set up dependency tracking
+}
+
+void Start()
+{
+    // Validate attribute system reference
+    // Build dependency map
+    // Perform initial calculation
+}
+
+void OnValidate()
+{
+    // Editor-time validation
+    // Update formula references
+}
+
+void OnDestroy()
+{
+    // Cleanup event subscriptions
+    // Stop interval coroutines
+}</div>
+
+        <h3>Update Mode Implementation</h3>
+        <div class="code-block">// Smart mode - event-driven updates
+void SubscribeToAttributeEvents()
+{
+    foreach (var attr in GetAllAttributes())
+    {
+        attr.OnBaseValueChanged += OnAttributeChanged;
+    }
+}
+
+// Interval mode - coroutine-based updates
+IEnumerator IntervalUpdateCoroutine()
+{
+    while (enabled)
+    {
+        yield return new WaitForSeconds(intervalUpdateRate);
+        if (ShouldRecalculate())
+            RecalculateAll();
+    }
+}
+
+// Manual mode - explicit calls only
+// No automatic updates</div>
+    </div>
+
+    <!-- Validation System -->
+    <div class="section">
+        <h2>Validation System</h2>
+        
+        <h3>Runtime Validation</h3>
+        <div class="code-block">// Circular dependency detection
+private HashSet&lt;string&gt; currentlyCalculating = new HashSet&lt;string&gt;();
+
+bool DetectCircularDependency(string formulaName)
+{
+    if (currentlyCalculating.Contains(formulaName))
+    {
+        LogError($"Circular dependency detected: {formulaName}");
+        return true;
+    }
+    return false;
+}
+
+// Attribute existence validation
+bool ValidateAttributeReferences(FormulaAsset formula)
+{
+    foreach (var row in formula.flatRows)
+    {
+        if (!HasAttribute(row.source))
+        {
+            LogError($"Missing attribute: {row.source}");
+            return false;
+        }
+    }
+    return true;
+}</div>
+
+        <h3>Value Boundary Enforcement</h3>
+        <div class="code-block">float ClampResult(float result, SimpleRuntimeAttribute target)
+{
+    // Respect attribute min/max values
+    if (target.minValue != target.maxValue)
+    {
+        result = Mathf.Clamp(result, target.minValue, target.maxValue);
+    }
+    
+    // Force integer for Resource types
+    if (target.behaviorType == SimpleBehaviorType.Resource && target.forceInteger)
+    {
+        result = Mathf.Round(result);
+    }
+    
+    return result;
+}</div>
+    </div>
+
+    <!-- Performance Features -->
+    <div class="section">
+        <h2>Performance Features</h2>
+        
+        <h3>Dependency Tracking</h3>
+        <div class="code-block">// Automatic dependency mapping
+private Dictionary&lt;string, HashSet&lt;string&gt;&gt; dependencyMap;
+
+void BuildDependencyMap()
+{
+    dependencyMap.Clear();
+    
+    foreach (var formula in formulas)
+    {
+        var dependencies = formula.GetSourceAttributes();
+        foreach (var dep in dependencies)
+        {
+            if (!dependencyMap.ContainsKey(dep))
+                dependencyMap[dep] = new HashSet&lt;string&gt;();
+            dependencyMap[dep].Add(formula.targetAttribute);
+        }
+    }
+}
+
+// Smart recalculation - only affected formulas
+void OnAttributeChanged(SimpleRuntimeAttribute attr, float oldValue, float newValue)
+{
+    if (dependencyMap.ContainsKey(attr.attributeName))
+    {
+        foreach (string targetAttr in dependencyMap[attr.attributeName])
+        {
+            RecalculateAttribute(targetAttr);
+        }
+    }
+}</div>
+
+        <h3>Caching System</h3>
+        <div class="code-block">// Optional caching for high-frequency calculations
+private Dictionary&lt;string, float&gt; lastValues;
+private Dictionary&lt;string, SimpleRuntimeAttribute&gt; attributeCache;
+
+void RefreshAttributeCache()
+{
+    if (!enableCaching) return;
+    
+    attributeCache.Clear();
+    var allAttrs = attributeSystem.GetAllRuntimeAttributes();
+    foreach (var kvp in allAttrs)
+    {
+        attributeCache[kvp.Key] = kvp.Value;
+    }
+}
+
+SimpleRuntimeAttribute GetCachedAttribute(string name)
+{
+    if (enableCaching && attributeCache.ContainsKey(name))
+        return attributeCache[name];
+    
+    return attributeSystem.GetRuntimeAttribute(name);
+}</div>
+    </div>
+
+    <!-- Integration Patterns -->
+    <div class="section">
+        <h2>Integration Patterns</h2>
+        
+        <h3>Accessing Orchestrator in Code</h3>
+        <div class="code-block">public class GameManager : MonoBehaviour
+{
+    // Direct reference
+    [SerializeField] private CharacterInfluence orchestrator;
+    
+    // Or find dynamically
+    void Start()
+    {
+        orchestrator = GetComponent&lt;CharacterInfluence&gt;();
+        // Or from any GameObject:
+        // orchestrator = FindObjectOfType&lt;CharacterInfluence&gt;();
+    }
+    
+    void ModifyAttribute(string attrName, float delta)
+    {
+        var attr = orchestrator.GetAttribute(attrName);
+        if (attr != null)
+        {
+            attr.baseValue += delta;
+            
+            // Manual recalculation if needed
+            if (orchestrator.recalculationMode == RecalculationMode.Manual)
+            {
+                orchestrator.RecalculateAttribute(attrName);
+            }
+        }
+    }
+}</div>
+
+        <h3>Runtime Formula Modification</h3>
+        <div class="code-block">public class DynamicFormulas : MonoBehaviour
+{
+    public void CreateTemporaryFormula()
+    {
+        // Create formula asset at runtime
+        var formula = ScriptableObject.CreateInstance&lt;FormulaAsset&gt;();
+        formula.formulaName = "TempBonus";
+        formula.targetAttribute = "Damage";
+        formula.startMode = StartMode.Zero;
+        formula.applyMode = ApplyMode.AddToBase;
+        
+        // Add flat bonus
+        formula.flatRows.Add(new FormulaRow
+        {
+            source = "Level",
+            operation = MathOperation.Add,
+            value = 5f
+        });
+        
+        // Add to orchestrator
+        var orchestrator = GetComponent&lt;CharacterInfluence&gt;();
+        orchestrator.AddFormula(formula);
+    }
+}</div>
+    </div>
+
+    <!-- Common Usage Patterns -->
+    <div class="section">
+        <h2>Common Usage Patterns</h2>
+        
+        <h3>Reading Values in Gameplay</h3>
+        <div class="code-block">//  CORRECT - Use totalValue for gameplay
+float attackDamage = strength.totalValue * weaponModifier;
+float maxHealth = health.totalValue;
+float currentHealth = health.currentValue; // Vitals only
+
+//  INCORRECT - Don't use for gameplay
+float damage = strength.baseValue;         // Ignores formula bonuses
+float damage = strength.formulaBonus;      // Only formula portion</div>
+
+        <h3>Modifying Values</h3>
+        <div class="code-block">//  CORRECT - Permanent changes
+strength.baseValue += 5;  // Equipment, upgrades, permanent bonuses
+
+//  CORRECT - Temporary effects  
+strength.modifierBonus += 10;  // Buffs, temporary bonuses
+
+//  INCORRECT - Never modify directly
+strength.formulaBonus = 20;    // Managed by orchestrator only
+strength.totalValue = 50;      // Read-only calculated value</div>
+
+        <h3>Event Handling</h3>
+        <div class="code-block">void Start()
+{
+    var attributes = GetComponent&lt;CharacterAttributes&gt;();
+    
+    // Listen for attribute changes
+    attributes.health.OnValueChanged += UpdateHealthUI;
+    attributes.health.OnReachedZero += HandleDeath;
+    
+    // Listen for base value changes (triggers formula recalc)
+    attributes.strength.OnBaseValueChanged += OnStrengthChanged;
+}
+
+void OnStrengthChanged(SimpleRuntimeAttribute attr, float oldValue, float newValue)
+{
+    // Formulas depending on strength will auto-recalculate
+    Debug.Log($"Strength changed: {oldValue} → {newValue}");
+}</div>
+    </div>
+
+    <!-- Debug and Testing -->
+    <div class="section">
+        <h2>Debug and Testing API</h2>
+        
+        <h3>Debug Mode Features</h3>
+        <div class="code-block">// Enable debug logging
+orchestrator.debugMode = true;
+
+// Debug specific formula
+orchestrator.DebugFormula("StrengthDamage");
+
+// Debug output example:
+// [FormulaDebug] StrengthDamage calculation:
+// - Start: 0
+// - Flat: Strength(10) × 1.5 = 15
+// - Result: 15
+// - Applied to Damage.formulaBonus</div>
+
+        <h3>Testing Utilities</h3>
+        <div class="code-block">// Test formula with specific values
+public float TestFormula(string formulaName, Dictionary&lt;string, float&gt; testValues)
+{
+    var formula = GetFormula(formulaName);
+    if (formula == null) return 0f;
+    
+    // Create temporary test provider
+    var testProvider = new TestAttributeProvider(testValues);
+    return formula.Calculate(testProvider);
+}
+
+// Manual calculation breakdown
+public FormulaBreakdown GetFormulaBreakdown(string formulaName)
+{
+    // Returns step-by-step calculation details
+    // Useful for debugging and UI display
+}</div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="quick-start-pro.html">← Quick Start</a>
+        <a href="formula-pipeline.html">Formula Pipeline →</a>
+    </div>
+</body>
+</html>

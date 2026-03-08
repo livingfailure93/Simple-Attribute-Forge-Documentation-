@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html" class="active">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Troubleshooting
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Troubleshooting Guide</h1>
+        <p>Common issues, solutions, and debugging techniques for the Ultimate system</p>
+    </div>
+
+    <!-- Quick Solutions -->
+    <div class="section">
+        <h2>Quick Solutions Checklist</h2>
+        
+        <div class="checklist">
+            <h3>Formulas Not Working?</h3>
+            <ul>
+                <li>☐ Orchestrator component added to GameObject?</li>
+                <li>☐ Attribute System reference assigned in orchestrator?</li>
+                <li>☐ Formula assets generated and assigned?</li>
+                <li>☐ Update Mode set to Smart or Interval?</li>
+                <li>☐ RecalculateAll() called at least once?</li>
+                <li>☐ ISimpleAttributeDataSource implemented on attribute component?</li>
+            </ul>
+        </div>
+
+        <div class="checklist">
+            <h3>Wizard Issues?</h3>
+            <ul>
+                <li>☐ AttributeData asset selected in Setup tab?</li>
+                <li>☐ All required attributes exist in project?</li>
+                <li>☐ No compilation errors in Unity Console?</li>
+                <li>☐ Base system properly installed and configured?</li>
+            </ul>
+        </div>
+
+        <div class="checklist">
+            <h3>Performance Problems?</h3>
+            <ul>
+                <li>☐ Using Manual update mode for turn-based games?</li>
+                <li>☐ Caching enabled for systems with many formulas?</li>
+                <li>☐ Debug mode disabled in production?</li>
+                <li>☐ Reasonable number of breakpoints per formula?</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Formula Calculation Issues -->
+    <div class="section">
+        <h2>Formula Calculation Issues</h2>
+        
+        <div class="issue-container">
+            <div class="issue-header">Formulas Not Executing</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>formulaBonus always shows 0</li>
+                    <li>totalValue equals baseValue only</li>
+                    <li>No automatic recalculation when values change</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Step-by-Step Diagnosis:</h4>
+                <div class="step-container">
+                    <span class="step-number">1</span>
+                    <strong>Verify Orchestrator Setup</strong>
+                </div>
+                <div class="code-block">// Check these in Inspector:
+ Orchestrator component added to GameObject
+ Attribute System field assigned
+ Formulas list shows formula assets (not empty)
+ Update Mode set to Smart or Interval
+ Recalculation Mode set to Auto</div>
+
+                <div class="step-container">
+                    <span class="step-number">2</span>
+                    <strong>Test Interface Implementation</strong>
+                </div>
+                <div class="code-block">// Add this test script temporarily:
+public class InterfaceTest : MonoBehaviour
+{
+    void Start()
+    {
+        var component = GetComponent<MonoBehaviour>();
+        if (component is ISimpleAttributeDataSource dataSource)
+        {
+            Debug.Log(" ISimpleAttributeDataSource implemented");
+            Debug.Log($" Attributes found: {dataSource.GetAllAttributes().Count()}");
+        }
+        else
+        {
+            Debug.LogError(" ISimpleAttributeDataSource NOT implemented");
+            Debug.LogError("  → Regenerate attributes with latest base wizard");
+        }
+    }
+}</div>
+
+                <div class="step-container">
+                    <span class="step-number">3</span>
+                    <strong>Force Manual Recalculation</strong>
+                </div>
+                <div class="code-block">// Test manual calculation:
+[ContextMenu("Force Recalculate")]
+void ForceRecalculate()
+{
+    var orchestrator = GetComponent<MonoBehaviour>(); // Your generated orchestrator
+    orchestrator.SendMessage("RecalculateAll");
+    
+    // Check results
+    var health = attributes.GetAttribute("Health");
+    Debug.Log($"Health: base={health.baseValue}, formula={health.formulaBonus}, total={health.totalValue}");
+}</div>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">Incorrect Calculation Results</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Formula results don't match expected values</li>
+                    <li>Math doesn't add up correctly</li>
+                    <li>Breakpoints not activating when they should</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Debugging Calculation Errors:</h4>
+                <div class="step-container">
+                    <span class="step-number">1</span>
+                    <strong>Enable Debug Mode</strong>
+                </div>
+                <div class="code-block">// In orchestrator inspector or code:
+orchestrator.debugMode = true;
+
+// Console output shows detailed calculation steps:
+[CharacterInfluence] Calculating StrengthDamage...
+[Pipeline] Step 1 Start: 0
+[Pipeline] Step 2 Flat: STR(25) × 2.0 = 50
+[Pipeline] Step 3 Add%: WeaponSkill(30) × 1.5% = 4.5% → ×1.045
+[Pipeline] Step 4 Sub%: None
+[Pipeline] Step 5 Mul: Class ×1.2 
+[Pipeline] Step 6 PostFlat: BaseWeapon +15
+[Pipeline] Result: 15 + ((0 + 50) × 1.045 × 1.2) = 15 + 62.7 = 77.7</div>
+
+                <div class="step-container">
+                    <span class="step-number">2</span>
+                    <strong>Use Test Preview Panel</strong>
+                </div>
+                <div class="code-block">// In Influence Wizard:
+1. Select the problematic formula
+2. Set test values to match your runtime scenario
+3. Compare Test Preview calculation with actual result
+4. Look for differences in the step-by-step breakdown</div>
+
+                <div class="step-container">
+                    <span class="step-number">3</span>
+                    <strong>Verify Breakpoint Conditions</strong>
+                </div>
+                <div class="code-block">// Check breakpoint activation:
+var strength = attributes.GetAttribute("Strength");
+var level = attributes.GetAttribute("Level");
+
+Debug.Log($"STR: {strength.totalValue}, Level: {level.totalValue}");
+Debug.Log($"Breakpoint condition: STR ≥ 30? {strength.totalValue >= 30}");
+Debug.Log($"Additional condition: Level ≥ 20? {level.totalValue >= 20}");</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wizard Issues -->
+    <div class="section">
+        <h2>Influence Wizard Issues</h2>
+        
+        <div class="issue-container">
+            <div class="issue-header">Wizard Won't Open</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Menu item doesn't appear or is grayed out</li>
+                    <li>Clicking menu item does nothing</li>
+                    <li>Console errors when trying to open</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Solutions:</h4>
+                <ul>
+                    <li>Check Unity Console for compilation errors</li>
+                    <li>Verify Simple Attribute Forge base system is installed</li>
+                    <li>Ensure Unity is in Edit mode (not Play mode)</li>
+                    <li>Try Window → General → Console to clear persistent errors</li>
+                    <li>Restart Unity if wizard state is corrupted</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">No Attributes Appear in Setup</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Setup tab shows "No attributes found"</li>
+                    <li>AttributeData field is assigned but attributes don't load</li>
+                    <li>Available Attributes section is empty</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Solutions:</h4>
+                <div class="code-block">Diagnostic Steps:
+1. Verify AttributeData asset exists and is not corrupted
+2. Check that base system was generated successfully
+3. Look for AttributeData in Assets/Generated/AttributeData/
+4. Try regenerating base system if asset is missing
+5. Ensure AttributeData contains actual attribute definitions</div>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">Test Preview Not Working</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Test panel shows "No calculation result"</li>
+                    <li>Changing test values doesn't update results</li>
+                    <li>Step-by-step breakdown is empty</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Solutions:</h4>
+                <ul>
+                    <li>Ensure a formula is selected in the formula list</li>
+                    <li>Check that formula has at least one pipeline step configured</li>
+                    <li>Verify test values are within reasonable ranges</li>
+                    <li>Look for validation errors in formula configuration</li>
+                    <li>Try refreshing test panel with Ctrl+R</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generation Issues -->
+    <div class="section">
+        <h2>Generation Issues</h2>
+        
+        <div class="issue-container">
+            <div class="issue-header">Generation Fails</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Click Generate but no files are created</li>
+                    <li>Console shows file writing errors</li>
+                    <li>Partial files generated but incomplete</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Solutions:</h4>
+                <div class="code-block">File Permission Checks:
+1. Ensure output directories are writable
+2. Close any external editors that might lock files
+3. Check that Unity has write permissions to project folder
+4. Verify output paths don't contain invalid characters
+5. Try generating to a different output directory</div>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">Compilation Errors After Generation</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Red compilation errors in Unity Console</li>
+                    <li>Generated code doesn't compile</li>
+                    <li>Missing namespace or class references</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Solutions:</h4>
+                <div class="code-block">Common Compilation Issues:
+
+System Name Conflicts:
+• Ensure system name is valid C# identifier
+• Avoid reserved keywords (class, interface, etc.)
+• Check for naming conflicts with existing classes
+
+Namespace Issues:
+• Verify namespace is valid if specified
+• Check for conflicts with Unity or system namespaces
+• Try empty namespace if having issues
+
+Missing Dependencies:  
+• Ensure base Simple Attribute Forge is properly installed
+• Check that all required packages are imported
+• Verify Unity version compatibility</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Runtime Issues -->
+    <div class="section">
+        <h2>Runtime Issues</h2>
+        
+        <div class="issue-container">
+            <div class="issue-header">Performance Problems</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Frame rate drops when using formulas</li>
+                    <li>Unity becomes unresponsive during calculation</li>
+                    <li>High CPU usage from formula system</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Performance Optimization:</h4>
+                <div class="step-container">
+                    <span class="step-number">1</span>
+                    <strong>Adjust Update Mode</strong>
+                </div>
+                <div class="code-block">Performance Tuning by Game Type:
+
+Real-time Action Games:
+• Update Mode: Smart (event-driven)
+• Recalculation Mode: Auto
+• Enable Caching: true
+• Minimize formula complexity
+
+Turn-based Games:
+• Update Mode: Manual
+• Recalculation Mode: Manual  
+• Batch all changes, then RecalculateAll()
+• Complex formulas acceptable
+
+High-frequency Systems:
+• Update Mode: Interval (0.1-0.2 seconds)
+• Enable Caching: true
+• Reduce breakpoint complexity</div>
+
+                <div class="step-container">
+                    <span class="step-number">2</span>
+                    <strong>Profile Formula System</strong>
+                </div>
+                <div class="code-block">// Performance monitoring script:
+public class FormulaProfiler : MonoBehaviour
+{
+    private float calculationTime;
+    private int calculationsThisFrame;
+    
+    void Update()
+    {
+        if (debugMode && Time.frameCount % 60 == 0)
+        {
+            Debug.Log($"Formulas per second: {calculationsThisFrame}");
+            Debug.Log($"Average calculation time: {calculationTime:F2}ms");
+            calculationsThisFrame = 0;
+            calculationTime = 0;
+        }
+    }
+}</div>
+
+                <div class="step-container">
+                    <span class="step-number">3</span>
+                    <strong>Optimize Formula Design</strong>
+                </div>
+                <ul>
+                    <li>Limit breakpoints per formula (3-5 maximum)</li>
+                    <li>Combine multiple small formulas into larger ones</li>
+                    <li>Use execution order to minimize dependency recalculations</li>
+                    <li>Cache attribute references in your own scripts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">Circular Dependencies</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Console warnings about convergence</li>
+                    <li>Formula values oscillating or growing infinitely</li>
+                    <li>Calculation iteration limits reached</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Circular Dependency Solutions:</h4>
+                <div class="code-block">Dependency Analysis:
+1. Map out formula relationships:
+   • StrengthDamage: Strength → Damage
+   • DamageHealth: Damage → Health (PROBLEM!)
+   • HealthStrength: Health → Strength (CREATES LOOP!)
+
+2. Break the cycle:
+   • Use execution order to control sequence
+   • Remove problematic dependencies
+   • Use intermediate calculations
+   • Split complex formulas into simpler ones</div>
+
+                <div class="warning">
+                    <strong>System Protection:</strong> The system automatically limits iterations to 10 cycles and logs convergence warnings. Values stabilize when changes are below threshold.
+                </div>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">Self-Reference Issues</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Formula uses target attribute as source</li>
+                    <li>Values accumulating each frame</li>
+                    <li>Yellow warnings in wizard</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Self-Reference Solutions:</h4>
+                <div class="code-block">Self-Reference Patterns:
+
+Valid Use Case:
+• Health formula uses current Health as source
+• For conditional scaling based on current health %
+• Use Manual recalculation mode to control updates
+
+Invalid Use Case:  
+• Damage formula adds to itself every frame
+• Creates infinite growth in Auto mode
+• Should use different source attribute</div>
+
+                <div class="info">
+                    <strong>Design Pattern:</strong> Self-reference is valid for conditional effects but requires careful update mode management.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Integration Issues -->
+    <div class="section">
+        <h2>Integration Issues</h2>
+        
+        <div class="issue-container">
+            <div class="issue-header">Missing Component References</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>NullReferenceExceptions when accessing attributes</li>
+                    <li>GetComponent calls returning null</li>
+                    <li>Orchestrator can't find attribute system</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>Component Reference Solutions:</h4>
+                <div class="code-block">// Robust component finding:
+public class AttributeSystemManager : MonoBehaviour
+{
+    private ISimpleAttributeDataSource attributeSystem;
+    private MonoBehaviour orchestrator;
+    
+    void Awake()
+    {
+        // Find components reliably
+        attributeSystem = GetComponent<ISimpleAttributeDataSource>();
+        if (attributeSystem == null)
+        {
+            Debug.LogError("No ISimpleAttributeDataSource found on " + gameObject.name);
+            return;
+        }
+        
+        // Find orchestrator by interface or name pattern
+        orchestrator = GetComponents<MonoBehaviour>()
+            .FirstOrDefault(mb => mb.GetType().Name.Contains("Influence"));
+            
+        if (orchestrator == null)
+        {
+            Debug.LogError("No orchestrator found on " + gameObject.name);
+        }
+    }
+}</div>
+            </div>
+        </div>
+
+        <div class="issue-container">
+            <div class="issue-header">UI Update Problems</div>
+            <div class="issue-symptoms">
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>UI shows old values after formula calculations</li>
+                    <li>Health bars don't reflect formula bonuses</li>
+                    <li>Text displays don't update automatically</li>
+                </ul>
+            </div>
+            
+            <div class="solution-steps">
+                <h4>UI Integration Solutions:</h4>
+                <div class="code-block">// Proper UI updating with formulas:
+public class AttributeUI : MonoBehaviour
+{
+    void Start()
+    {
+        // Listen for attribute changes
+        var health = attributes.GetAttribute("Health");
+        var strength = attributes.GetAttribute("Strength");
+        
+        health.OnValueChanged += UpdateHealthUI;
+        strength.OnValueChanged += UpdateStrengthUI;
+    }
+    
+    void UpdateHealthUI(SimpleRuntimeAttribute attr, float oldValue, float newValue)
+    {
+        // Use totalValue for maximum health, currentValue for current
+        healthBar.fillAmount = attr.currentValue / attr.totalValue;
+        healthText.text = $"{attr.currentValue:F0}/{attr.totalValue:F0}";
+        
+        // Show formula bonus separately if desired
+        if (attr.formulaBonus > 0)
+        {
+            bonusText.text = $"(+{attr.formulaBonus:F0})";
+        }
+    }
+}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Common Error Messages -->
+    <div class="section">
+        <h2>Common Error Messages</h2>
+        
+        <div class="error-reference">
+            <table>
+                <tr>
+                    <th>Error Message</th>
+                    <th>Cause</th>
+                    <th>Solution</th>
+                </tr>
+                <tr>
+                    <td>"No ISimpleAttributeDataSource found"</td>
+                    <td>Attribute component doesn't implement required interface</td>
+                    <td>Regenerate attributes with latest base wizard</td>
+                </tr>
+                <tr>
+                    <td>"FormulaAsset class not found"</td>
+                    <td>Formula classes not generated yet</td>
+                    <td>Generate orchestrator first, then create formula assets</td>
+                </tr>
+                <tr>
+                    <td>"Attribute 'X' not found"</td>
+                    <td>Typo in attribute name or missing attribute</td>
+                    <td>Check spelling, verify attribute exists in AttributeData</td>
+                </tr>
+                <tr>
+                    <td>"Convergence threshold exceeded"</td>
+                    <td>Values changing too rapidly in circular dependency</td>
+                    <td>Use Manual mode or break dependency cycle</td>
+                </tr>
+                <tr>
+                    <td>"Maximum iterations reached"</td>
+                    <td>Circular dependency loop detected</td>
+                    <td>Review formula dependencies and execution order</td>
+                </tr>
+                <tr>
+                    <td>"Formula validation failed"</td>
+                    <td>Invalid formula configuration</td>
+                    <td>Check all required fields, verify attribute references</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Debug Tools -->
+    <div class="section">
+        <h2>Debug Tools and Techniques</h2>
+        
+        <h3>Console Debug Commands</h3>
+        <div class="code-block">// Add these context menu items to your orchestrator:
+
+[ContextMenu("Debug: Show All Formulas")]
+void DebugShowFormulas()
+{
+    Debug.Log("=== Formula Debug Report ===");
+    foreach (var formula in formulas)
+    {
+        if (formula != null)
+        {
+            Debug.Log($" {formula.formulaName}: Enabled={formula.enabled}, Order={formula.executionOrder}");
+        }
+        else
+        {
+            Debug.LogWarning(" Null formula asset detected");
+        }
+    }
+}
+
+[ContextMenu("Debug: Test Single Formula")]  
+void DebugTestFormula()
+{
+    if (formulas.Count > 0 && formulas[0] != null)
+    {
+        float result = formulas[0].Calculate(this);
+        Debug.Log($"Formula {formulas[0].formulaName} result: {result}");
+    }
+}
+
+[ContextMenu("Debug: Show Attribute Values")]
+void DebugAttributeValues()
+{
+    var allAttrs = attributeSystem.GetAllAttributes();
+    foreach (var attr in allAttrs)
+    {
+        Debug.Log($"{attr.name}: base={attr.baseValue:F1}, formula={attr.formulaBonus:F1}, " +
+                 $"modifier={attr.modifierBonus:F1}, total={attr.totalValue:F1}");
+    }
+}</div>
+
+        <h3>Performance Profiling</h3>
+        <div class="code-block">// Performance measurement script:
+public class PerformanceProfiler : MonoBehaviour
+{
+    private System.Diagnostics.Stopwatch stopwatch;
+    
+    void Start()
+    {
+        stopwatch = new System.Diagnostics.Stopwatch();
+    }
+    
+    [ContextMenu("Profile Formula Performance")]
+    void ProfileFormulas()
+    {
+        var orchestrator = GetComponent<MonoBehaviour>(); // Your orchestrator
+        
+        stopwatch.Restart();
+        
+        // Test multiple calculations
+        for (int i = 0; i < 100; i++)
+        {
+            orchestrator.SendMessage("RecalculateAll");
+        }
+        
+        stopwatch.Stop();
+        
+        float avgTime = stopwatch.ElapsedMilliseconds / 100f;
+        Debug.Log($"Average calculation time: {avgTime:F2}ms");
+        
+        if (avgTime > 1.0f)
+        {
+            Debug.LogWarning("Performance may be too slow for real-time updates");
+        }
+    }
+}</div>
+
+        <h3>Validation Tools</h3>
+        <div class="code-block">// Comprehensive system validation:
+public class SystemValidator : MonoBehaviour
+{
+    [ContextMenu("Validate Complete System")]
+    void ValidateSystem()
+    {
+        Debug.Log("=== System Validation Report ===");
+        
+        // Check components
+        var attributes = GetComponent<ISimpleAttributeDataSource>();
+        var orchestrator = GetComponent<MonoBehaviour>();
+        
+        if (attributes == null)
+        {
+            Debug.LogError(" No ISimpleAttributeDataSource component");
+            return;
+        }
+        
+        if (orchestrator == null)
+        {
+            Debug.LogError(" No orchestrator component");
+            return;
+        }
+        
+        // Test attribute access
+        try
+        {
+            var allAttrs = attributes.GetAllAttributes();
+            Debug.Log($" {allAttrs.Count()} attributes accessible");
+            
+            foreach (var attr in allAttrs)
+            {
+                if (float.IsNaN(attr.totalValue) || float.IsInfinity(attr.totalValue))
+                {
+                    Debug.LogError($" {attr.name} has invalid totalValue: {attr.totalValue}");
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($" Attribute access failed: {e.Message}");
+        }
+        
+        Debug.Log("=== End Validation Report ===");
+    }
+}</debug>
+    </div>
+
+    <!-- Advanced Troubleshooting -->
+    <div class="section">
+        <h2>Advanced Troubleshooting</h2>
+        
+        <h3>Memory Issues</h3>
+        <div class="issue-container">
+            <div class="issue-header">Memory Leaks</div>
+            <div class="solution-steps">
+                <div class="code-block">Memory Management Best Practices:
+• Avoid creating formula assets at runtime
+• Cache attribute references instead of repeated lookups
+• Use object pooling for temporary calculation objects
+• Profile memory usage during long play sessions
+
+Memory Leak Detection:
+1. Use Unity Profiler to monitor memory usage
+2. Look for growing allocations in GC.Alloc
+3. Check for unclosed coroutines in regeneration systems
+4. Monitor formula asset creation/destruction</div>
+            </div>
+        </div>
+
+        <h3>Thread Safety</h3>
+        <div class="issue-container">
+            <div class="issue-header">Multithreading Issues</div>
+            <div class="solution-steps">
+                <div class="code-block">Thread Safety Guidelines:
+• Formula calculations are NOT thread-safe
+• Always calculate on main Unity thread
+• Use Coroutines for long-running calculations
+• Avoid formula access from background threads
+
+Safe Multithreading Pattern:
+// Background thread calculates values
+float[] values = CalculateInBackground();
+
+// Main thread applies results
+UnityMainThreadDispatcher.Instance.Enqueue(() => {
+    ApplyCalculatedValues(values);
+});</div>
+            </div>
+        </div>
+
+        <h3>Save/Load Corruption</h3>
+        <div class="issue-container">
+            <div class="issue-header">Save Data Problems</div>
+            <div class="solution-steps">
+                <div class="code-block">Save/Load Troubleshooting:
+
+Common Issues:
+• Saving formulaBonus (should save baseValue only)
+• Not recalculating formulas after loading
+• Missing currentValue for Vitals
+• Incorrect value tier assignments
+
+Robust Save/Load Pattern:
+// Saving
+SaveData.SetFloat($"{attr.name}_base", attr.baseValue);
+if (attr.isVital)
+{
+    SaveData.SetFloat($"{attr.name}_current", attr.currentValue);
+}
+
+// Loading  
+attr.baseValue = SaveData.GetFloat($"{attr.name}_base");
+if (attr.isVital)
+{
+    attr.currentValue = SaveData.GetFloat($"{attr.name}_current");
+}
+
+// IMPORTANT: Recalculate after loading all attributes
+orchestrator.RecalculateAll();</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagnostic Scripts -->
+    <div class="section">
+        <h2>Diagnostic Scripts</h2>
+        
+        <h3>Complete System Diagnostic</h3>
+        <div class="code-block">using UnityEngine;
+using SimpleAttributeForge;
+using System.Linq;
+
+public class UltimateSystemDiagnostic : MonoBehaviour
+{
+    [ContextMenu("Run Complete Diagnostic")]
+    void RunDiagnostic()
+    {
+        Debug.Log("=== Simple Attribute Forge Ultimate Diagnostic ===");
+        
+        // Component checks
+        CheckComponents();
+        
+        // Attribute system checks
+        CheckAttributeSystem();
+        
+        // Formula system checks  
+        CheckFormulaSystem();
+        
+        // Performance checks
+        CheckPerformance();
+        
+        Debug.Log("=== Diagnostic Complete ===");
+    }
+    
+    void CheckComponents()
+    {
+        Debug.Log("--- Component Check ---");
+        
+        var attributeComp = GetComponent<ISimpleAttributeDataSource>();
+        var orchestratorComp = GetComponents<MonoBehaviour>()
+            .FirstOrDefault(mb => mb.GetType().Name.Contains("Influence"));
+            
+        Debug.Log($"Attribute Component: {(attributeComp != null ? " Found" : " Missing")}");
+        Debug.Log($"Orchestrator Component: {(orchestratorComp != null ? " Found" : " Missing")}");
+        
+        if (orchestratorComp != null)
+        {
+            Debug.Log($"Orchestrator Type: {orchestratorComp.GetType().Name}");
+        }
+    }
+    
+    void CheckAttributeSystem()
+    {
+        Debug.Log("--- Attribute System Check ---");
+        
+        var attributes = GetComponent<ISimpleAttributeDataSource>();
+        if (attributes == null) return;
+        
+        var allAttrs = attributes.GetAllAttributes();
+        Debug.Log($"Total Attributes: {allAttrs.Count()}");
+        
+        foreach (var attr in allAttrs)
+        {
+            bool hasValidValues = !float.IsNaN(attr.totalValue) && !float.IsInfinity(attr.totalValue);
+            Debug.Log($"{attr.name}: {(hasValidValues ? "" : "")} Values valid");
+            
+            if (!hasValidValues)
+            {
+                Debug.LogError($"  → {attr.name} has invalid values: " +
+                              $"base={attr.baseValue}, formula={attr.formulaBonus}, total={attr.totalValue}");
+            }
+        }
+    }
+    
+    void CheckFormulaSystem()
+    {
+        Debug.Log("--- Formula System Check ---");
+        
+        var orchestrator = GetComponents<MonoBehaviour>()
+            .FirstOrDefault(mb => mb.GetType().Name.Contains("Influence"));
+            
+        if (orchestrator == null)
+        {
+            Debug.LogError("No orchestrator found");
+            return;
+        }
+        
+        // Use reflection to check formula assets
+        var formulasField = orchestrator.GetType().GetField("formulas");
+        if (formulasField != null)
+        {
+            var formulas = formulasField.GetValue(orchestrator) as System.Collections.IList;
+            Debug.Log($"Formula Assets: {formulas?.Count ?? 0}");
+            
+            if (formulas != null)
+            {
+                for (int i = 0; i < formulas.Count; i++)
+                {
+                    var formula = formulas[i];
+                    Debug.Log($"  Formula {i}: {(formula != null ? " Valid" : " Null")}");
+                }
+            }
+        }
+    }
+    
+    void CheckPerformance()
+    {
+        Debug.Log("--- Performance Check ---");
+        
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        
+        // Test calculation performance
+        var orchestrator = GetComponents<MonoBehaviour>()
+            .FirstOrDefault(mb => mb.GetType().Name.Contains("Influence"));
+            
+        if (orchestrator != null)
+        {
+            orchestrator.SendMessage("RecalculateAll");
+            stopwatch.Stop();
+            
+            float calcTime = stopwatch.ElapsedMilliseconds;
+            Debug.Log($"Calculation Time: {calcTime:F2}ms");
+            
+            if (calcTime > 5f)
+            {
+                Debug.LogWarning("Calculation time may be too slow for real-time updates");
+            }
+        }
+    }
+}</div>
+
+        <h3>Formula Validation Tool</h3>
+        <div class="code-block">using UnityEngine;
+using UnityEditor;
+
+public class FormulaValidationTool : EditorWindow
+{
+    [MenuItem("Tools/Simple Formula Validator")]
+    static void ShowWindow()
+    {
+        GetWindow<FormulaValidationTool>("Formula Validator");
+    }
+    
+    void OnGUI()
+    {
+        GUILayout.Label("Formula System Validation", EditorStyles.boldLabel);
+        
+        if (GUILayout.Button("Validate All Formula Assets"))
+        {
+            ValidateAllFormulas();
+        }
+        
+        if (GUILayout.Button("Check Circular Dependencies"))
+        {
+            CheckCircularDependencies();
+        }
+        
+        if (GUILayout.Button("Performance Test"))
+        {
+            PerformanceTest();
+        }
+    }
+    
+    void ValidateAllFormulas()
+    {
+        // Find all formula assets in project
+        var formulaGuids = AssetDatabase.FindAssets("t:FormulaAsset");
+        
+        Debug.Log($"Found {formulaGuids.Length} formula assets");
+        
+        foreach (var guid in formulaGuids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var formula = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
+            
+            if (formula != null)
+            {
+                Debug.Log($" {formula.name}: Valid");
+            }
+            else
+            {
+                Debug.LogError($" Failed to load formula at {path}");
+            }
+        }
+    }
+}</div>
+    </div>
+
+    <!-- Getting Help -->
+    <div class="section">
+        <h2>Getting Help</h2>
+        
+        <div class="info">
+            <strong>When You Need Additional Help:</strong>
+            <ul>
+                <li><strong>Documentation:</strong> Review <a href="formula-examples.html">Formula Examples</a> for working patterns</li>
+                <li><strong>Wizard Guide:</strong> Check <a href="influence-wizard.html">Influence Wizard Guide</a> for usage details</li>
+                <li><strong>API Reference:</strong> See <a href="api-reference-pro.html">API Reference</a> for technical details</li>
+                <li><strong>Migration Help:</strong> Use <a href="migration-guide.html">Migration Guide</a> for upgrade issues</li>
+            </ul>
+        </div>
+
+        <h3>Support Information</h3>
+        <div class="code-block">When Contacting Support, Include:
+• Unity version and platform
+• Simple Attribute Forge versions (base + Ultimate)
+• Console error messages (copy full text)
+• Screenshots of wizard configuration
+• Minimal reproduction steps
+• Project setup details (single vs multi-character, etc.)</div>
+
+        <h3>Community Resources</h3>
+        <ul>
+            <li><strong>Unity Forums:</strong> Search for Simple Attribute Forge discussions</li>
+            <li><strong>Asset Store Reviews:</strong> Check Q&A section for similar issues</li>
+            <li><strong>Documentation Examples:</strong> All examples in docs are tested and working</li>
+        </ul>
+    </div>
+
+    <!-- Preventive Measures -->
+    <div class="section">
+        <h2>Preventive Measures</h2>
+        
+        <h3>Development Best Practices</h3>
+        <ul>
+            <li><strong>Start Simple:</strong> Begin with basic formulas, add complexity gradually</li>
+            <li><strong>Test Frequently:</strong> Use Test Preview panel during formula creation</li>
+            <li><strong>Backup Regularly:</strong> Export formula configurations before major changes</li>
+            <li><strong>Document Dependencies:</strong> Note formula relationships in design docs</li>
+            <li><strong>Version Control:</strong> Track generated files in version control</li>
+        </ul>
+
+        <h3>System Maintenance</h3>
+        <div class="code-block">Regular Maintenance Tasks:
+• Export formula backups before Unity upgrades
+• Test formula calculations after package updates  
+• Validate import/export compatibility with team
+• Review performance metrics periodically
+• Check for deprecated API usage in generated code</div>
+
+        <h3>Error Prevention</h3>
+        <div class="success">
+            <strong>Avoid Common Problems:</strong>
+            <ul>
+                <li>Always regenerate base system before adding Pro features</li>
+                <li>Test formulas in wizard before generating orchestrator</li>
+                <li>Use descriptive names for formulas and avoid special characters</li>
+                <li>Keep formula complexity reasonable (max 5 breakpoints per formula)</li>
+                <li>Document formula logic for team collaboration</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="import-export.html">← Import/Export</a>
+        <a href="demo-scene-guide.html">Demo Scene Guide →</a>
+    </div>
+</body>
+</html>

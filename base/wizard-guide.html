@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizard Guide - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+  
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+      <li><a href="wizard-guide.html" class="active">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html">Runtime Usage</a></li>
+      <li><a href="demo-manager.html">Demo Scene</a></li>
+      <li><a href="import-export.html">Import/Export</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / Wizard Guide
+  </div>
+
+  <div class="section">
+    <h1> Attribute Data Wizard Guide</h1>
+    <p>Complete guide to the 4-step attribute generation wizard that creates type-safe, feature-rich attribute systems with modern three-tier architecture.</p>
+  </div>
+
+  <div class="section">
+    <h2> What the Wizard Generates</h2>
+    <p>The wizard creates a complete attribute system with modern architecture:</p>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Three-Tier Value System</h4>
+        <p>Each attribute has baseValue, formulaBonus, modifierBonus, and calculated totalValue for clean separation of concerns.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Type-Safe Interface</h4>
+        <p>Generated components implement ISimpleAttributeDataSource for consistent integration across your project.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Automatic Regeneration</h4>
+        <p>Coroutine-based regeneration system for Vital attributes with configurable delays and rates.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Ultimate Ready</h4>
+        <p>Built-in support for Simple Attribute Forge Ultimate's Influence System through formulaBonus separation, and Modifier System through modifierBonus.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Step 1: Data Info</h2>
+    <p>Configure the basic information and naming conventions for your attribute system.</p>
+
+    <h3>Required Fields</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Data Name</h4>
+        <p>The display name for your attribute system (e.g., "Character Attributes")</p>
+        <ul>
+          <li>Used in ScriptableObject asset name</li>
+          <li>Appears in inspector headers</li>
+          <li>Should be descriptive and clear</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Description</h4>
+        <p>Brief description of the system's purpose</p>
+        <ul>
+          <li>Helps with project organization</li>
+          <li>Useful for team collaboration</li>
+          <li>Exported with JSON data</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Class Name Prefix</h4>
+        <p>Prefix for all generated classes (e.g., "Character")</p>
+        <ul>
+          <li>Creates: CharacterAttributes.cs</li>
+          <li>Creates: CharacterAttributesEnum.cs</li>
+          <li>Creates: CharacterAttributeData.cs</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Namespace (Optional)</h4>
+        <p>C# namespace for generated code (e.g., "Game.Attributes")</p>
+        <ul>
+          <li>Prevents naming conflicts</li>
+          <li>Organizes code structure</li>
+          <li>Follow your project conventions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="warning">
+      <strong> Naming Best Practices:</strong>
+      <ul>
+        <li>Use PascalCase for class prefixes (Character, Enemy, Player)</li>
+        <li>Avoid special characters and spaces</li>
+        <li>Keep names descriptive but concise</li>
+        <li>Consider how names will appear in your IDE</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Step 2: Attributes Configuration</h2>
+    <p>Define your attributes with their behaviors, types, and properties.</p>
+
+    <h3>Behavior Types</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Basic</h4>
+        <p><strong>Use for:</strong> Strength, Intelligence, Dexterity</p>
+        <ul>
+          <li>Simple values without current/max split</li>
+          <li>No regeneration capability</li>
+          <li>Perfect for core stats</li>
+          <li>Access via: <code>attribute.totalValue</code></li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Vital</h4>
+        <p><strong>Use for:</strong> Health, Mana, Stamina</p>
+        <ul>
+          <li>Has current and max values</li>
+          <li>Supports automatic regeneration</li>
+          <li>Current clamped to 0-max range</li>
+          <li>Access via: <code>attribute.currentValue</code></li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Percentage</h4>
+        <p><strong>Use for:</strong> Critical Chance, Resistance</p>
+        <ul>
+          <li>Values typically 0-100</li>
+          <li>Perfect for rates and chances</li>
+          <li>No special behaviors</li>
+          <li>Use with: <code>Random.Range(0f, 100f) < critChance.totalValue</code></li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Resource</h4>
+        <p><strong>Use for:</strong> Gold, Experience, Level</p>
+        <ul>
+          <li>Automatically forced to integers</li>
+          <li>Perfect for countable items</li>
+          <li>No regeneration capability</li>
+          <li>Access via: <code>attribute.GetIntValue()</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Essential Properties</h3>
+    <div class="code-block">
+// Every attribute has these core properties:
+Name: "Health"                    // Display name
+Code: "HP"                        // Short abbreviation for UI
+Base Value: 100.0                 // Starting value
+Min Value: 0.0                    // Minimum boundary  
+Max Value: 100.0                  // Maximum boundary
+Force Integer: false              // Round to whole numbers
+Behavior Type: Vital              // Determines available features
+    </div>
+
+    <h3>Regeneration Settings (Vitals Only)</h3>
+    <div class="code-block">
+Can Regenerate: true              // Enable auto-recovery
+Regeneration Rate: 5.0            // Points per second
+Regeneration Delay: 3.0           // Seconds before regen starts
+    </div>
+
+    <div class="success">
+      <strong> Pro Tip:</strong> The three-tier value system means you don't need to worry about bonuses during setup. The baseValue you set becomes the foundation, and formula/modifier bonuses are added automatically.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Step 3: Code Settings</h2>
+    <p>Configure where and how the code files are generated.</p>
+
+    <h3>Output Directories</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Script Output Path</h4>
+        <p>Where .cs files are generated</p>
+        <ul>
+          <li>Default: Assets/Generated/[SystemName]/</li>
+          <li>Must be within Assets folder</li>
+          <li>Creates subdirectories if needed</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Asset Output Path</h4>
+        <p>Where .asset files are created</p>
+        <ul>
+          <li>Usually same as script path</li>
+          <li>Can be different for organization</li>
+          <li>Must be within Assets folder</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Generated File Preview</h3>
+    <div class="file-tree">
+Assets/Generated/CharacterAttributes/
+├── CharacterAttributesEnum.cs      // Type-safe identifiers
+├── CharacterAttributes.cs          // MonoBehaviour component  
+├── CharacterAttributeData.cs       // ScriptableObject definition
+└── CharacterAttributeData.asset    // Data asset
+    </div>
+
+    <h3>Code Preview</h3>
+    <p>The wizard shows exactly what will be generated before creating files:</p>
+    
+    <div class="code-block">
+// Generated enum
+public enum CharacterAttributesEnum
+{
+    Health = 0,
+    Mana = 1,
+    Strength = 2,
+    // ... other attributes
+}
+
+// Generated component (implements ISimpleAttributeDataSource)
+public class CharacterAttributes : MonoBehaviour, ISimpleAttributeDataSource
+{
+    [Header("Vital Attributes")]
+    public SimpleRuntimeAttribute health;
+    public SimpleRuntimeAttribute mana;
+    
+    [Header("Basic Attributes")]
+    public SimpleRuntimeAttribute strength;
+    
+    // Three-tier value system built-in
+    // Automatic regeneration management
+    // Type-safe attribute access
+    // Component-wide events
+}
+    </div>
+
+    <div class="warning">
+      <strong> File Overwrite Warning:</strong>
+      The wizard will overwrite existing files with the same names. Make sure to backup any custom changes before regenerating.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Step 4: Generate Files</h2>
+    <p>Create all the files and integrate them into your project.</p>
+
+    <h3>Generation Process</h3>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Code Generation:</strong> Creates .cs files with modern architecture
+    </div>
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Asset Creation:</strong> Generates ScriptableObject assets
+    </div>
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Auto-Compilation:</strong> Unity compiles the new code
+    </div>
+    <div class="step-container">
+      <span class="step-number">4</span>
+      <strong>Ready to Use:</strong> Components available in Add Component menu
+    </div>
+
+    <h3>What You Get</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Type-Safe Access</h4>
+        <div class="code-block">
+// Direct property access
+var health = attributes.health;
+
+// Enum-based lookup
+var attr = attributes.GetRuntimeAttribute("Health");
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Three-Tier Values</h4>
+        <div class="code-block">
+// Always use totalValue for gameplay
+float damage = strength.totalValue * weapon;
+
+// Base value for permanent changes
+strength.baseValue += levelUpBonus;
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Automatic Events</h4>
+        <div class="code-block">
+// Individual attribute events
+health.OnValueChanged += UpdateUI;
+health.OnReachedZero += HandleDeath;
+
+// Component-wide events
+attributes.OnAnyAttributeChanged += LogChange;
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Built-in Regeneration</h4>
+        <div class="code-block">
+// Just deal damage - system handles regeneration
+health.ModifyValue(-damage);
+
+// Automatic coroutine management
+// No manual Update() calls needed
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Advanced Features</h2>
+
+    <h3>JSON Import/Export</h3>
+    <p>Share attribute configurations between projects or team members:</p>
+    <div class="code-block">
+// Export creates comprehensive JSON with:
+{
+  "dataName": "Character Attributes",
+  "attributes": [...],
+  "behaviorTypeRules": [...],
+  "validationRules": [...],
+  "_metadata": {
+    "exportedOn": "2024-01-01 12:00:00",
+    "version": "1.0"
+  }
+}
+    </div>
+
+    <h3>Validation System</h3>
+    <p>The wizard automatically validates and fixes common configuration issues:</p>
+    <ul>
+      <li> Ensures min ≤ value ≤ max</li>
+      <li> Validates regeneration settings for Vitals</li>
+      <li> Checks for duplicate attribute names</li>
+      <li> Prevents invalid characters in names</li>
+    </ul>
+
+    <h3>Ultimate Integration</h3>
+    <p>Generated components are ready for Simple Attribute Forge Ultimate:</p>
+    <ul>
+      <li> ISimpleAttributeDataSource interface implemented</li>
+      <li> formulaBonus separated from baseValue (used by Influence System)</li>
+      <li> modifierBonus for buff/debuff effects (used by Modifier System)</li>
+      <li> OnBaseValueChanged events for formula triggers</li>
+      <li> Proper value architecture for all Ultimate subsystems</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2> Best Practices</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Attribute Naming</h4>
+        <ul>
+          <li>Use clear, descriptive names</li>
+          <li>Keep codes short (HP, STR, INT)</li>
+          <li>Be consistent with your game's terminology</li>
+          <li>Avoid abbreviations in full names</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Value Ranges</h4>
+        <ul>
+          <li>Set realistic min/max bounds</li>
+          <li>Consider future growth/balance changes</li>
+          <li>Use round numbers for player clarity</li>
+          <li>Test with extreme values</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Regeneration Tuning</h4>
+        <ul>
+          <li>Balance rate with gameplay pacing</li>
+          <li>Use delays to prevent spam healing</li>
+          <li>Consider different rates per attribute</li>
+          <li>Test in actual game scenarios</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Organization</h4>
+        <ul>
+          <li>Use consistent naming across projects</li>
+          <li>Keep generated files together</li>
+          <li>Use namespaces for large projects</li>
+          <li>Document custom modifications</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Integration Example</h2>
+    <div class="code-block">
+// After generation, use in your game:
+public class Player : MonoBehaviour
+{
+    private CharacterAttributes attributes;
+
+    void Start()
+    {
+        attributes = GetComponent&lt;CharacterAttributes&gt;();
+        
+        // Setup events
+        attributes.health.OnReachedZero += Die;
+        attributes.OnAnyAttributeChanged += UpdateUI;
+        
+        Debug.Log($"Player has {attributes.health.totalValue} HP");
+    }
+
+    public void TakeDamage(float amount)
+    {
+        // Use the three-tier system correctly
+        attributes.health.ModifyValue(-amount);
+        
+        // Regeneration starts automatically after delay
+    }
+
+    public void LevelUp()
+    {
+        // Permanent stat increases
+        attributes.strength.baseValue += 2;
+        attributes.health.baseValue += 20;
+        
+        // Ready for Pro formula integration
+    }
+}
+    </div>
+  </div>
+
+  <div class="success">
+    <strong> You're Ready!</strong>
+    With the wizard-generated system, you have a complete, modern attribute system that follows best practices and integrates seamlessly with both basic gameplay and the advanced features in Simple Attribute Forge Ultimate.
+  </div>
+
+  <div class="page-nav">
+    <a href="quick-start.html">← Quick Start</a>
+    <a href="runtime-usage.html">Runtime Usage →</a>
+  </div>
+
+</body>
+</html>

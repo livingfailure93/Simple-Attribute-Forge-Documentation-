@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Attribute Forge Ultimate - Complete Modifier & Template System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <!-- Introduction -->
+    <div class="section">
+        <h2>Welcome to Simple Attribute Forge Ultimate</h2>
+        <p>Simple Attribute Forge Ultimate is the complete package for building professional RPG attribute systems. It includes everything from the Base and Pro tiers, plus two powerful new systems:</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Modifier System</h4>
+                <p>Create buffs, debuffs, equipment bonuses, status effects, and any temporary or permanent attribute modifications with full conditional logic support.</p>
+            </div>
+            <div class="feature-card gold">
+                <h4>Character Template System</h4>
+                <p>Define character classes (Knight, Mage, Rogue, etc.) with unique starting attribute configurations. Perfect for class-based RPGs.</p>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Requirements:</strong> Ultimate includes both the Base and Influence systems. The Modifier System works with any ISimpleAttributeDataSource, and integrates seamlessly with the Influence System's formula calculations.
+        </div>
+    </div>
+
+    <!-- What's Included -->
+    <div class="section">
+        <h2>What's Included</h2>
+
+        <h3>Everything from Base + Influence System, Plus:</h3>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Modifier Wizard</h4>
+                <p>4-step visual editor for creating modifiers. Configure attributes, conditions, behaviors, and generate complete code automatically.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Conditional Modifiers</h4>
+                <p>Modifiers that only activate when conditions are met. "Berserker Rage: +50% damage when Health < 25%"</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>ARPG Regen System</h4>
+                <p>Modify regeneration rates and delays. Flat bonuses, percentage bonuses, or completely disable regeneration.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Requirements System</h4>
+                <p>Level requirements, modifier compatibility rules, and category-based organization for complex modifier interactions.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Modifier Tracker</h4>
+                <p>Static utility for querying active modifiers. Check for buffs, debuffs, and modifier tags at runtime.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Character Templates</h4>
+                <p>Define starting attributes for character classes. Auto-generates enums, managers, helpers, and validators.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modifier System Overview -->
+    <div class="section">
+        <h2>Modifier System Architecture</h2>
+
+        <h3>Core Components</h3>
+
+        <div class="modifier-container">
+            <div class="modifier-header">SimpleAttributeModifierGroup</div>
+            <div class="modifier-breakdown">
+The main modifier container class. Each group can contain multiple AttributeModifications
+and supports duration, priority, stacking, and behavior flags.
+
+Key Properties:
+- name, description, tag (Identity)
+- duration, priority, stackable, maxStacks (Timing)
+- isDebuff, isHidden, canBeDispelled, persistsThroughDeath (Behavior)
+- requiredLevel, category, incompatibleModifiers, requiredModifiers (Requirements)
+- modifications (List of AttributeModification)
+            </div>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">AttributeModification</div>
+            <div class="modifier-breakdown">
+Individual attribute change within a modifier group.
+
+Properties:
+- targetAttribute (string) - Which attribute to modify
+- type (Flat, Percentage, Multiply) - How to apply the value
+- value (float) - The modification amount
+- modifyBaseValue, modifyCurrentValue, modifyMinValue, modifyMaxValue
+- enableConditions - Enable conditional activation
+- conditions (List of AttributeCondition)
+- modifierConditions (List of ModifierCondition)
+            </div>
+        </div>
+
+        <h3>Condition Types</h3>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>AttributeCondition</h4>
+                <p>Check attribute values: "Health < 50%", "Mana >= 100", "Stamina != 0". Supports 12 comparison types including percentage-based checks.</p>
+            </div>
+            <div class="feature-card">
+                <h4>ModifierCondition</h4>
+                <p>Check modifier presence: "Has Burning debuff", "Does NOT have Shield buff", "Has any modifier with tag 'curse'".</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generated Code -->
+    <div class="section">
+        <h2>What Gets Generated</h2>
+        <p>For each modifier defined in the wizard, three files are generated:</p>
+
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Asset Class (ScriptableObject)</strong><br>
+            Inspector-editable modifier configuration. Drag into the project, tweak values, reference from other scripts.
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Component Class (MonoBehaviour)</strong><br>
+            Attachable component for GameObjects. Apply on Start, remove on Destroy, with inspector-configurable thresholds.
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Helper Class (Static)</strong><br>
+            Programmatic API for code-driven modifier application. Includes Info nested class with constants.
+        </div>
+
+        <div class="code-block">// Example: Using the generated Helper class
+AdrenalineSurgeHelper.ApplyAdrenalineSurge(player);
+AdrenalineSurgeHelper.RemoveAdrenalineSurge(player);
+
+if (AdrenalineSurgeHelper.CanApplyAdrenalineSurge(player))
+{
+    // Conditions are met
+}
+
+// Access modifier info
+string name = AdrenalineSurgeHelper.Info.ModifierName;
+string[] affected = AdrenalineSurgeHelper.Info.AffectedAttributes;</div>
+    </div>
+
+    <!-- Character Template System -->
+    <div class="section">
+        <h2>Character Template System</h2>
+        <p>Define starting attribute configurations for different character classes in your RPG.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Example: Soulslike Character Classes</div>
+            <div class="modifier-breakdown">
+13 pre-built templates included:
+- Ash Knight, Blight Rogue, Blood Herald, Bone Archer
+- Dusk Priest, Ember Seer, Grave Warden, Hollow Pilgrim
+- Hollow Scholar, Iron Wanderer, Oathbreaker, Pale Witch, Veil Dancer
+
+Each template defines:
+- Starting Vigor, Endurance, Strength, Dexterity
+- Starting Intelligence, Faith, Arcane, Luck
+- Class-specific attribute overrides
+            </div>
+        </div>
+
+        <h3>Generated Code</h3>
+        <ul>
+            <li><strong>Enum</strong> - Type-safe character template identifiers</li>
+            <li><strong>Manager</strong> - MonoBehaviour component for Inspector-based template management</li>
+            <li><strong>Helper</strong> - Utility methods for template operations</li>
+            <li><strong>Validator</strong> - Runtime validation of template configurations</li>
+        </ul>
+    </div>
+
+    <!-- Real-World Examples -->
+    <div class="section">
+        <h2>Real-World Applications</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Equipment Systems</h4>
+                <p>Weapons that add +50 damage, armor that adds +100 health, accessories with percentage bonuses. All configurable in the Inspector.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Buff/Debuff Systems</h4>
+                <p>Temporary effects with durations: Poison (-5 HP/sec for 10s), Haste (+25% speed for 30s), Shield (+50% defense for 1 minute).</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Passive Abilities</h4>
+                <p>Conditional permanent effects: "Berserker: +30% damage when Health < 25%", "Last Stand: Invincible for 3s when taking fatal damage".</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Synergy Effects</h4>
+                <p>Modifiers that require other modifiers: "Fire Mastery: +20% fire damage (requires Burning on target)", "Combo Finish: +100% damage (requires 3 stacks of Combo)".</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Class Systems</h4>
+                <p>Starting configurations for Warriors, Mages, Rogues, etc. Templates define base stats that the Influence System then calculates derived values from.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Status Effects</h4>
+                <p>Burning, Frozen, Poisoned, Stunned - each with unique attribute modifications, conditions, and behaviors like disabling regeneration.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Getting Started -->
+    <div class="section">
+        <h2>Getting Started</h2>
+
+        <h3>Prerequisites</h3>
+        <ul>
+            <li>Unity 2021.3 or later</li>
+            <li>Generated attribute container implementing ISimpleAttributeDataSource</li>
+            <li>(Optional) Influence system for formula-driven derived stats</li>
+        </ul>
+
+        <h3>Quick Setup - Modifier System</h3>
+        <ol>
+            <li><strong>Open Modifier Wizard:</strong> Window > Simple Attribute Forge > Modifier Wizard</li>
+            <li><strong>Step 1:</strong> Select your AttributeData ScriptableObject</li>
+            <li><strong>Step 2:</strong> Configure modifiers (name, attributes, conditions, behaviors)</li>
+            <li><strong>Step 3:</strong> Set namespace, paths, and generation options</li>
+            <li><strong>Step 4:</strong> Generate code - assets are auto-created after compilation</li>
+        </ol>
+
+        <h3>Quick Setup - Character Templates</h3>
+        <ol>
+            <li><strong>Open Template Wizard:</strong> Window > Simple Attribute Forge > Character Template Wizard</li>
+            <li><strong>Step 1:</strong> Select your AttributeData ScriptableObject</li>
+            <li><strong>Step 2:</strong> Define character classes and their attribute overrides</li>
+            <li><strong>Step 3:</strong> Configure generation settings</li>
+            <li><strong>Step 4:</strong> Generate code and template assets</li>
+        </ol>
+
+        <div class="success">
+            <strong>Zero Code Required!</strong> Both systems generate complete, production-ready code from visual editors. All modifier values and conditions are editable in the Inspector.
+        </div>
+    </div>
+
+    <!-- Documentation Sections -->
+    <div class="section">
+        <h2>Documentation Sections</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><a href="quick-start-ultimate.html">Quick Start Guide</a></h4>
+                <p>Step-by-step tutorial for creating your first modifier and character template.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="modifier-system.html">Modifier System</a></h4>
+                <p>Deep dive into SimpleAttributeModifierGroup, AttributeModification, and the modifier lifecycle.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="modifier-wizard.html">Modifier Wizard Guide</a></h4>
+                <p>Complete walkthrough of the 4-step modifier creation wizard.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="modifier-conditions.html">Conditions System</a></h4>
+                <p>AttributeCondition and ModifierCondition in detail. Comparison types, logic operators, and advanced patterns.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="regen-modifiers.html">Regen Modifiers</a></h4>
+                <p>ARPG-style regeneration modification. Flat bonuses, percentage bonuses, and regen disabling.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="character-templates.html">Character Templates</a></h4>
+                <p>Creating class-based starting configurations with the Template Wizard.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="api-reference-ultimate.html">API Reference</a></h4>
+                <p>Complete API documentation for all Ultimate classes, methods, and enums.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="import-export.html">Import/Export</a></h4>
+                <p>JSON import/export for modifiers. Schema documentation and AI integration.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="troubleshooting-ultimate.html">Troubleshooting</a></h4>
+                <p>Common issues and solutions for the Modifier and Template systems.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="demo-scene-guide.html">Demo Scene</a></h4>
+                <p>Walkthrough of the included Ultimate demo scene with modifiers and templates.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Forge Product Family -->
+    <div class="section">
+        <h2>Simple Forge Product Family</h2>
+
+        <div class="info">
+            <strong>You're viewing documentation for Simple Attribute Forge Ultimate</strong> - the complete package with Modifier System and Character Templates.
+        </div>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Base (Free)</th>
+                    <th>Influence System</th>
+                    <th>Ultimate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Attribute Wizard</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Code Generation</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Regeneration System</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Event System</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>JSON Import/Export</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Influence System (Formulas)</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>7-Step Formula Pipeline</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Breakpoint System</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Modifier System</td>
+                    <td class="not-included">-</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Conditional Modifiers</td>
+                    <td class="not-included">-</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>ARPG Regen Modifiers</td>
+                    <td class="not-included">-</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Character Templates</td>
+                    <td class="not-included">-</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                </tr>
+                <tr>
+                    <td>Modifier Tracker</td>
+                    <td class="not-included">-</td>
+                    <td class="not-included">-</td>
+                    <td class="included">Yes</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="success">
+            <strong>Compatibility Promise:</strong> Each tier builds on the previous one. Ultimate includes everything from Base and Influence System, with full backward compatibility.
+        </div>
+    </div>
+
+    <!-- Version Information -->
+    <div class="section">
+        <h2>Version & Support</h2>
+
+        <h3>Current Version</h3>
+        <p>Simple Attribute Forge Ultimate v1.0 - Complete Modifier & Template System</p>
+
+        <h3>Support & Resources</h3>
+        <ul>
+            <li><strong>Documentation:</strong> Complete guides and API reference included</li>
+            <li><strong>Demo Scene:</strong> Working example with modifiers and templates</li>
+            <li><strong>JSON Schema:</strong> Export for AI-assisted modifier generation</li>
+            <li><strong>Source Code:</strong> Fully readable, extensible codebase</li>
+        </ul>
+
+        <h3>Credits</h3>
+        <p>Created by <strong>Living Failure</strong> - Building complete RPG systems through visual tools and automated code generation.</p>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <span></span>
+        <a href="quick-start-ultimate.html">Quick Start Guide</a>
+    </div>
+</body>
+</html>

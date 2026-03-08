@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runtime Usage - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+  
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+      <li><a href="wizard-guide.html">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html" class="active">Runtime Usage</a></li>
+      <li><a href="demo-manager.html">Demo Scene</a></li>
+      <li><a href="import-export.html">Import/Export</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / Runtime Usage
+  </div>
+
+  <div class="section">
+    <h1> Runtime Usage Guide</h1>
+    <p>Complete guide for using generated attribute systems in your game with correct patterns and best practices.</p>
+  </div>
+
+  <div class="section">
+    <h2> Critical: Three-Tier Value System</h2>
+    <div class="warning">
+      <strong>Understanding this is crucial for proper gameplay programming!</strong>
+    </div>
+
+    <p>Every attribute uses a three-tier value architecture:</p>
+
+    <div class="code-block">
+totalValue = baseValue + formulaBonus + modifierBonus
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>baseValue</h4>
+        <ul>
+          <li>Persistent attribute value</li>
+          <li>Saved with character data</li>
+          <li>Modified by equipment/upgrades</li>
+          <li>Used as input for formulas</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>formulaBonus</h4>
+        <ul>
+          <li>Calculated from influence formulas</li>
+          <li>Automatically managed by Ultimate's Influence System</li>
+          <li>DO NOT modify manually</li>
+          <li>Prevents accumulation issues</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>modifierBonus</h4>
+        <ul>
+          <li>Temporary effects (buffs/debuffs)</li>
+          <li>Manually managed by gameplay code</li>
+          <li>Not affected by formula system</li>
+          <li>Cleared when effects expire</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>totalValue</h4>
+        <ul>
+          <li>Final calculated result</li>
+          <li>Use for ALL gameplay logic</li>
+          <li>Automatically updated</li>
+          <li>Read-only property</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Correct Usage Patterns</h2>
+
+    <h3>Reading Values for Gameplay Logic</h3>
+    <div class="code-block">
+//  ALWAYS use totalValue for gameplay calculations
+float damage = strength.totalValue * weaponMultiplier;
+float defense = armor.totalValue;
+bool canAfford = gold.totalValue >= itemCost;
+bool canCastSpell = mana.currentValue >= spellCost;
+
+//  For Vitals, use currentValue vs totalValue
+if (health.currentValue <= 0)
+{
+    HandleDeath();
+}
+
+//  Check percentage for UI bars
+float healthPercent = health.GetPercentage(); // 0-1 range
+healthBar.fillAmount = healthPercent;
+    </div>
+
+    <h3>Modifying Attribute Values</h3>
+    <div class="code-block">
+//  ModifyValue() - For gameplay changes (triggers regeneration)
+health.ModifyValue(-damageAmount);    // Take damage
+mana.ModifyValue(-spellCost);         // Cast spell
+gold.ModifyValue(questReward);        // Add gold
+experience.ModifyValue(xpGain);       // Gain XP
+
+//  SetValue() - For administrative changes (no regeneration)
+health.SetValue(100f);                // Load save data
+health.FillToMax();                   // Admin heal/cheat
+level.SetValue(savedLevel);           // Load character level
+
+//  baseValue - For permanent upgrades
+strength.baseValue += 2;              // Permanent stat increase
+health.baseValue += 50;               // Equipment bonus (permanent)
+    </div>
+
+    <div class="success">
+      <strong> Key Rule:</strong> Use <code>ModifyValue()</code> for gameplay changes that should trigger regeneration. Use <code>SetValue()</code> for administrative changes that shouldn't.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Common Mistakes to Avoid</h2>
+
+    <div class="warning">
+      <strong>These patterns will cause bugs or missing functionality!</strong>
+    </div>
+
+    <div class="code-block">
+//  WRONG - Using baseValue for gameplay (misses bonuses!)
+float damage = strength.baseValue * weaponMultiplier; // Missing formula + modifier bonuses!
+
+//  WRONG - Using old 'value' property (doesn't exist)
+float health = healthAttr.value; // Compile error - use totalValue or currentValue
+
+//  WRONG - Manually modifying formulaBonus
+strength.formulaBonus += 10; // Will be overwritten by Ultimate's Influence System!
+
+//  WRONG - Using GetCurrentValue() for non-Vitals
+float str = strength.GetCurrentValue(); // Use totalValue instead
+
+//  WRONG - Direct assignment without proper methods  
+health.currentValue = 100; // Use SetValue() or ModifyValue() instead
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Automatic Regeneration System</h2>
+    <p>Regeneration is completely automatic for Vital attributes with <code>canRegenerate = true</code>.</p>
+
+    <h3>How It Works</h3>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Damage Occurs:</strong> <code>health.ModifyValue(-30f)</code>
+    </div>
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Delay Starts:</strong> Waits for <code>regenerationDelay</code> seconds
+    </div>
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Regeneration Begins:</strong> Heals at <code>regenerationRate</code> per second
+    </div>
+    <div class="step-container">
+      <span class="step-number">4</span>
+      <strong>Auto Stops:</strong> When reaching max or taking more damage
+    </div>
+
+    <h3>Configuration</h3>
+    <div class="code-block">
+// Enable and configure regeneration
+health.canRegenerate = true;
+health.regenerationRate = 2.5f;    // 2.5 HP per second
+health.regenerationDelay = 3f;      // 3 second delay after damage
+
+// Check regeneration state
+bool isRegenerating = health.IsRegenerating;
+
+// NO MANUAL CALLS NEEDED - IT'S AUTOMATIC!
+    </div>
+
+    <div class="success">
+      <strong> Best Practice:</strong> Let the system handle regeneration automatically. Just use <code>ModifyValue()</code> for damage and healing.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Practical Examples</h2>
+
+    <h3>Combat System</h3>
+    <div class="code-block">
+public class CombatSystem : MonoBehaviour
+{
+    [Header("Cached References")]
+    private SimpleRuntimeAttribute health;
+    private SimpleRuntimeAttribute mana;
+    private SimpleRuntimeAttribute strength;
+    private SimpleRuntimeAttribute defense;
+
+    void Start()
+    {
+        var attributes = GetComponent&lt;CharacterAttributes&gt;();
+        
+        // Cache references for performance
+        health = attributes.health;
+        mana = attributes.mana;
+        strength = attributes.strength;
+        defense = attributes.defense;
+    }
+
+    public void PerformAttack(CombatSystem target)
+    {
+        // Calculate damage using totalValue (includes all bonuses)
+        float baseDamage = strength.totalValue * 2f;
+        float targetDefense = target.defense.totalValue;
+        float finalDamage = Mathf.Max(1f, baseDamage - targetDefense);
+
+        // Deal damage - triggers regeneration automatically
+        target.health.ModifyValue(-finalDamage);
+        
+        Debug.Log($"Dealt {finalDamage:F1} damage");
+
+        // Check for death
+        if (target.health.IsAtMin())
+        {
+            HandleDeath(target);
+        }
+    }
+
+    public void CastSpell(float manaCost, float spellPower)
+    {
+        // Check if can cast
+        if (mana.currentValue < manaCost)
+        {
+            Debug.Log("Not enough mana!");
+            return;
+        }
+
+        // Consume mana
+        mana.ModifyValue(-manaCost);
+        
+        // Spell effects based on totalValue
+        float finalPower = spellPower * intelligence.totalValue;
+        // ... perform spell
+    }
+
+    private void HandleDeath(CombatSystem target)
+    {
+        Debug.Log($"{target.name} died!");
+        // Death logic
+    }
+}
+    </div>
+
+    <h3>Buff/Debuff System</h3>
+    <div class="code-block">
+public class EffectSystem : MonoBehaviour
+{
+    private CharacterAttributes attributes;
+    private List&lt;ActiveEffect&gt; activeEffects = new List&lt;ActiveEffect&gt;();
+
+    void Start()
+    {
+        attributes = GetComponent&lt;CharacterAttributes&gt;();
+    }
+
+    public void ApplyBuff(string attributeName, float amount, float duration)
+    {
+        var attribute = attributes.GetRuntimeAttribute(attributeName);
+        if (attribute == null) return;
+
+        // Apply temporary modifier
+        attribute.modifierBonus += amount;
+        
+        // Track for removal
+        var effect = new ActiveEffect(attribute, amount, duration);
+        activeEffects.Add(effect);
+        
+        Debug.Log($"Applied +{amount} {attributeName} for {duration}s");
+    }
+
+    void Update()
+    {
+        // Update active effects
+        for (int i = activeEffects.Count - 1; i >= 0; i--)
+        {
+            var effect = activeEffects[i];
+            effect.timeLeft -= Time.deltaTime;
+
+            if (effect.timeLeft <= 0)
+            {
+                // Remove effect
+                effect.attribute.modifierBonus -= effect.amount;
+                activeEffects.RemoveAt(i);
+                Debug.Log($"Effect expired on {effect.attribute.attributeName}");
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public class ActiveEffect
+{
+    public SimpleRuntimeAttribute attribute;
+    public float amount;
+    public float timeLeft;
+
+    public ActiveEffect(SimpleRuntimeAttribute attr, float amt, float duration)
+    {
+        attribute = attr;
+        amount = amt;
+        timeLeft = duration;
+    }
+}
+    </div>
+
+    <h3>UI Update System</h3>
+    <div class="code-block">
+public class AttributeUI : MonoBehaviour
+{
+    [Header("UI Elements")]
+    public Slider healthBar;
+    public Text healthText;
+    public Text strengthText;
+    public Text statusText;
+
+    [Header("Performance")]
+    public float updateInterval = 0.1f; // Limit UI update frequency
+
+    private CharacterAttributes attributes;
+    private float lastUIUpdate;
+
+    void Start()
+    {
+        attributes = GetComponent&lt;CharacterAttributes&gt;();
+        
+        // Subscribe to events for immediate updates
+        attributes.health.OnValueChanged += UpdateHealthUI;
+        attributes.strength.OnValueChanged += UpdateStrengthUI;
+    }
+
+    void Update()
+    {
+        // Throttled UI updates for performance
+        if (Time.time - lastUIUpdate >= updateInterval)
+        {
+            UpdateAllUI();
+            lastUIUpdate = Time.time;
+        }
+    }
+
+    private void UpdateHealthUI()
+    {
+        var health = attributes.health;
+        
+        // Update bar and text
+        healthBar.value = health.GetPercentage();
+        healthText.text = $"{health.currentValue:F0}/{health.totalValue:F0}";
+        
+        // Show regeneration status
+        if (health.IsRegenerating)
+        {
+            statusText.text = "Regenerating...";
+            statusText.color = Color.green;
+        }
+        else if (health.IsAtMin())
+        {
+            statusText.text = "Critical!";
+            statusText.color = Color.red;
+        }
+        else
+        {
+            statusText.text = "";
+        }
+    }
+
+    private void UpdateStrengthUI()
+    {
+        var str = attributes.strength;
+        
+        // Show value with bonus breakdown
+        string text = str.totalValue.ToString("F0");
+        
+        if (str.formulaBonus != 0 || str.modifierBonus != 0)
+        {
+            text += " (";
+            text += str.baseValue.ToString("F0");
+            if (str.formulaBonus != 0) text += $"+{str.formulaBonus:F0}";
+            if (str.modifierBonus != 0) text += $"+{str.modifierBonus:F0}";
+            text += ")";
+        }
+        
+        strengthText.text = $"STR: {text}";
+    }
+
+    private void UpdateAllUI()
+    {
+        // Clear dirty flags after update
+        foreach (var attr in attributes.GetAllRuntimeAttributes().Values)
+        {
+            if (attr.IsDirty)
+            {
+                attr.ClearDirtyFlag();
+            }
+        }
+    }
+}
+    </div>
+
+    <h3>Save/Load System</h3>
+    <div class="code-block">
+[System.Serializable]
+public class SaveData
+{
+    public Dictionary&lt;string, float&gt; baseValues = new Dictionary&lt;string, float&gt;();
+    public Dictionary&lt;string, float&gt; currentValues = new Dictionary&lt;string, float&gt;();
+}
+
+public class SaveSystem : MonoBehaviour
+{
+    public SaveData CreateSaveData()
+    {
+        var data = new SaveData();
+        var attributes = GetComponent&lt;CharacterAttributes&gt;();
+        
+        foreach (var kvp in attributes.GetAllRuntimeAttributes())
+        {
+            var attr = kvp.Value;
+            
+            // Save base values (persistent)
+            data.baseValues[attr.attributeName] = attr.baseValue;
+            
+            // Save current values for Vitals
+            if (attr.behaviorType == SimpleBehaviorType.Vital)
+            {
+                data.currentValues[attr.attributeName] = attr.currentValue;
+            }
+        }
+        
+        return data;
+    }
+    
+    public void LoadSaveData(SaveData data)
+    {
+        var attributes = GetComponent&lt;CharacterAttributes&gt;();
+        
+        // Load base values
+        foreach (var kvp in data.baseValues)
+        {
+            var attr = attributes.GetRuntimeAttribute(kvp.Key);
+            if (attr != null)
+            {
+                attr.baseValue = kvp.Value; // Use SetValue() to avoid regeneration
+            }
+        }
+        
+        // Load current values for Vitals
+        foreach (var kvp in data.currentValues)
+        {
+            var attr = attributes.GetRuntimeAttribute(kvp.Key);
+            if (attr != null && attr.behaviorType == SimpleBehaviorType.Vital)
+            {
+                attr.SetValue(kvp.Value); // Use SetValue() to avoid triggering regen
+            }
+        }
+        
+        // Recalculate formulas if using Ultimate's Influence System
+        var orchestrator = GetComponent&lt;InfluenceSystem&gt;();
+        if (orchestrator != null)
+        {
+            orchestrator.RecalculateAll();
+        }
+        
+        Debug.Log("Game loaded successfully!");
+    }
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Debug and Testing</h2>
+
+    <h3>Inspector Testing</h3>
+    <p>Generated components include testing tools:</p>
+    <div class="code-block">
+// Context menu methods available in editor
+[ContextMenu("Log All Attributes")]
+[ContextMenu("Debug Active Regeneration")]
+[ContextMenu("Set Attribute Value")] // Uses inspector test values
+    </div>
+
+    <h3>Runtime Debugging</h3>
+    <div class="code-block">
+// Check attribute state
+public void DebugAttribute(string name)
+{
+    var attr = attributes.GetRuntimeAttribute(name);
+    if (attr != null)
+    {
+        Debug.Log($"{attr.attributeName}:");
+        Debug.Log($"  Base: {attr.baseValue}");
+        Debug.Log($"  Formula: {attr.formulaBonus}");
+        Debug.Log($"  Modifier: {attr.modifierBonus}");
+        Debug.Log($"  Total: {attr.totalValue}");
+        
+        if (attr.behaviorType == SimpleBehaviorType.Vital)
+        {
+            Debug.Log($"  Current: {attr.currentValue}");
+            Debug.Log($"  Regenerating: {attr.IsRegenerating}");
+        }
+    }
+}
+
+// Monitor events
+void Start()
+{
+    attributes.OnAnyAttributeChanged += (name, value) => {
+        Debug.Log($"Attribute {name} changed to {value}");
+    };
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Performance Tips</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Cache References</h4>
+        <div class="code-block">
+//  Cache attribute references
+private SimpleRuntimeAttribute health;
+void Start() {
+    health = attributes.health;
+}
+
+//  Don't lookup every time
+void Update() {
+    var health = attributes.GetRuntimeAttribute("Health");
+}
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Throttle UI Updates</h4>
+        <div class="code-block">
+//  Update UI at intervals
+public float uiUpdateInterval = 0.1f;
+private float lastUpdate;
+
+void Update() {
+    if (Time.time - lastUpdate > uiUpdateInterval) {
+        UpdateUI();
+        lastUpdate = Time.time;
+    }
+}
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Use Events Wisely</h4>
+        <div class="code-block">
+//  Subscribe to specific attributes
+health.OnValueChanged += UpdateHealthBar;
+
+//  Don't subscribe to everything
+attributes.OnAnyAttributeChanged += UpdateAllUI;
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Batch Operations</h4>
+        <div class="code-block">
+//  Batch multiple changes
+health.baseValue += 50;
+strength.baseValue += 10;
+// Formulas recalculate automatically
+
+//  Separate modifications
+ModifyMultipleAttributes();
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <a href="wizard-guide.html">← Wizard Guide</a>
+    <a href="demo-manager.html">Demo Manager →</a>
+  </div>
+
+</body>
+</html>

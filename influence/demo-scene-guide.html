@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Scene Guide - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html" class="active">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Demo Scene Guide
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Demo Scene Guide</h1>
+        <p>Testing and visualizing your influence formulas in real-time</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="section">
+        <h2>Demo System Overview</h2>
+        <p>The Simple Attribute Forge Ultimate includes a comprehensive demo and testing system that provides real-time visualization of attribute values, formula calculations, and system behavior. This is essential for developing, testing, and debugging your influence systems.</p>
+        
+        <div class="info">
+            <strong>What the Demo System Provides:</strong>
+            <ul>
+                <li>Real-time attribute value monitoring</li>
+                <li>Formula calculation breakdowns</li>
+                <li>Interactive testing tools</li>
+                <li>Visual debugging aids</li>
+                <li>Performance monitoring</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quick Setup -->
+    <div class="section">
+        <h2>Quick Setup Guide</h2>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Create Demo GameObject</strong>
+        </div>
+        <ul>
+            <li>Create an empty GameObject in your scene</li>
+            <li>Name it "Demo Manager" or similar</li>
+            <li>Add Component → Search "SimpleInfluenceDemoManager"</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Setup UI Canvas</strong>
+        </div>
+        <div class="code-block">Required UI Elements:
+1. Create UI Canvas (if not present)
+2. Add TextMeshPro - Text (UI) element for attributes
+3. Add TextMeshPro - Text (UI) element for formulas
+4. Position elements for visibility during testing</div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Configure Demo Manager</strong>
+        </div>
+        <ul>
+            <li><strong>Target Object:</strong> GameObject with your attributes + orchestrator</li>
+            <li><strong>Attributes Display:</strong> First TextMeshPro element</li>
+            <li><strong>Formulas Display:</strong> Second TextMeshPro element</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Test the Setup</strong>
+        </div>
+        <ul>
+            <li>Enter Play Mode</li>
+            <li>Verify displays show current attribute values</li>
+            <li>Check that formula calculations are visible</li>
+            <li>Use context menu testing features</li>
+        </ul>
+    </div>
+
+    <!-- Demo Manager Configuration -->
+    <div class="section">
+        <h2>Demo Manager Configuration</h2>
+        
+        <h3>Inspector Fields</h3>
+        
+        <div class="feature-card">
+            <h4>Target References</h4>
+            <div class="code-block">Required Fields:
+• Target Object: GameObject with attribute system and orchestrator
+• Attributes Display: TextMeshPro component for attribute values
+• Formulas Display: TextMeshPro component for formula breakdown
+
+Optional Overrides:
+• Attribute Source Override: Manually specify attribute component
+• Orchestrator Override: Manually specify orchestrator component</div>
+        </div>
+
+        <div class="feature-card">
+            <h4>Display Settings</h4>
+            <div class="code-block">Update Interval: How often to refresh displays (default: 0.5 seconds)
+Group By Type: Organize attributes by behavior type (Vital, Basic, etc.)
+Show Formula Bonuses: Include formula contributions in attribute display
+Show Breakpoints: Highlight active breakpoints in formula display
+Decimal Places: Precision for displayed numbers (default: 1)</div>
+        </div>
+
+        <div class="feature-card">
+            <h4>Testing Configuration</h4>
+            <div class="code-block">Test Attribute: Name of attribute to modify (e.g., "Strength")
+Test Value: Amount to change the test attribute by
+Debug Mode: Enable detailed console logging
+Auto-Find Components: Automatically locate attribute and orchestrator components</div>
+        </div>
+    </div>
+
+    <!-- Display Formats -->
+    <div class="section">
+        <h2>Display Formats</h2>
+        
+        <h3>Attributes Display</h3>
+        <p>Shows all attributes organized by type with real-time values:</p>
+        
+        <div class="display-example">=== CHARACTER ATTRIBUTES ===
+
+VITALS
+Health: 85/120 (+20 formula)
+Mana: 45/60 (+10 formula)
+Stamina: 100/100
+
+BASIC STATS  
+Strength: 25 → 45 (+20 formula)
+Intelligence: 18 → 27 (+9 formula)
+Dexterity: 15 → 15
+Constitution: 20 → 35 (+15 formula)
+
+RESOURCES
+Level: 12
+Experience: 8500/10000
+Gold: 1250
+
+DERIVED STATS
+Damage: 50 (formula result)
+SpellPower: 13 (formula result)
+CritChance: 8.5% (formula result)</div>
+
+        <h3>Formulas Display</h3>
+        <p>Shows active formulas with calculation breakdown:</p>
+        
+        <div class="display-example">=== ACTIVE FORMULAS ===
+
+[ORDER 0] StrengthDamage → Damage
+  Result: +50
+  Pipeline: STR(25) × 2.0 = 50
+  Status:  Active
+
+[ORDER 0] LevelHealth → Health  
+  Result: +20
+  Pipeline: Level(12) × 1.5 + BaseBonus(2) = 20
+  Status:  Active
+
+[ORDER 1] IntelligenceMana → Mana
+  Result: +10
+  Pipeline: INT(18) × 0.5 + LevelBonus(1) = 10
+  Breakpoint: Level ≥ 10 (+1 bonus)  Active
+  Status:  Active</div>
+
+        <h3>Display Features</h3>
+        <ul>
+            <li><strong>Color Coding:</strong> Health values change color based on percentage</li>
+            <li><strong>Formula Indicators:</strong> Shows which attributes have formula bonuses</li>
+            <li><strong>Breakpoint Status:</strong> Displays active breakpoints with  checkmarks</li>
+            <li><strong>Real-time Updates:</strong> Values update automatically as they change</li>
+            <li><strong>Error Indicators:</strong> Shows  for formula errors or missing references</li>
+        </ul>
+    </div>
+
+    <!-- Testing Features -->
+    <div class="section">
+        <h2>Interactive Testing Features</h2>
+        
+        <h3>Context Menu Commands</h3>
+        <p>Right-click the SimpleInfluenceDemoManager component in Inspector to access testing tools:</p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Modify Test Attribute</h4>
+                <div class="code-block">[ContextMenu("Set Test Attribute")]
+• Changes the specified test attribute to test value
+• Triggers automatic recalculation
+• Logs the change to console</div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Force Recalculation</h4>
+                <div class="code-block">[ContextMenu("Force Recalculate")]
+• Manually triggers orchestrator recalculation
+• Useful for testing Manual update mode
+• Shows recalculation timing</div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Dump Attribute Values</h4>
+                <div class="code-block">[ContextMenu("Log All Values")]
+• Prints detailed attribute breakdown to console
+• Shows base, formula, modifier, and total values
+• Useful for debugging and verification</div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Toggle Update Mode</h4>
+                <div class="code-block">[ContextMenu("Toggle Auto Mode")]
+• Switches between Auto and Manual recalculation
+• Tests different performance scenarios
+• Shows current mode in console</div>
+            </div>
+        </div>
+
+        <h3>Runtime Value Modification</h3>
+        <div class="code-block">// The demo manager provides methods for runtime testing:
+
+public void ModifyAttribute(string attributeName, float newValue)
+{
+    var attr = attributeSource.GetAttribute(attributeName);
+    if (attr != null)
+    {
+        attr.baseValue = newValue;
+        Debug.Log($"Set {attributeName} to {newValue}");
+    }
+}
+
+public void TestScenario(string scenarioName)
+{
+    switch (scenarioName)
+    {
+        case "LowLevel":
+            SetupLowLevelCharacter();
+            break;
+        case "HighLevel":
+            SetupHighLevelCharacter();
+            break;
+        case "MaxStats":
+            SetupMaxStatsCharacter();
+            break;
+    }
+    
+    orchestrator.RecalculateAll();
+}</div>
+    </div>
+
+    <!-- Testing Scenarios -->
+    <div class="section">
+        <h2>Common Testing Scenarios</h2>
+        
+        <h3>Basic Formula Testing</h3>
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Verify Base Calculations</strong>
+        </div>
+        <ul>
+            <li>Set test attribute to known value (e.g., Strength = 20)</li>
+            <li>Check that formula result matches expected calculation</li>
+            <li>Verify display shows both base and formula bonus</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Test Value Changes</strong>
+        </div>
+        <ul>
+            <li>Modify attribute values using Inspector or context menu</li>
+            <li>Watch formula results update in real-time</li>
+            <li>Confirm that dependent attributes recalculate correctly</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Breakpoint Activation Testing</strong>
+        </div>
+        <ul>
+            <li>Set attribute values around breakpoint thresholds</li>
+            <li>Verify breakpoints activate at correct values</li>
+            <li>Check that breakpoint effects appear in formula display</li>
+        </ul>
+
+        <h3>Advanced Testing Scenarios</h3>
+        <div class="code-block">Testing Checklist:
+
+□ Basic formula math is correct
+□ Breakpoints activate at right thresholds  
+□ Multiple breakpoints work together
+□ Execution order affects results properly
+□ Circular dependencies are handled
+□ Performance is acceptable with all formulas
+□ UI updates reflect formula changes
+□ Save/load preserves baseValue correctly</div>
+
+        <h3>Performance Testing</h3>
+        <ul>
+            <li><strong>Update Frequency:</strong> Test different update intervals</li>
+            <li><strong>Formula Count:</strong> Add many formulas to test performance</li>
+            <li><strong>Breakpoint Complexity:</strong> Test with complex breakpoint conditions</li>
+            <li><strong>Auto vs Manual:</strong> Compare update mode performance</li>
+        </ul>
+    </div>
+
+    <!-- Debug Information -->
+    <div class="section">
+        <h2>Debug Information Display</h2>
+        
+        <h3>Console Output</h3>
+        <div class="code-block">// Example debug output from demo manager:
+
+=== ATTRIBUTE VALUES DEBUG ===
+Health: base=100, formula=20, modifier=0, total=120, current=85
+Mana: base=50, formula=10, modifier=0, total=60, current=45  
+Strength: base=25, formula=0, modifier=5, total=30
+Damage: base=0, formula=50, modifier=0, total=50
+
+=== FORMULA CALCULATIONS DEBUG ===
+StrengthDamage: STR(25) × 2.0 = 50 → Damage
+LevelHealth: Level(12) × 1.5 + Base(2) = 20 → Health
+IntelligenceMana: INT(18) × 0.5 + Breakpoint(1) = 10 → Mana
+
+=== PERFORMANCE DEBUG ===
+Total formulas: 3
+Recalculation time: 0.15ms
+Update frequency: 2.0 FPS (every 0.5s)</div>
+
+        <h3>Error Detection</h3>
+        <p>The demo system automatically detects and displays common issues:</p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Missing References</h4>
+                <div class="code-block"> MISSING: Formula references "MagicPower" but attribute not found
+ NULL: Orchestrator reference is null
+ INVALID: Attribute "Strenght" (typo in name)</div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Circular Dependencies</h4>
+                <div class="code-block"> CIRCULAR: A→B→A dependency detected
+ CONVERGED: Loop resolved after 3 iterations
+ MAX_ITER: Iteration limit reached, values may be unstable</div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Performance Warnings</h4>
+                <div class="code-block"> SLOW: Recalculation took 5.2ms (may impact performance)
+ FREQUENT: 15 recalculations this second
+ COMPLEX: 8 breakpoints in single formula</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customization -->
+    <div class="section">
+        <h2>Customizing the Demo System</h2>
+        
+        <h3>Custom Display Formatting</h3>
+        <div class="code-block">// Override display methods for custom formatting:
+
+public class CustomDemoManager : SimpleInfluenceDemoManager
+{
+    protected override string FormatAttributeDisplay(SimpleRuntimeAttribute attr)
+    {
+        // Custom formatting logic
+        if (attr.behaviorType == SimpleBehaviorType.Vital)
+        {
+            // Show health bars for vitals
+            return $"{attr.name}: {GetHealthBar(attr)} ({attr.currentValue:F0}/{attr.totalValue:F0})";
+        }
+        
+        // Custom color coding
+        var color = attr.formulaBonus > 0 ? "green" : "white";
+        return $"<color={color}>{attr.name}: {attr.totalValue:F1}</color>";
+    }
+    
+    string GetHealthBar(SimpleRuntimeAttribute attr)
+    {
+        float percentage = attr.currentValue / attr.totalValue;
+        int bars = Mathf.RoundToInt(percentage * 10);
+        return $"[{'█'.Repeat(bars)}{'░'.Repeat(10-bars)}]";
+    }
+}</div>
+
+        <h3>Adding Test Scenarios</h3>
+        <div class="code-block">// Add predefined test scenarios:
+
+[ContextMenu("Test: Low Level Character")]
+void TestLowLevel()
+{
+    SetAttribute("Level", 5);
+    SetAttribute("Strength", 12);
+    SetAttribute("Intelligence", 10);
+    RecalculateAndLog("Low Level Test");
+}
+
+[ContextMenu("Test: Boss Fight Simulation")]
+void TestBossFight()
+{
+    SetAttribute("Health", GetAttribute("Health").totalValue * 0.2f); // Low health
+    SetAttribute("Strength", GetAttribute("Strength").baseValue + 10); // Combat boost
+    RecalculateAndLog("Boss Fight Simulation");
+}
+
+void RecalculateAndLog(string scenario)
+{
+    orchestrator.RecalculateAll();
+    Debug.Log($"=== {scenario} Results ===");
+    LogAllAttributeValues();
+}</div>
+
+        <h3>Integration with Game Systems</h3>
+        <ul>
+            <li><strong>Combat System:</strong> Test damage calculations during combat</li>
+            <li><strong>Leveling System:</strong> Verify stat growth on level up</li>
+            <li><strong>Equipment System:</strong> Test gear bonuses and formula interactions</li>
+            <li><strong>Buff System:</strong> Verify temporary modifiers affect formulas correctly</li>
+        </ul>
+    </div>
+
+    <!-- Mobile Testing -->
+    <div class="section">
+        <h2>Mobile and Touch Testing</h2>
+        
+        <h3>Touch-Friendly Testing</h3>
+        <div class="code-block">// Add UI buttons for mobile testing:
+
+public class MobileDemoUI : MonoBehaviour
+{
+    public Button increaseStrengthButton;
+    public Button decreaseStrengthButton;
+    public Button testScenarioButton;
+    public Slider attributeSlider;
+    
+    void Start()
+    {
+        increaseStrengthButton.onClick.AddListener(() => ModifyTestAttribute(+1));
+        decreaseStrengthButton.onClick.AddListener(() => ModifyTestAttribute(-1));
+        testScenarioButton.onClick.AddListener(RunTestScenario);
+        
+        attributeSlider.onValueChanged.AddListener(OnSliderChanged);
+    }
+    
+    void OnSliderChanged(float value)
+    {
+        demoManager.SetTestAttributeValue(value);
+    }
+}</div>
+
+        <h3>Performance Considerations</h3>
+        <ul>
+            <li>Longer update intervals (1-2 seconds) for mobile</li>
+            <li>Simplified display formatting to reduce UI overhead</li>
+            <li>Optional debug features that can be disabled</li>
+            <li>Efficient text updates to minimize garbage collection</li>
+        </ul>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Demo System Best Practices</h2>
+        
+        <div class="success">
+            <strong>Development Workflow:</strong>
+            <ul>
+                <li>Keep demo manager active during formula development</li>
+                <li>Create test scenarios for each major game situation</li>
+                <li>Document expected values for QA reference</li>
+                <li>Use demo system to verify balance changes</li>
+                <li>Test edge cases and extreme values</li>
+            </ul>
+        </div>
+
+        <h3>Performance Guidelines</h3>
+        <div class="code-block">Update Interval Recommendations:
+• Development: 0.1-0.2 seconds (responsive)
+• Testing: 0.5 seconds (balanced)
+• Performance testing: 1.0+ seconds (minimal overhead)
+• Mobile: 1.0-2.0 seconds (battery friendly)
+
+Formula Count Considerations:
+• < 10 formulas: Any update rate acceptable
+• 10-25 formulas: 0.5+ second intervals recommended  
+• 25+ formulas: Manual mode or 1.0+ second intervals
+• 50+ formulas: Requires performance optimization</div>
+
+        <div class="warning">
+            <strong>Production Considerations:</strong>
+            <ul>
+                <li>Remove or disable demo manager in release builds</li>
+                <li>Debug console output can impact performance</li>
+                <li>Text updates can cause garbage collection spikes</li>
+                <li>Mobile devices may struggle with frequent UI updates</li>
+            </ul>
+        </div>
+
+        <h3>Team Workflow</h3>
+        <ul>
+            <li><strong>Designers:</strong> Use demo system to test and balance formulas</li>
+            <li><strong>Programmers:</strong> Verify integration and performance</li>
+            <li><strong>QA:</strong> Use predefined scenarios for regression testing</li>
+            <li><strong>Artists:</strong> Test with realistic visual scenarios</li>
+        </ul>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="section">
+        <h2>Advanced Demo Features</h2>
+        
+        <h3>Automated Testing</h3>
+        <div class="code-block">// Automated test suite example:
+
+public class FormulaTestSuite : MonoBehaviour
+{
+    [ContextMenu("Run All Tests")]
+    public void RunAllTests()
+    {
+        StartCoroutine(ExecuteTestSuite());
+    }
+    
+    IEnumerator ExecuteTestSuite()
+    {
+        var testResults = new List<string>();
+        
+        // Test 1: Basic math verification
+        yield return StartCoroutine(TestBasicMath(testResults));
+        
+        // Test 2: Breakpoint activation
+        yield return StartCoroutine(TestBreakpoints(testResults));
+        
+        // Test 3: Performance testing
+        yield return StartCoroutine(TestPerformance(testResults));
+        
+        // Report results
+        LogTestResults(testResults);
+    }
+    
+    IEnumerator TestBasicMath(List<string> results)
+    {
+        SetAttribute("Strength", 20);
+        yield return new WaitForSeconds(0.1f);
+        
+        float expectedDamage = 40; // STR 20 × 2.0
+        float actualDamage = GetAttribute("Damage").totalValue;
+        
+        bool passed = Mathf.Approximately(expectedDamage, actualDamage);
+        results.Add($"Basic Math Test: {(passed ? "PASS" : "FAIL")} " +
+                   $"(Expected: {expectedDamage}, Actual: {actualDamage})");
+    }
+}</div>
+
+        <h3>Visual Debugging</h3>
+        <div class="code-block">// Visual debugging features:
+
+public class VisualDebugger : MonoBehaviour
+{
+    public LineRenderer dependencyLine;
+    public Transform[] attributeNodes;
+    
+    void Update()
+    {
+        if (showDependencies)
+        {
+            DrawFormulaDependencies();
+        }
+    }
+    
+    void DrawFormulaDependencies()
+    {
+        // Draw lines between attributes that have formula relationships
+        foreach (var formula in orchestrator.GetFormulas())
+        {
+            var sourceNode = GetNodeForAttribute(formula.sourceAttribute);
+            var targetNode = GetNodeForAttribute(formula.targetAttribute);
+            
+            if (sourceNode && targetNode)
+            {
+                DrawLine(sourceNode.position, targetNode.position, Color.green);
+            }
+        }
+    }
+}</div>
+
+        <h3>Data Export</h3>
+        <div class="code-block">// Export test results for analysis:
+
+[ContextMenu("Export Test Data")]
+void ExportTestData()
+{
+    var csvData = new StringBuilder();
+    csvData.AppendLine("Attribute,BaseValue,FormulaBonus,ModifierBonus,TotalValue");
+    
+    foreach (var attr in attributeSource.GetAllAttributes())
+    {
+        csvData.AppendLine($"{attr.name},{attr.baseValue},{attr.formulaBonus}," +
+                          $"{attr.modifierBonus},{attr.totalValue}");
+    }
+    
+    string filePath = Path.Combine(Application.persistentDataPath, 
+                                   $"AttributeData_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
+    File.WriteAllText(filePath, csvData.ToString());
+    Debug.Log($"Test data exported to: {filePath}");
+}</div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="section">
+        <h2>Demo System Troubleshooting</h2>
+        
+        <h3>Common Issues</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Display Not Updating</h4>
+                <ul>
+                    <li>Check Target Object assignment</li>
+                    <li>Verify TextMeshPro components are assigned</li>
+                    <li>Ensure Update Interval is reasonable</li>
+                    <li>Check for console errors</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Values Show as Zero</h4>
+                <ul>
+                    <li>Verify orchestrator is assigned and working</li>
+                    <li>Check that formulas are enabled</li>
+                    <li>Ensure RecalculateAll() has been called</li>
+                    <li>Test with manual recalculation</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Performance Issues</h4>
+                <ul>
+                    <li>Increase update interval</li>
+                    <li>Simplify display formatting</li>
+                    <li>Reduce number of active formulas</li>
+                    <li>Check for excessive debug logging</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Validation Checklist</h3>
+        <div class="code-block">Demo System Health Check:
+□ Target Object has both attributes and orchestrator
+□ TextMeshPro components are assigned and active
+□ Update Interval is between 0.1 and 2.0 seconds
+□ No console errors or warnings
+□ Formulas show expected results in display
+□ Test scenarios modify values correctly
+□ Performance is acceptable for your target platform</div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="troubleshooting-pro.html">← Troubleshooting</a>
+        <div class="final-note">
+            <strong> End of Documentation</strong><br>
+            You now have complete knowledge of Simple Attribute Forge Ultimate!
+        </div>
+    </div>
+</body>
+</html>

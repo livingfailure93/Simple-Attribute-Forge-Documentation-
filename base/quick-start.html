@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Start - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html" class="active">Quick Start</a></li>
+      <li><a href="wizard-guide.html">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html">Runtime Usage</a></li>
+      <li><a href="demo-manager.html">Demo Scene</a></li>
+      <li><a href="import-export.html">Import/Export</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / Quick Start
+  </div>
+
+  <div class="section">
+    <h1> Quick Start Guide</h1>
+    <p>Create your first complete attribute system in under 5 minutes! This guide shows the current workflow for the modern Simple Attribute Forge system.</p>
+  </div>
+
+  <div class="section">
+    <h2> Prerequisites</h2>
+    <ul>
+      <li>Unity 2021.3 or newer</li>
+      <li>Simple Attribute Forge package imported</li>
+      <li>Basic understanding of Unity MonoBehaviours</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2> 4-Step Creation Process</h2>
+
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Open the Attribute Data Wizard</strong><br>
+      Navigate to <code>Window → Simple Attribute Forge → Attribute Data Wizard</code>
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Configure Your Attribute System</strong><br>
+      Set up basic information and add your attributes
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Generate Code Files</strong><br>
+      Create enum, runtime class, and ScriptableObject automatically
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">4</span>
+      <strong>Add to GameObject</strong><br>
+      Attach generated component and start using your attributes
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Example: RPG Character Attributes</h2>
+    <p>Let's create a typical RPG character attribute system step by step.</p>
+
+    <h3>Step 1: Data Info Configuration</h3>
+    <div class="feature-card">
+      <h4>Basic Settings</h4>
+      <ul>
+        <li><strong>Data Name:</strong> "Character Attributes"</li>
+        <li><strong>Description:</strong> "RPG character stats and vitals"</li>
+        <li><strong>Namespace:</strong> "Game.Attributes" (optional)</li>
+        <li><strong>Class Prefix:</strong> "Character"</li>
+      </ul>
+      <p><strong>Generated Files:</strong></p>
+      <ul>
+        <li>CharacterAttributesEnum.cs</li>
+        <li>CharacterAttributes.cs (MonoBehaviour)</li>
+        <li>CharacterAttributeData.asset (ScriptableObject)</li>
+      </ul>
+    </div>
+
+    <h3>Step 2: Add Essential Attributes</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Health (Vital)</h4>
+        <ul>
+          <li><strong>Name:</strong> Health</li>
+          <li><strong>Code:</strong> HP</li>
+          <li><strong>Base Value:</strong> 100</li>
+          <li><strong>Min/Max:</strong> 0/100</li>
+          <li><strong>Can Regenerate:</strong> </li>
+          <li><strong>Regen Rate:</strong> 5/sec</li>
+          <li><strong>Regen Delay:</strong> 3 sec</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Mana (Vital)</h4>
+        <ul>
+          <li><strong>Name:</strong> Mana</li>
+          <li><strong>Code:</strong> MP</li>
+          <li><strong>Base Value:</strong> 50</li>
+          <li><strong>Min/Max:</strong> 0/50</li>
+          <li><strong>Can Regenerate:</strong> </li>
+          <li><strong>Regen Rate:</strong> 2/sec</li>
+          <li><strong>Regen Delay:</strong> 2 sec</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Strength (Basic)</h4>
+        <ul>
+          <li><strong>Name:</strong> Strength</li>
+          <li><strong>Code:</strong> STR</li>
+          <li><strong>Base Value:</strong> 10</li>
+          <li><strong>Min/Max:</strong> 1/100</li>
+          <li><strong>Can Regenerate:</strong> </li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Intelligence (Basic)</h4>
+        <ul>
+          <li><strong>Name:</strong> Intelligence</li>
+          <li><strong>Code:</strong> INT</li>
+          <li><strong>Base Value:</strong> 10</li>
+          <li><strong>Min/Max:</strong> 1/100</li>
+          <li><strong>Can Regenerate:</strong> </li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Gold (Resource)</h4>
+        <ul>
+          <li><strong>Name:</strong> Gold</li>
+          <li><strong>Code:</strong> G</li>
+          <li><strong>Base Value:</strong> 0</li>
+          <li><strong>Min/Max:</strong> 0/999999</li>
+          <li><strong>Force Integer:</strong> </li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Level (Resource)</h4>
+        <ul>
+          <li><strong>Name:</strong> Level</li>
+          <li><strong>Code:</strong> LVL</li>
+          <li><strong>Base Value:</strong> 1</li>
+          <li><strong>Min/Max:</strong> 1/100</li>
+          <li><strong>Force Integer:</strong> </li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Step 3: Generate and Integrate</h3>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Generate Code:</strong> Click "Generate Files" - compilation happens automatically
+    </div>
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Create GameObject:</strong> Create new GameObject named "Player"
+    </div>
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Add Component:</strong> Add the generated "Character Attributes" component
+    </div>
+    <div class="step-container">
+      <span class="step-number">4</span>
+      <strong>Assign Asset:</strong> Drag "CharacterAttributeData.asset" to the Data Asset field
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Using Your Attributes in Code</h2>
+    
+    <h3>Basic Player Controller</h3>
+    <div class="code-block">
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    private CharacterAttributes attributes;
+
+    void Start()
+    {
+        // Get the generated attribute component
+        attributes = GetComponent&lt;CharacterAttributes&gt;();
+        
+        // Subscribe to health events
+        attributes.health.OnReachedZero += HandleDeath;
+        attributes.health.OnValueChanged += UpdateHealthUI;
+        
+        Debug.Log("Player initialized with " + attributes.health.totalValue + " HP");
+    }
+
+    void Update()
+    {
+        // Test damage with spacebar
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TakeDamage(10f);
+        }
+        
+        // Test heal with H key
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Heal(15f);
+        }
+        
+        // Add gold with G key
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            AddGold(50);
+        }
+    }
+
+    public void TakeDamage(float amount)
+    {
+        // Use ModifyValue for gameplay changes (triggers regeneration)
+        attributes.health.ModifyValue(-amount);
+        Debug.Log($"Took {amount} damage. Health: {attributes.health.currentValue}/{attributes.health.totalValue}");
+    }
+
+    public void Heal(float amount)
+    {
+        attributes.health.ModifyValue(amount);
+        Debug.Log($"Healed {amount} HP. Health: {attributes.health.currentValue}/{attributes.health.totalValue}");
+    }
+
+    public void AddGold(int amount)
+    {
+        attributes.gold.ModifyValue(amount);
+        Debug.Log($"Gained {amount} gold. Total: {attributes.gold.GetIntValue()}");
+    }
+
+    public void LevelUp()
+    {
+        attributes.level.ModifyValue(1);
+        
+        // Permanent stat increases
+        attributes.strength.baseValue += 2;
+        attributes.intelligence.baseValue += 1;
+        attributes.health.baseValue += 20;
+        
+        // Fill health on level up
+        attributes.health.FillToMax();
+        
+        Debug.Log($"Level up! Now level {attributes.level.GetIntValue()}");
+    }
+
+    private void HandleDeath()
+    {
+        Debug.Log("Player died!");
+        // Handle death logic
+    }
+
+    private void UpdateHealthUI()
+    {
+        // Update your health bar UI here
+        float healthPercent = attributes.health.GetPercentage();
+        // healthBar.fillAmount = healthPercent;
+    }
+}
+    </div>
+
+    <h3>Simple Combat System</h3>
+    <div class="code-block">
+public class SimpleCombat : MonoBehaviour
+{
+    private CharacterAttributes playerAttributes;
+    private CharacterAttributes enemyAttributes;
+
+    void Start()
+    {
+        playerAttributes = GameObject.FindWithTag("Player").GetComponent&lt;CharacterAttributes&gt;();
+        enemyAttributes = GetComponent&lt;CharacterAttributes&gt;();
+    }
+
+    public void PlayerAttack()
+    {
+        // Calculate damage using totalValue (includes all bonuses)
+        float damage = playerAttributes.strength.totalValue * 1.5f;
+        
+        // Deal damage to enemy
+        enemyAttributes.health.ModifyValue(-damage);
+        
+        Debug.Log($"Player deals {damage:F1} damage!");
+        
+        if (enemyAttributes.health.IsAtMin())
+        {
+            HandleEnemyDeath();
+        }
+    }
+
+    public void EnemyAttack()
+    {
+        float damage = enemyAttributes.strength.totalValue * 1.2f;
+        playerAttributes.health.ModifyValue(-damage);
+        
+        Debug.Log($"Enemy deals {damage:F1} damage!");
+    }
+
+    private void HandleEnemyDeath()
+    {
+        // Give rewards
+        playerAttributes.gold.ModifyValue(Random.Range(10, 50));
+        Debug.Log("Enemy defeated! Gold gained.");
+        
+        Destroy(gameObject);
+    }
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Key Features Demonstrated</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Automatic Regeneration</h4>
+        <p>Health and Mana automatically regenerate after taking damage. No manual coroutines needed!</p>
+        <div class="code-block">
+// Just deal damage - regeneration is automatic
+health.ModifyValue(-30f);
+// System handles delay and healing automatically
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4> Three-Tier Values</h4>
+        <p>Each attribute has baseValue, formulaBonus, modifierBonus, and calculated totalValue.</p>
+        <div class="code-block">
+// Always use totalValue for gameplay
+float damage = strength.totalValue * multiplier;
+
+// Modify baseValue for permanent changes  
+strength.baseValue += 5; // Upgrade
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4> Type-Safe Access</h4>
+        <p>Generated enums and properties provide compile-time safety and IntelliSense support.</p>
+        <div class="code-block">
+// Direct property access
+var health = attributes.health;
+
+// Enum-based access
+var attr = attributes.GetAttributeByEnum(CharacterAttributesEnum.Health);
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4> Event System</h4>
+        <p>Rich event system for UI updates and gameplay reactions.</p>
+        <div class="code-block">
+// Individual attribute events
+health.OnValueChanged += UpdateHealthBar;
+health.OnReachedZero += HandleDeath;
+
+// Component-wide events
+attributes.OnAnyAttributeChanged += LogChanges;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> What's Generated</h2>
+    
+    <h3>File Structure</h3>
+    <div class="file-tree">
+Assets/
+├── Generated/
+│   └── CharacterAttributes/
+│       ├── CharacterAttributesEnum.cs
+│       ├── CharacterAttributes.cs
+│       └── CharacterAttributeData.asset
+    </div>
+
+    <h3>Generated Enum</h3>
+    <div class="code-block">
+public enum CharacterAttributesEnum
+{
+    Health = 0,
+    Mana = 1,
+    Strength = 2,
+    Intelligence = 3,
+    Gold = 4,
+    Level = 5
+}
+    </div>
+
+    <h3>Generated Component</h3>
+    <div class="code-block">
+public class CharacterAttributes : MonoBehaviour, ISimpleAttributeDataSource
+{
+    [Header("Vital Attributes")]
+    public SimpleRuntimeAttribute health;
+    public SimpleRuntimeAttribute mana;
+    
+    [Header("Basic Attributes")]  
+    public SimpleRuntimeAttribute strength;
+    public SimpleRuntimeAttribute intelligence;
+    
+    [Header("Resource Attributes")]
+    public SimpleRuntimeAttribute gold;
+    public SimpleRuntimeAttribute level;
+    
+    // Automatic regeneration management
+    // Component-wide events
+    // ISimpleAttributeDataSource implementation
+    // Type-safe access methods
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Testing Your Setup</h2>
+    
+    <h3>Runtime Testing</h3>
+    <p>The generated component includes testing tools accessible via the inspector:</p>
+    <ul>
+      <li><strong>Context Menu:</strong> Right-click component → "Log All Attributes"</li>
+      <li><strong>Test Values:</strong> Set inspector values and use "Set Attribute Value" context menu</li>
+      <li><strong>Debug Regeneration:</strong> Use "Debug Active Regeneration" to see active coroutines</li>
+    </ul>
+
+    <h3>Play Mode Testing</h3>
+    <div class="code-block">
+// Test in Update() or with UI buttons
+void Update()
+{
+    if (Input.GetKeyDown(KeyCode.D))
+    {
+        // Test damage
+        attributes.health.ModifyValue(-20f);
+        Debug.Log("Took damage - watch regeneration!");
+    }
+    
+    if (Input.GetKeyDown(KeyCode.S))
+    {
+        // Test stat increase
+        attributes.strength.baseValue += 1;
+        Debug.Log($"STR increased to {attributes.strength.totalValue}");
+    }
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Next Steps</h2>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Learn Runtime Usage</h4>
+        <p>Master the three-tier value system and proper gameplay patterns.</p>
+        <a href="runtime-usage.html">→ Runtime Usage Guide</a>
+      </div>
+      
+      <div class="feature-card">
+        <h4> Explore the Wizard</h4>
+        <p>Deep dive into all wizard features including import/export and validation.</p>
+        <a href="wizard-guide.html">→ Wizard Guide</a>
+      </div>
+      
+      <div class="feature-card">
+        <h4> Add Formulas (Ultimate)</h4>
+        <p>Create mathematical relationships between attributes with the Influence System in Simple Attribute Forge Ultimate.</p>
+        <p><em>Available separately on the Unity Asset Store.</em></p>
+      </div>
+      
+      <div class="feature-card">
+        <h4> API Reference</h4>
+        <p>Complete reference for all classes, methods, and properties.</p>
+        <a href="api-reference.html">→ API Reference</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="success">
+    <strong> Congratulations!</strong> You now have a fully functional attribute system. The examples above demonstrate the key patterns you'll use in your game. Remember to always use <code>totalValue</code> for gameplay logic and let the system handle regeneration automatically.
+  </div>
+
+  <div class="page-nav">
+    <a href="installation.html">← Installation</a>
+    <a href="wizard-guide.html">Wizard Guide →</a>
+  </div>
+
+</body>
+</html>

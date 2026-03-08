@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Attribute Forge Ultimate - Advanced Formula & Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Simple Attribute Forge Ultimate</h1>
+        <p>Advanced Formula & Influence System for Unity</p>
+    </div>
+
+    <!-- Introduction -->
+    <div class="section">
+        <h2>Welcome to Simple Attribute Forge Ultimate</h2>
+        <p>Simple Attribute Forge Ultimate extends the base Simple Attribute Forge system with powerful mathematical formula relationships, breakpoint conditions, and automated orchestration. Create complex RPG mechanics through visual editors without writing formula code.</p>
+
+        <div class="info">
+            <strong>Requirements:</strong> This Ultimate system requires the base Simple Attribute Forge system to be installed and configured first. The Ultimate system integrates seamlessly with existing attribute containers through the three-tier value architecture.
+        </div>
+    </div>
+
+    <!-- System Overview -->
+    <div class="section">
+        <h2>System Architecture</h2>
+        
+        <h3>Three-Tier Value Integration</h3>
+        <p>The Pro system integrates perfectly with the base system's three-tier architecture:</p>
+        
+        <div class="code-block">totalValue = baseValue + formulaBonus + modifierBonus
+
+Where:
+-baseValue    - Base attribute value (equipment, upgrades)
+-formulaBonus - Calculated by Pro system formulas  
+-modifierBonus - Temporary effects (buffs, debuffs)</div>
+
+        <h3>Formula Data Flow</h3>
+        <p>Formulas read from <code>baseValue</code> and write to <code>formulaBonus</code>, preventing feedback loops:</p>
+        
+        <div class="pipeline-step">Step 1: Read baseValue from source attributes</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 2: Execute 7-step mathematical pipeline</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 3: Write result to formulaBonus</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 4: Base system calculates totalValue</div>
+    </div>
+
+    <!-- Key Features -->
+    <div class="section">
+        <h2>Key Features</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Visual Formula Editor</h4>
+                <p>Create complex mathematical relationships through intuitive GUI. Seven-step pipeline system handles flat bonuses, percentages, multipliers, and conditional breakpoints.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Breakpoint System</h4>
+                <p>Conditional effects that activate based on attribute values. Support for threshold and step-based triggers with multiple conditions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Code Generation</h4>
+                <p>Generates complete orchestrator MonoBehaviour with typed methods, validation, and performance optimizations. No manual coding required.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Import/Export</h4>
+                <p>Full JSON import/export with schema validation. Share formulas between projects or version control your attribute systems.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Performance Optimized</h4>
+                <p>Smart dependency tracking, automatic caching, configurable update modes, and circular dependency prevention.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Runtime Testing</h4>
+                <p>Built-in test panel for formula validation, live calculation preview, and debugging tools. Test edge cases before deployment.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Regen Rate Targeting</h4>
+                <p>Formulas can target RegenerationRate or RegenerationDelay for Vital attributes. Create dynamic regen systems driven by stats like Level or Endurance.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formula Pipeline Overview -->
+    <div class="section">
+        <h2>7-Step Formula Pipeline</h2>
+        <p>Every formula follows the same mathematical pipeline for consistent, predictable results:</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Mathematical Formula</div>
+            <div class="formula-breakdown">Result = PostFlat + ((Start + Flat) × (1 + AddPct% - SubPct%) × Multipliers)</div>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Starting Point:</strong> Choose Zero or use target attribute's baseValue
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Flat Bonuses:</strong> Add/subtract values based on source attributes (STR × 2)
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Additive Percentages:</strong> Percentage increases (INT adds 5% spell damage)
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Subtractive Percentages:</strong> Percentage decreases (Encumbrance reduces movement)
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Multipliers:</strong> Static multiplication factors (Equipment bonus ×1.2)
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">6</span>
+            <strong>Post-Flat Bonuses:</strong> Final flat adjustments (Set bonus +50)
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">7</span>
+            <strong>Apply Mode:</strong> How result affects target (Override, Add, or Subtract)
+        </div>
+    </div>
+
+    <!-- Getting Started -->
+    <div class="section">
+        <h2>Getting Started</h2>
+        
+        <h3>Prerequisites</h3>
+        <ul>
+            <li>Simple Attribute Forge (base system) installed and configured</li>
+            <li>Generated attribute container implementing ISimpleAttributeDataSource</li>
+            <li>Unity 2021.3 or later</li>
+        </ul>
+        
+        <h3>Quick Setup Process</h3>
+        <ol>
+            <li><strong>Open Influence Wizard:</strong> Window → Simple Attribute Forge → Influence Wizard</li>
+            <li><strong>Setup Tab:</strong> Select your AttributeData ScriptableObject</li>
+            <li><strong>Formulas Tab:</strong> Create your first formula (e.g., STR affects Damage)</li>
+            <li><strong>Configuration Tab:</strong> Set system name and export paths</li>
+            <li><strong>Generate Tab:</strong> Create orchestrator and formula assets</li>
+        </ol>
+        
+        <div class="success">
+            <strong>Ready to go!</strong> Your orchestrator will automatically manage formula calculations and integrate with your existing attribute system.
+        </div>
+    </div>
+
+    <!-- Core Concepts -->
+    <div class="section">
+        <h2>Core Concepts</h2>
+        
+        <h3>Formula Assets</h3>
+        <p>Formulas are stored as ScriptableObject assets that can be edited in the Inspector after creation. This data-driven approach allows for easy modification without recompiling code.</p>
+        
+        <h3>Orchestrator Component</h3>
+        <p>The generated orchestrator MonoBehaviour manages all formula execution, dependency tracking, and performance optimization. It implements IAttributeProvider for seamless integration.</p>
+        
+        <h3>Dependency Management</h3>
+        <p>The system automatically tracks which formulas depend on which attributes, enabling smart recalculation that only updates affected formulas when values change.</p>
+        
+        <h3>Update Modes</h3>
+        <ul>
+            <li><strong>Smart:</strong> Event-driven updates (recommended for most games)</li>
+            <li><strong>Interval:</strong> Fixed-time updates (performance-critical scenarios)</li>
+            <li><strong>Manual:</strong> Explicit control (turn-based games)</li>
+        </ul>
+    </div>
+
+    <!-- Real-World Examples -->
+    <div class="section">
+        <h2>Real-World Applications</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>RPG Character Progression</h4>
+                <p>Level affects Health and Mana, STR affects Damage and Carry Capacity, INT affects Mana and Spell Damage with breakpoint bonuses.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Equipment Systems</h4>
+                <p>Weapon damage formulas, armor defense calculations, set bonuses through post-flat bonuses, conditional effects.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Combat Mechanics</h4>
+                <p>Critical hit calculations, damage resistance formulas, healing effectiveness, status effect interactions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Progression Systems</h4>
+                <p>Skill point allocation effects, talent tree bonuses, prestige system multipliers, achievement bonuses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentation Navigation -->
+    <div class="section">
+        <h2>Documentation Sections</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><a href="quick-start-pro.html">Quick Start Guide</a></h4>
+                <p>Step-by-step tutorial for creating your first formula system. Includes complete RPG character example with level progression.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="formula-pipeline.html">Formula Pipeline</a></h4>
+                <p>Deep dive into the 7-step mathematical pipeline. Understanding each step with detailed examples and use cases.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="formula-examples.html">Formula Examples</a></h4>
+                <p>Extensive collection of real-world formula patterns. From basic stat scaling to complex conditional systems.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="breakpoints.html">Breakpoint System</a></h4>
+                <p>Advanced conditional logic system. Create threshold-based bonuses and step-based scaling with multiple conditions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="influence-wizard.html">Wizard Interface</a></h4>
+                <p>Complete guide to the visual formula editor. Learn keyboard shortcuts, testing tools, and advanced features.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="orchestrator-setup.html">Orchestrator Setup</a></h4>
+                <p>Configuring and using the generated orchestrator component. Performance tuning and integration patterns.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="api-reference-pro.html">API Reference</a></h4>
+                <p>Complete API documentation for all Pro system classes, interfaces, and extension methods.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="migration-guide.html">Migration Guide</a></h4>
+                <p>Upgrading from base system to Pro. Breaking changes, integration steps, and compatibility information.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="import-export.html">Import/Export</a></h4>
+                <p>JSON schema documentation, sharing formulas between projects, and version control integration.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="troubleshooting-pro.html">Troubleshooting</a></h4>
+                <p>Common issues and solutions. Debug tools, performance optimization, and integration problems.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="demo-scene-guide.html">Demo Scene</a></h4>
+                <p>Walkthrough of the included demo scene. Understanding the complete implementation example.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Requirements -->
+    <div class="section">
+        <h2>System Requirements</h2>
+        
+        <h3>Technical Requirements</h3>
+        <ul>
+            <li>Unity 2021.3 or later</li>
+            <li>Simple Attribute Forge (base system) installed</li>
+            <li>Generated attribute container with ISimpleAttributeDataSource implementation</li>
+            <li>.NET Standard 2.1 compatible</li>
+        </ul>
+        
+        <h3>Performance Characteristics</h3>
+        <ul>
+            <li>Zero GC allocation during formula calculation</li>
+            <li>Smart dependency tracking minimizes recalculation</li>
+            <li>Configurable update modes for different game types</li>
+            <li>Built-in circular dependency prevention</li>
+            <li>Optional caching for high-frequency calculations</li>
+        </ul>
+    </div>
+
+    <!-- Quick Integration Example -->
+    <div class="section">
+        <h2>Quick Integration Preview</h2>
+        <p>Here's how easy it is to add formula relationships to your existing attributes:</p>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Existing Base System:</strong> You already have CharacterAttributes with Health, Mana, STR, etc.
+        </div>
+        
+        <div class="code-block">// Your existing generated component
+public class CharacterAttributes : MonoBehaviour, ISimpleAttributeDataSource
+{
+    public SimpleRuntimeAttribute health;    // baseValue: 100
+    public SimpleRuntimeAttribute strength;  // baseValue: 10
+    public SimpleRuntimeAttribute level;     // baseValue: 1
+}</div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Add Pro System:</strong> Create formula "Level affects Health"
+        </div>
+        
+        <div class="formula-container">
+            <div class="formula-header">Level Health Formula</div>
+            <div class="calculation-step"><strong>Target:</strong> Health</div>
+            <div class="calculation-step"><strong>Flat Bonus:</strong> Level × 10 (each level adds 10 health)</div>
+            <div class="calculation-step"><strong>Apply Mode:</strong> Add to Base</div>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Result:</strong> Automatic formula calculation integrated with your existing system
+        </div>
+        
+        <div class="code-block">// Automatically calculated by orchestrator:
+health.baseValue = 100        // Your original value
+health.formulaBonus = 50      // Level 5 × 10 = 50
+health.totalValue = 150       // Final calculated value</div>
+
+        <div class="success">
+            <strong>Zero Code Required!</strong> The Pro system integrates seamlessly with your existing attribute containers through the three-tier architecture.
+        </div>
+    </div>
+
+    <!-- Simple Forge Versions -->
+    <div class="section">
+        <h2>Simple Forge Product Family</h2>
+        
+        <div class="success">
+            <strong>You're viewing documentation for Simple Attribute Forge Ultimate</strong> - the advanced formula system that extends the base Simple Attribute Forge with mathematical attribute relationships.
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Base Version (Free)</h4>
+                <p>Complete attribute generation system:</p>
+                <ul>
+                    <li>Full attribute wizard</li>
+                    <li>Complete code generation</li>
+                    <li>Coroutine-based regeneration</li>
+                    <li>Event system</li>
+                    <li>Performance optimizations</li>
+                    <li>JSON import/export</li>
+                    <li>Demo manager</li>
+                    <li>Full documentation</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>Influence System (Current)</h4>
+                <p>Adds the Influence System:</p>
+                <ul>
+                    <li>Attribute relationships</li>
+                    <li>Formula-based influences</li>
+                    <li>7-step mathematical pipeline</li>
+                    <li>Breakpoint system</li>
+                    <li>Visual formula editor</li>
+                    <li>Auto-calculation chains</li>
+                    <li>Performance optimization</li>
+                    <li>Advanced debugging tools</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Ultimate Version ($49.99)</h4>
+                <p>Everything in Ultimate PLUS Modifier System & Character Templates:</p>
+                <ul>
+                    <li>Complete modifier framework</li>
+                    <li>Conditional modifiers</li>
+                    <li>ARPG regeneration modifiers</li>
+                    <li>Buff/debuff behavior flags</li>
+                    <li>Priority, stacking, duration</li>
+                    <li>Character Template System</li>
+                    <li>Class-based starting attributes</li>
+                    <li>JSON import/export</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>Complete Edition - Coming Soon</h4>
+                <p>Everything in Ultimate PLUS Forge Suite:</p>
+                <ul>
+                    <li>ItemForge - complete item system</li>
+                    <li>QuestForge - quest generation</li>
+                    <li>DialogueForge - conversation system</li>
+                    <li>Integrated systems workflow</li>
+                    <li>AAA-ready game templates</li>
+                    <li>Lifetime updates</li>
+                    <li>Premium support</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Compatibility Promise:</strong> Each version builds on the previous one. Ultimate extends Base without breaking existing functionality. Your current attribute code continues to work unchanged.
+        </div>
+    </div>
+
+    <!-- Version Information -->
+    <div class="section">
+        <h2>Version & Support</h2>
+        
+        <h3>Current Version</h3>
+        <p>Simple Attribute Forge Ultimate v1.0 - Advanced Formula System</p>
+        
+        <h3>Support & Resources</h3>
+        <ul>
+            <li><strong>Documentation:</strong> Complete guides and API reference included</li>
+            <li><strong>Demo Scene:</strong> Working example with multiple formula types</li>
+            <li><strong>JSON Export:</strong> Schema documentation for external tool integration</li>
+            <li><strong>Extension Methods:</strong> Compatibility layer for existing code</li>
+        </ul>
+        
+        <h3>Credits</h3>
+        <p>Created by <strong>Living Failure</strong> - Extending Unity game development capabilities through visual tools and automated code generation.</p>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <span></span>
+        <a href="quick-start-pro.html">Quick Start Guide →</a>
+    </div>
+</body>
+</html>

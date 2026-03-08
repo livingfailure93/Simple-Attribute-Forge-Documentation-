@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troubleshooting - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+  
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+      <li><a href="wizard-guide.html">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html">Runtime Usage</a></li>
+      <li><a href="demo-manager.html">Demo Scene</a></li>
+      <li><a href="import-export.html">Import/Export</a></li>
+      <li><a href="troubleshooting.html" class="active">Troubleshooting</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / Troubleshooting
+  </div>
+
+  <div class="section">
+    <h1> Troubleshooting Guide</h1>
+    <p>Common issues and solutions for Simple Attribute Forge. Updated for the modern three-tier value system.</p>
+  </div>
+
+  <div class="section">
+    <h2> Installation & Setup Issues</h2>
+
+    <h3>Wizard Menu Missing</h3>
+    <div class="warning">
+      <strong>Problem:</strong> "Window → Simple Attribute Forge" menu doesn't appear
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li>Wait for Unity to finish compiling scripts (check progress bar)</li>
+        <li>Check Console for compilation errors that prevent script loading</li>
+        <li>Ensure all Simple Attribute Forge files are in correct folder structure</li>
+        <li>Right-click on Simple Attribute Forge folder → Reimport</li>
+        <li>Clear Library folder and restart Unity if necessary</li>
+        <li>Verify Unity version compatibility (2021.3+ required)</li>
+      </ul>
+    </div>
+
+    <h3>Compilation Errors</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Red errors in Console preventing compilation
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li>Check Unity version (2021.3 LTS or newer required)</li>
+        <li>Ensure all Simple Attribute Forge files imported correctly</li>
+        <li>Look for conflicting scripts with same class names</li>
+        <li>Clear Library folder and let Unity regenerate</li>
+        <li>Check for .meta file corruption (reimport if needed)</li>
+      </ul>
+    </div>
+
+    <h3>Generated Files Not Appearing</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Wizard completes but no files generated
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li>Check specified output directories exist and are valid</li>
+        <li>Ensure write permissions on output folders</li>
+        <li>Look in Project window, files might be in different location</li>
+        <li>Check Console for file generation errors</li>
+        <li>Refresh Project window (F5 or right-click → Refresh)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Runtime & Usage Issues</h2>
+
+    <h3>Values Not Updating Correctly</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Attribute values don't behave as expected
+    </div>
+    <div class="success">
+      <strong>Common Causes & Solutions:</strong>
+      <ul>
+        <li><strong>Using baseValue instead of totalValue:</strong> Always use <code>totalValue</code> for gameplay logic</li>
+        <li><strong>Old .value property:</strong> Update to <code>totalValue</code> or <code>currentValue</code> (for Vitals)</li>
+        <li><strong>Manual formulaBonus modification:</strong> Never modify formulaBonus directly - let Ultimate's Influence System handle it</li>
+        <li><strong>Missing component reference:</strong> Ensure attribute component is assigned</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+// ❌ WRONG - Common mistakes
+float damage = strength.baseValue * weapon;        // Missing bonuses!  
+float health = healthAttr.value;                  // Property doesn't exist
+strength.formulaBonus += 10;                      // Will be overwritten!
+
+// ✅ CORRECT - Modern patterns
+float damage = strength.totalValue * weapon;      // Includes all bonuses
+float health = healthAttr.currentValue;           // For Vitals
+float maxHealth = healthAttr.totalValue;          // For max values
+    </div>
+
+    <h3>Regeneration Not Working</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Vital attributes don't regenerate automatically
+    </div>
+    <div class="success">
+      <strong>Checklist:</strong>
+      <ul>
+        <li><strong>Behavior Type:</strong> Must be set to "Vital"</li>
+        <li><strong>Can Regenerate:</strong> Must be enabled (true)</li>
+        <li><strong>Regeneration Rate:</strong> Must be greater than 0</li>
+        <li><strong>Damage Method:</strong> Use <code>ModifyValue()</code>, not <code>SetValue()</code></li>
+        <li><strong>GameObject Active:</strong> Component GameObject must be active</li>
+        <li><strong>Not At Max:</strong> Already full attributes won't regenerate</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+// ✅ Correct way to enable regeneration
+health.canRegenerate = true;
+health.regenerationRate = 5.0f;      // 5 HP per second
+health.regenerationDelay = 3.0f;     // 3 second delay
+
+// ✅ Correct way to trigger regeneration
+health.ModifyValue(-30f);             // Triggers regen after delay
+
+// ❌ Wrong way - won't trigger regeneration  
+health.SetValue(health.currentValue - 30f);  // Administrative change
+    </div>
+
+    <h3>Events Not Firing</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Attribute events not triggering UI updates
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li><strong>Subscribe Correctly:</strong> Use proper event syntax with +=</li>
+        <li><strong>Unsubscribe on Destroy:</strong> Prevent null reference exceptions</li>
+        <li><strong>Check Event Names:</strong> Use exact case-sensitive names</li>
+        <li><strong>Value Change Method:</strong> Use <code>ModifyValue()</code> or proper setters</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+// ✅ Correct event subscription
+void Start()
+{
+    var attributes = GetComponent&lt;CharacterAttributes&gt;();
+    
+    // Individual attribute events
+    attributes.health.OnValueChanged += UpdateHealthUI;
+    attributes.health.OnReachedZero += HandleDeath;
+    
+    // Component-wide events  
+    attributes.OnAnyAttributeChanged += LogAttributeChange;
+}
+
+void OnDestroy()
+{
+    // ✅ Always unsubscribe to prevent memory leaks
+    if (attributes?.health != null)
+    {
+        attributes.health.OnValueChanged -= UpdateHealthUI;
+        attributes.health.OnReachedZero -= HandleDeath;
+    }
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Code Generation Issues</h2>
+
+    <h3>Compilation Errors After Generation</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Generated code has compilation errors
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li><strong>Invalid Characters:</strong> Check attribute names for special characters</li>
+        <li><strong>Reserved Keywords:</strong> Don't use C# keywords as attribute names</li>
+        <li><strong>Duplicate Names:</strong> Ensure all attribute names are unique</li>
+        <li><strong>Empty Names:</strong> All attributes must have valid names</li>
+        <li><strong>Namespace Conflicts:</strong> Check for conflicting namespaces</li>
+      </ul>
+    </div>
+
+    <h3>Component Not Appearing in Add Component Menu</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Generated MonoBehaviour not available
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li>Wait for Unity to finish compiling (no progress bar in lower-right)</li>
+        <li>Check Console for compilation errors</li>
+        <li>Refresh Project window (F5)</li>
+        <li>Look for component under correct namespace in Add Component menu</li>
+        <li>Search for component by name in Add Component search box</li>
+      </ul>
+    </div>
+
+    <h3>ScriptableObject Asset Issues</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Generated .asset file not working properly
+    </div>
+    <div class="success">
+      <strong>Solutions:</strong>
+      <ul>
+        <li><strong>Missing Assignment:</strong> Drag .asset file to "Data Asset" field on component</li>
+        <li><strong>Asset Corruption:</strong> Delete .asset and regenerate through wizard</li>
+        <li><strong>Meta File Issues:</strong> Delete .asset.meta file and let Unity regenerate</li>
+        <li><strong>Inspector Not Showing Values:</strong> Click on .asset file to see contents</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Three-Tier Value System Issues</h2>
+
+    <h3>Bonuses Not Showing</h3>
+    <div class="warning">
+      <strong>Problem:</strong> formulaBonus or modifierBonus not reflecting in totalValue
+    </div>
+    <div class="success">
+      <strong>Debug Steps:</strong>
+      <ul>
+        <li><strong>Check Individual Values:</strong> Log baseValue, formulaBonus, modifierBonus separately</li>
+        <li><strong>Verify Calculation:</strong> totalValue should equal base + formula + modifier</li>
+        <li><strong>Formula Integration:</strong> Ensure Ultimate's Influence System orchestrator is recalculating</li>
+        <li><strong>Modifier Application:</strong> Check if modifierBonus being set correctly</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+//  Debug attribute values
+public void DebugAttributeValues()
+{
+    var attr = attributes.GetRuntimeAttribute("Strength");
+    Debug.Log($"STR Base: {attr.baseValue}");
+    Debug.Log($"STR Formula: {attr.formulaBonus}"); 
+    Debug.Log($"STR Modifier: {attr.modifierBonus}");
+    Debug.Log($"STR Total: {attr.totalValue}");
+    Debug.Log($"Expected: {attr.baseValue + attr.formulaBonus + attr.modifierBonus}");
+}
+    </div>
+
+    <h3>Values Accumulating Incorrectly</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Attribute values growing unexpectedly over time
+    </div>
+    <div class="success">
+      <strong>Common Causes:</strong>
+      <ul>
+        <li><strong>Reading totalValue for Formulas:</strong> Formulas should read baseValue only</li>
+        <li><strong>Multiple Formula Applications:</strong> Check for duplicate formula execution</li>
+        <li><strong>Modifier Stacking:</strong> Ensure temporary effects are properly removed</li>
+        <li><strong>Save/Load Issues:</strong> Don't save formulaBonus or modifierBonus</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+// ✅ Correct formula input (Ultimate's Influence System)
+// Formulas should read baseValue to prevent accumulation
+float strengthBonus = strength.baseValue * 0.5f;
+
+// ✅ Correct modifier management
+public void ApplyTemporaryBuff(float amount, float duration)
+{
+    attribute.modifierBonus += amount;  // Apply
+    StartCoroutine(RemoveBuffAfterDelay(amount, duration));
+}
+
+IEnumerator RemoveBuffAfterDelay(float amount, float duration)
+{
+    yield return new WaitForSeconds(duration);
+    attribute.modifierBonus -= amount; // Remove
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Performance Issues</h2>
+
+    <h3>High CPU Usage</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Attribute system causing performance drops
+    </div>
+    <div class="success">
+      <strong>Optimizations:</strong>
+      <ul>
+        <li><strong>Cache References:</strong> Store attribute references instead of lookup each frame</li>
+        <li><strong>Throttle UI Updates:</strong> Update UI at intervals, not every frame</li>
+        <li><strong>Event Management:</strong> Unsubscribe unused events</li>
+        <li><strong>Regeneration Limits:</strong> Avoid excessive regeneration rates</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+// ✅ Performance-optimized patterns
+public class OptimizedAttributeUI : MonoBehaviour
+{
+    private SimpleRuntimeAttribute health; // Cache reference
+    private float lastUpdateTime;
+    private float updateInterval = 0.1f; // Throttle updates
+    
+    void Start()
+    {
+        health = GetComponent&lt;CharacterAttributes&gt;().health;
+        health.OnValueChanged += MarkDirty; // Event-driven updates
+    }
+    
+    void Update()
+    {
+        if (isDirty && Time.time - lastUpdateTime > updateInterval)
+        {
+            UpdateUI();
+            lastUpdateTime = Time.time;
+            isDirty = false;
+        }
+    }
+}
+    </div>
+
+    <h3>Memory Leaks</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Memory usage grows over time
+    </div>
+    <div class="success">
+      <strong>Prevention:</strong>
+      <ul>
+        <li><strong>Unsubscribe Events:</strong> Always unsubscribe in OnDestroy</li>
+        <li><strong>Stop Coroutines:</strong> Stop regeneration coroutines when needed</li>
+        <li><strong>Null Checks:</strong> Check for null before accessing attributes</li>
+        <li><strong>Object Cleanup:</strong> Properly dispose temporary objects</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Integration Issues</h2>
+
+    <h3>Ultimate Integration</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Simple Attribute Forge Ultimate subsystems not working with generated attributes
+    </div>
+    <div class="success">
+      <strong>Requirements:</strong>
+      <ul>
+        <li><strong>Interface Implementation:</strong> Component implements ISimpleAttributeDataSource</li>
+        <li><strong>Modern Architecture:</strong> Uses three-tier value system</li>
+        <li><strong>OnBaseValueChanged Events:</strong> Available for formula triggers</li>
+        <li><strong>Regenerated Code:</strong> Use latest wizard to ensure compatibility</li>
+        <li><strong>Ultimate Installed:</strong> Influence, Modifier, and Character Template systems require Ultimate</li>
+      </ul>
+    </div>
+
+    <h3>Save/Load System</h3>
+    <div class="warning">
+      <strong>Problem:</strong> Attributes not saving/loading correctly
+    </div>
+    <div class="success">
+      <strong>Best Practices:</strong>
+      <ul>
+        <li><strong>Save baseValue:</strong> This is the persistent value</li>
+        <li><strong>Save currentValue:</strong> For Vital attributes only</li>
+        <li><strong>Don't Save Bonuses:</strong> formulaBonus and modifierBonus are runtime</li>
+        <li><strong>Recalculate on Load:</strong> Let formulas recalculate after loading</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+// ✅ Correct save/load pattern
+[System.Serializable]
+public class AttributeSaveData
+{
+    public Dictionary&lt;string, float&gt; baseValues = new();
+    public Dictionary&lt;string, float&gt; currentValues = new(); // Vitals only
+    // DON'T save formulaBonus or modifierBonus
+}
+
+void SaveAttributes()
+{
+    foreach (var kvp in attributes.GetAllRuntimeAttributes())
+    {
+        var attr = kvp.Value;
+        saveData.baseValues[attr.attributeName] = attr.baseValue;
+        
+        if (attr.behaviorType == SimpleBehaviorType.Vital)
+            saveData.currentValues[attr.attributeName] = attr.currentValue;
+    }
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Getting Help</h2>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Check Documentation</h4>
+        <ul>
+          <li><a href="api-reference.html">API Reference</a> - Complete method documentation</li>
+          <li><a href="runtime-usage.html">Runtime Usage</a> - Correct usage patterns</li>
+          <li><a href="quick-start.html">Quick Start</a> - Basic setup guide</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Debug Tools</h4>
+        <ul>
+          <li><strong>Context Menu:</strong> Right-click component → "Log All Attributes"</li>
+          <li><strong>Inspector Values:</strong> Use "Set Attribute Value" for testing</li>
+          <li><strong>Debug Regeneration:</strong> "Debug Active Regeneration" shows coroutines</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4> Common Debug Code</h4>
+        <div class="code-block">
+// Log all attribute states
+[ContextMenu("Debug All Attributes")]
+void DebugAll()
+{
+    foreach(var attr in GetAllRuntimeAttributes().Values)
+    {
+        Debug.Log($"{attr.attributeName}: {attr.baseValue} + {attr.formulaBonus} + {attr.modifierBonus} = {attr.totalValue}");
+    }
+}
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4> Support</h4>
+        <ul>
+          <li>Check Unity Console for detailed error messages</li>
+          <li>Try regenerating components with latest wizard</li>
+          <li>Test with fresh Unity project to isolate issues</li>
+          <li>Include error messages when seeking help</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="success">
+    <strong> Most Common Fix:</strong>
+    Many issues are resolved by updating code from the old <code>.value</code> property to the modern three-tier system using <code>.totalValue</code>, <code>.currentValue</code>, and <code>.baseValue</code> appropriately.
+  </div>
+
+  <div class="page-nav">
+    <a href="import-export.html">← Import/Export</a>
+    <a href="api-reference.html">API Reference →</a>
+  </div>
+
+</body>
+</html>

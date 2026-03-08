@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Guide - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html" class="active">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Migration Guide
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Migration Guide</h1>
+        <p>Upgrading existing projects to Simple Attribute Forge Ultimate</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="section">
+        <h2>Migration Overview</h2>
+        <p>This guide covers migrating from the base Simple Attribute Forge system to the Ultimate version, including handling breaking changes from base system updates and upgrading existing projects.</p>
+        
+        <div class="info">
+            <strong>Migration Scenarios:</strong>
+            <ul>
+                <li>Fresh install of Ultimate on existing base system</li>
+                <li>Upgrading base system with existing Ultimate installation</li>
+                <li>Moving existing formulas to Pro system</li>
+                <li>Handling breaking changes from base system updates</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Breaking Changes -->
+    <div class="section">
+        <h2>Breaking Changes from Base System Updates</h2>
+        
+        <div class="breaking-change">
+            <h4> BREAKING: value property deprecated</h4>
+            <p>The <code>value</code> property has been replaced with the three-tier value system.</p>
+            
+            <div class="code-block">// Old code (deprecated):
+float health = healthAttribute.value;
+
+// New code:
+float health = healthAttribute.totalValue;</div>
+            
+            <div class="warning">
+                <strong>Impact:</strong> All direct .value access must be updated to use the appropriate tier (baseValue, formulaBonus, modifierBonus, or totalValue).
+            </div>
+        </div>
+
+        <div class="breaking-change">
+            <h4> BREAKING: Three-tier value system</h4>
+            <p>Attributes now have three distinct value components instead of a single value:</p>
+            
+            <div class="code-block">public class SimpleRuntimeAttribute
+{
+    public float baseValue;      // Core attribute value (equipment, permanent upgrades)
+    public float formulaBonus;   // Calculated by Pro formula system (read-only)
+    public float modifierBonus;  // Temporary effects (buffs, debuffs)
+    public float totalValue;     // baseValue + formulaBonus + modifierBonus (read-only)
+}</div>
+
+            <div class="migration-table">
+                <table>
+                    <tr>
+                        <th>Property</th>
+                        <th>Purpose</th>
+                        <th>Modified By</th>
+                        <th>When to Use</th>
+                    </tr>
+                    <tr>
+                        <td><code>baseValue</code></td>
+                        <td>Core attribute value</td>
+                        <td>Equipment, level-ups, permanent upgrades</td>
+                        <td>Setting permanent changes</td>
+                    </tr>
+                    <tr>
+                        <td><code>formulaBonus</code></td>
+                        <td>Formula-calculated bonuses</td>
+                        <td>Ultimate influence system only</td>
+                        <td>Read-only in your code</td>
+                    </tr>
+                    <tr>
+                        <td><code>modifierBonus</code></td>
+                        <td>Temporary modifiers</td>
+                        <td>Buffs, debuffs, temporary effects</td>
+                        <td>Temporary effect systems</td>
+                    </tr>
+                    <tr>
+                        <td><code>totalValue</code></td>
+                        <td>Final computed value</td>
+                        <td>System automatically calculated</td>
+                        <td>Gameplay calculations</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="breaking-change">
+            <h4> BREAKING: ISimpleAttributeDataSource interface requirement</h4>
+            <p>All attribute system components must now implement the <code>ISimpleAttributeDataSource</code> interface for Ultimate compatibility.</p>
+            
+            <div class="code-block">// Generated attribute classes now implement:
+public class CharacterAttributes : MonoBehaviour, ISimpleAttributeDataSource
+{
+    // Interface provides standardized access methods
+    public SimpleRuntimeAttribute GetAttribute(string attributeName);
+    public bool HasAttribute(string attributeName);
+    public IEnumerable<SimpleRuntimeAttribute> GetAllAttributes();
+}</div>
+            
+            <div class="warning">
+                <strong>Solution:</strong> Regenerate your attribute classes using the latest Attribute Data Wizard to automatically implement this interface.
+            </div>
+        </div>
+
+        <div class="breaking-change">
+            <h4> BREAKING: Regeneration system changes</h4>
+            <p>Regeneration coroutines are no longer managed internally. Components must handle regeneration events.</p>
+            
+            <div class="code-block">// Old automatic regeneration (removed):
+// System automatically managed regeneration coroutines
+
+// New event-based regeneration:
+void Start()
+{
+    healthAttribute.OnShouldStartRegeneration += StartHealthRegen;
+    healthAttribute.OnShouldStopRegeneration += StopHealthRegen;
+    manaAttribute.OnShouldStartRegeneration += StartManaRegen;
+    manaAttribute.OnShouldStopRegeneration += StopManaRegen;
+}
+
+void StartHealthRegen(SimpleRuntimeAttribute attr)
+{
+    StartCoroutine(RegenerateHealth(attr));
+}
+
+void StopHealthRegen(SimpleRuntimeAttribute attr)
+{
+    StopCoroutine(RegenerateHealth(attr));
+}</div>
+        </div>
+
+        <div class="breaking-change">
+            <h4> BREAKING: Scene reference reset</h4>
+            <p>Regenerating attribute classes breaks existing scene references due to class recreation.</p>
+            
+            <div class="warning">
+                <strong>Impact:</strong> All GameObjects with attribute components will need to be reassigned after regeneration.
+            </div>
+        </div>
+    </div>
+
+    <!-- Migration Steps -->
+    <div class="section">
+        <h2>Step-by-Step Migration Process</h2>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Backup Your Project</strong>
+        </div>
+        <ul>
+            <li>Create complete project backup or commit current state to version control</li>
+            <li>Export attribute configuration JSON from base system wizard</li>
+            <li>Document any custom scripts that reference attribute values</li>
+            <li>Screenshot current scene component assignments</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Install Ultimate System</strong>
+        </div>
+        <ul>
+            <li>Import Simple Attribute Forge Ultimate package</li>
+            <li>Verify no compilation errors after import</li>
+            <li>Check that Influence Wizard appears in Window menu</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Regenerate Base Attribute System</strong>
+        </div>
+        <div class="code-block">Required Steps:
+1. Open Window → Simple Attribute Forge → Attribute Data Wizard
+2. Load your existing attribute configuration
+3. Click "Generate" to recreate classes with ISimpleAttributeDataSource
+4. Wait for Unity compilation to complete</div>
+
+        <div class="warning">
+            <strong>Critical:</strong> This step breaks all existing scene references. You'll need to reassign attribute components in all scenes.
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Fix Scene References</strong>
+        </div>
+        <ul>
+            <li>Find all GameObjects with missing attribute components (pink/broken references)</li>
+            <li>Remove old broken components</li>
+            <li>Add the newly generated attribute components</li>
+            <li>Restore attribute values from backup/screenshots</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Update Code References</strong>
+        </div>
+        <div class="code-block">// Use Find & Replace in your IDE to update code:
+
+Find: .value
+Replace: .totalValue
+
+Find: GetValue()
+Replace: GetCurrentValue()
+
+Find: SetValue(
+Replace: baseValue =
+
+Find: ModifyValue(
+Replace: ModifyCurrentValue(  // For Vitals only</div>
+
+        <div class="step-container">
+            <span class="step-number">6</span>
+            <strong>Setup Ultimate Influence System</strong>
+        </div>
+        <ul>
+            <li>Open Window → Simple Attribute Forge → Influence Wizard</li>
+            <li>Select your regenerated AttributeData asset in Setup tab</li>
+            <li>Create formulas in Formulas tab</li>
+            <li>Configure system settings in Configuration tab</li>
+            <li>Generate orchestrator in Generate tab</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">7</span>
+            <strong>Integrate Orchestrator</strong>
+        </div>
+        <ul>
+            <li>Add generated orchestrator component to GameObjects with attributes</li>
+            <li>Assign Attribute System reference to your attribute component</li>
+            <li>Verify formula assets are assigned correctly</li>
+            <li>Test in Play Mode to confirm formulas execute</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">8</span>
+            <strong>Update Save/Load Systems</strong>
+        </div>
+        <div class="code-block">// Old save system (single value):
+PlayerPrefs.SetFloat("player_health", health.value);
+PlayerPrefs.SetFloat("player_mana", mana.value);
+
+// New save system (base + current for Vitals):
+PlayerPrefs.SetFloat("player_health_base", health.baseValue);
+PlayerPrefs.SetFloat("player_health_current", health.currentValue);
+PlayerPrefs.SetFloat("player_mana_base", mana.baseValue);
+PlayerPrefs.SetFloat("player_mana_current", mana.currentValue);
+PlayerPrefs.SetFloat("player_strength_base", strength.baseValue);
+
+// Loading:
+health.baseValue = PlayerPrefs.GetFloat("player_health_base");
+health.currentValue = PlayerPrefs.GetFloat("player_health_current");
+// ... load other attributes ...
+orchestrator.RecalculateAll(); // Recalculate formulas after loading</div>
+
+        <div class="step-container">
+            <span class="step-number">9</span>
+            <strong>Test and Validate</strong>
+        </div>
+        <ul>
+            <li>Test all gameplay systems that use attributes</li>
+            <li>Verify UI displays show correct values</li>
+            <li>Check that formulas calculate as expected</li>
+            <li>Test save/load functionality</li>
+            <li>Verify regeneration events work correctly</li>
+        </ul>
+    </div>
+
+    <!-- Code Migration Examples -->
+    <div class="section">
+        <h2>Code Migration Examples</h2>
+        
+        <h3>Combat System Migration</h3>
+        <div class="code-comparison">
+            <h4>Before Migration:</h4>
+            <div class="code-block">public void TakeDamage(float amount)
+{
+    health.value -= amount;
+    
+    if (health.value <= 0)
+    {
+        Die();
+    }
+    
+    // Update UI
+    healthBar.fillAmount = health.value / health.maxValue;
+}</div>
+
+            <h4>After Migration:</h4>
+            <div class="code-block">public void TakeDamage(float amount)
+{
+    // For Vitals, modify currentValue
+    health.ModifyCurrentValue(-amount);
+    
+    if (health.currentValue <= 0)
+    {
+        Die();
+    }
+    
+    // Update UI - totalValue includes all bonuses
+    healthBar.fillAmount = health.currentValue / health.totalValue;
+}</div>
+        </div>
+
+        <h3>Buff System Migration</h3>
+        <div class="code-comparison">
+            <h4>Before Migration:</h4>
+            <div class="code-block">public void ApplyStrengthBuff(float bonus, float duration)
+{
+    // Directly modify attribute value
+    strength.value += bonus;
+    
+    // Schedule removal
+    StartCoroutine(RemoveBuffAfter(bonus, duration));
+}
+
+IEnumerator RemoveBuffAfter(float bonus, float duration)
+{
+    yield return new WaitForSeconds(duration);
+    strength.value -= bonus;
+}</div>
+
+            <h4>After Migration:</h4>
+            <div class="code-block">public void ApplyStrengthBuff(float bonus, float duration)
+{
+    // Use modifierBonus for temporary effects
+    strength.modifierBonus += bonus;
+    
+    // Formulas automatically recalculate with new totalValue
+    // Schedule removal
+    StartCoroutine(RemoveBuffAfter(bonus, duration));
+}
+
+IEnumerator RemoveBuffAfter(float bonus, float duration)
+{
+    yield return new WaitForSeconds(duration);
+    strength.modifierBonus -= bonus;
+    // Formulas automatically recalculate when modifierBonus changes
+}</div>
+        </div>
+
+        <h3>UI System Migration</h3>
+        <div class="code-comparison">
+            <h4>Before Migration:</h4>
+            <div class="code-block">void UpdateUI()
+{
+    // Simple value display
+    healthText.text = $"{health.value:F0}/{health.maxValue:F0}";
+    strengthText.text = $"STR: {strength.value:F0}";
+    damageText.text = $"DMG: {CalculateDamage():F0}";
+}</div>
+
+            <h4>After Migration:</h4>
+            <div class="code-block">void UpdateUI()
+{
+    // Show current/total for Vitals
+    healthText.text = $"{health.currentValue:F0}/{health.totalValue:F0}";
+    
+    // Show total value with bonus breakdown
+    strengthText.text = $"STR: {strength.totalValue:F0}";
+    if (strength.formulaBonus != 0)
+    {
+        strengthBonusText.text = $"(+{strength.formulaBonus:F0})";
+    }
+    
+    // Damage automatically calculated by formulas
+    damageText.text = $"DMG: {damage.totalValue:F0}";
+}</div>
+        </div>
+
+        <h3>Equipment System Migration</h3>
+        <div class="code-comparison">
+            <h4>Before Migration:</h4>
+            <div class="code-block">public void EquipWeapon(WeaponData weapon)
+{
+    // Direct stat modification
+    strength.value += weapon.strengthBonus;
+    damage.value += weapon.damageBonus;
+    
+    currentWeapon = weapon;
+}</div>
+
+            <h4>After Migration:</h4>
+            <div class="code-block">public void EquipWeapon(WeaponData weapon)
+{
+    // Modify base values for permanent equipment bonuses
+    strength.baseValue += weapon.strengthBonus;
+    damage.baseValue += weapon.damageBonus;
+    
+    // Formulas automatically recalculate totalValue
+    // No need to manually update dependent calculations
+    
+    currentWeapon = weapon;
+}</div>
+        </div>
+    </div>
+
+    <!-- Ultimate System Integration -->
+    <div class="section">
+        <h2>Ultimate System Integration</h2>
+        
+        <h3>Creating Your First Formula</h3>
+        <p>After completing base system migration, add Ultimate formulas to enhance your attribute relationships:</p>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Open Influence Wizard</strong>
+        </div>
+        <p>Window → Simple Attribute Forge → Influence Wizard</p>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Connect to Attribute System</strong>
+        </div>
+        <div class="code-block">Setup Tab Configuration:
+• Select your AttributeData asset (from regenerated base system)
+• Verify all attributes appear in the Available Attributes list
+• Confirm no errors or warnings</div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Create Basic Formula</strong>
+        </div>
+        <div class="code-block">Example: Strength affects Damage
+• Add Formula: "StrengthDamage"
+• Target Attribute: "Damage"
+• Flat Row: Strength Add 2.0
+• Test in preview panel
+
+Result: Each STR point adds 2 to damage.totalValue</div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Generate and Test</strong>
+        </div>
+        <ul>
+            <li>Generate orchestrator in Generate tab</li>
+            <li>Add orchestrator component to GameObject with attributes</li>
+            <li>Assign Attribute System reference</li>
+            <li>Test in Play Mode - damage.formulaBonus should update when strength changes</li>
+        </ul>
+    </div>
+
+    <!-- Common Migration Issues -->
+    <div class="section">
+        <h2>Common Migration Issues</h2>
+        
+        <h3>Scene Reference Problems</h3>
+        <div class="warning">
+            <strong>Broken Component References:</strong>
+            <ul>
+                <li>Pink/missing component references after regeneration</li>
+                <li>Scripts that can't find attribute components</li>
+                <li>UI systems that no longer update</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Remove broken components and re-add regenerated versions</li>
+                <li>Update GetComponent calls to use new class names</li>
+                <li>Reassign UI references in inspector</li>
+            </ul>
+        </div>
+
+        <h3>Value Access Issues</h3>
+        <div class="warning">
+            <strong>Compilation Errors:</strong>
+            <ul>
+                <li>'value' property no longer exists</li>
+                <li>Direct value assignment fails</li>
+                <li>Math operations on deprecated properties</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Replace .value with .totalValue for reading</li>
+                <li>Replace .value assignments with .baseValue assignments</li>
+                <li>Use ModifyCurrentValue() for Vitals</li>
+            </ul>
+        </div>
+
+        <h3>Regeneration System Issues</h3>
+        <div class="warning">
+            <strong>Missing Regeneration:</strong>
+            <ul>
+                <li>Vitals no longer regenerate automatically</li>
+                <li>Console errors about missing coroutine management</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Implement regeneration event handlers</li>
+                <li>Create coroutines for regeneration logic</li>
+                <li>Test regeneration start/stop behavior</li>
+            </ul>
+        </div>
+
+        <h3>Formula Integration Problems</h3>
+        <div class="warning">
+            <strong>Formulas Not Working:</strong>
+            <ul>
+                <li>formulaBonus always shows 0</li>
+                <li>totalValue equals baseValue only</li>
+                <li>No automatic recalculation</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Verify orchestrator component is added</li>
+                <li>Check Attribute System reference is assigned</li>
+                <li>Ensure formula assets are generated and assigned</li>
+                <li>Test with debugMode enabled</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Compatibility Testing -->
+    <div class="section">
+        <h2>Migration Validation</h2>
+        
+        <h3>Compatibility Checker Script</h3>
+        <p>Add this script to verify your migration was successful:</p>
+        
+        <div class="code-block">using UnityEngine;
+using SimpleAttributeForge;
+
+public class MigrationValidator : MonoBehaviour
+{
+    [ContextMenu("Validate Migration")]
+    void ValidateMigration()
+    {
+        Debug.Log("=== Migration Validation Report ===");
+        
+        // Check for ISimpleAttributeDataSource implementation
+        var attributeComponent = GetComponent<MonoBehaviour>();
+        if (attributeComponent is ISimpleAttributeDataSource dataSource)
+        {
+            Debug.Log(" ISimpleAttributeDataSource implemented correctly");
+            
+            // Test attribute access
+            var allAttributes = dataSource.GetAllAttributes();
+            Debug.Log($" Found {allAttributes.Count()} attributes");
+            
+            foreach (var attr in allAttributes)
+            {
+                Debug.Log($" {attr.name}: base={attr.baseValue:F1}, " +
+                         $"formula={attr.formulaBonus:F1}, total={attr.totalValue:F1}");
+            }
+        }
+        else
+        {
+            Debug.LogError("✗ Component does not implement ISimpleAttributeDataSource");
+            Debug.LogError("  → Regenerate attributes with latest base system");
+        }
+        
+        // Check for orchestrator
+        var orchestrator = GetComponent<MonoBehaviour>();
+        var orchestratorType = orchestrator?.GetType();
+        if (orchestratorType?.Name.Contains("Influence") == true)
+        {
+            Debug.Log($" Orchestrator found: {orchestratorType.Name}");
+        }
+        else
+        {
+            Debug.LogWarning(" No orchestrator component found");
+            Debug.LogWarning("  → Add orchestrator component after generating Pro system");
+        }
+        
+        Debug.Log("=== End Validation Report ===");
+    }
+}</div>
+
+        <h3>Formula Testing</h3>
+        <div class="code-block">// Test formula calculations manually
+[ContextMenu("Test Formula System")]
+void TestFormulas()
+{
+    var attributes = GetComponent<ISimpleAttributeDataSource>();
+    var orchestrator = GetComponent<MonoBehaviour>(); // Your generated orchestrator
+    
+    // Test base value changes
+    var strength = attributes.GetAttribute("Strength");
+    float oldStrength = strength.baseValue;
+    
+    strength.baseValue = 25;
+    orchestrator.SendMessage("RecalculateAll"); // Force recalculation
+    
+    Debug.Log($"STR 25: Damage formulaBonus = {attributes.GetAttribute("Damage").formulaBonus}");
+    
+    strength.baseValue = 35;
+    orchestrator.SendMessage("RecalculateAll");
+    
+    Debug.Log($"STR 35: Damage formulaBonus = {attributes.GetAttribute("Damage").formulaBonus}");
+    
+    // Restore original value
+    strength.baseValue = oldStrength;
+}</div>
+    </div>
+
+    <!-- Migration Best Practices -->
+    <div class="section">
+        <h2>Migration Best Practices</h2>
+        
+        <div class="success">
+            <strong>Recommended Migration Approach:</strong>
+            <ol>
+                <li><strong>Incremental Migration:</strong> Migrate one system at a time, test thoroughly</li>
+                <li><strong>Maintain Compatibility:</strong> Keep old save files working during transition</li>
+                <li><strong>Document Changes:</strong> Track all modified scripts and configurations</li>
+                <li><strong>Test Extensively:</strong> Verify all gameplay systems work correctly</li>
+                <li><strong>Team Communication:</strong> Coordinate migration across team members</li>
+            </ol>
+        </div>
+
+        <h3>Value System Guidelines</h3>
+        <div class="code-block">Value Usage Best Practices:
+
+• baseValue: Permanent character progression (levels, equipment, upgrades)
+• modifierBonus: Temporary effects (buffs, debuffs, environmental)
+• formulaBonus: Let Pro system manage this automatically
+• totalValue: Use for all gameplay calculations and UI display
+
+Never directly modify formulaBonus - it's managed by the influence system.</div>
+
+        <h3>Performance Considerations</h3>
+        <ul>
+            <li><strong>Update Mode:</strong> Start with Smart mode, switch to Interval if performance issues arise</li>
+            <li><strong>Formula Complexity:</strong> Begin with simple formulas, add complexity gradually</li>
+            <li><strong>Caching:</strong> Enable caching for systems with many formulas</li>
+            <li><strong>Debug Mode:</strong> Disable in production builds</li>
+        </ul>
+
+        <h3>Team Workflow</h3>
+        <div class="code-block">Team Migration Strategy:
+1. One team member performs migration on main branch
+2. Export Pro formula configurations to JSON
+3. Share JSON with team for import into their branches
+4. Test merged systems thoroughly before production
+5. Update team documentation with new API patterns</div>
+    </div>
+
+    <!-- Rollback Plan -->
+    <div class="section">
+        <h2>Rollback Plan</h2>
+        
+        <p>If migration encounters critical issues, you can rollback using these steps:</p>
+        
+        <div class="warning">
+            <strong>Emergency Rollback Process:</strong>
+            <ol>
+                <li>Restore project from backup</li>
+                <li>Remove Pro package import</li>
+                <li>Restore original attribute classes</li>
+                <li>Reassign scene references to original components</li>
+                <li>Restore original scripts using version control</li>
+            </ol>
+        </div>
+
+        <div class="info">
+            <strong>Partial Rollback:</strong> You can remove Pro components while keeping the updated base system by deleting orchestrator components and Pro formula assets.
+        </div>
+    </div>
+
+    <!-- Migration Checklist -->
+    <div class="section">
+        <h2>Migration Completion Checklist</h2>
+        
+        <div class="checklist">
+            <h3>Pre-Migration</h3>
+            <ul>
+                <li>☐ Project backup created</li>
+                <li>☐ Attribute configuration exported</li>
+                <li>☐ Custom scripts documented</li>
+                <li>☐ Scene assignments documented</li>
+            </ul>
+
+            <h3>Base System Update</h3>
+            <ul>
+                <li>☐ Attributes regenerated with ISimpleAttributeDataSource</li>
+                <li>☐ Scene references reassigned</li>
+                <li>☐ Code updated for three-tier value system</li>
+                <li>☐ Regeneration events implemented</li>
+            </ul>
+
+            <h3>Pro Integration</h3>
+            <ul>
+                <li>☐ Influence Wizard connected to AttributeData</li>
+                <li>☐ Formulas created and tested</li>
+                <li>☐ Orchestrator generated and integrated</li>
+                <li>☐ Formula calculations verified in Play Mode</li>
+            </ul>
+
+            <h3>Final Validation</h3>
+            <ul>
+                <li>☐ All gameplay systems functional</li>
+                <li>☐ UI displays correct values</li>
+                <li>☐ Save/load systems updated</li>
+                <li>☐ Performance acceptable</li>
+                <li>☐ No console errors</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Version Compatibility -->
+    <div class="section">
+        <h2>Version Compatibility</h2>
+        
+        <h3>Supported Migration Paths</h3>
+        <div class="code-block">Base System Versions:
+ v1.0 → Ultimate v1.0: Full compatibility
+ v1.1 → Ultimate v1.0: Requires regeneration
+ v1.2+ → Ultimate v1.0: Three-tier system compatible
+
+Ultimate System Versions:
+ Ultimate v1.0 → Ultimate v1.0+: Forward compatible
+ Ultimate v1.0+ → Ultimate v1.0: May lose features</div>
+
+        <h3>Unity Version Requirements</h3>
+        <div class="code-block">Minimum Requirements:
+• Unity 2021.3 LTS or later
+• .NET Standard 2.1
+• Serialization system v2
+
+Recommended:
+• Unity 2022.3 LTS
+• Latest .NET framework version</div>
+
+        <div class="info">
+            <strong>Compatibility Notes:</strong> Ultimate system maintains backward compatibility with base system APIs. Existing base system functionality continues to work unchanged.
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="orchestrator-setup.html">← Orchestrator Setup</a>
+        <a href="import-export.html">Import/Export →</a>
+    </div>
+</body>
+</html>

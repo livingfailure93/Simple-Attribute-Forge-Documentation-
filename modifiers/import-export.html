@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import/Export - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html" class="active">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Import/Export</h1>
+        <p>JSON import/export for modifiers and schema documentation.</p>
+    </div>
+
+    <div class="section">
+        <h2>Importing Modifiers from JSON</h2>
+        <ol>
+            <li>Open the Modifier Wizard (Window > Simple Attribute Forge > Modifier Wizard)</li>
+            <li>Go to Step 2 (Configure Modifiers)</li>
+            <li>Click "Import JSON..."</li>
+            <li>Select your JSON file</li>
+            <li>Choose how to handle import:
+                <ul>
+                    <li><strong>Replace All</strong> - Clear existing modifiers and import</li>
+                    <li><strong>Add to Existing</strong> - Keep existing modifiers and add new ones</li>
+                </ul>
+            </li>
+            <li>Modifiers will be validated and populated from the file</li>
+        </ol>
+
+        <div class="info">
+            <strong>Validation:</strong> Import checks that modifier names are not empty, each modifier has at least one modification, and all target attributes exist in your attribute system.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Exporting Schema</h2>
+        <p>Export a JSON schema that documents the modifier format. This is useful for:</p>
+        <ul>
+            <li>AI-assisted modifier generation</li>
+            <li>External tools integration</li>
+            <li>Documentation purposes</li>
+        </ul>
+        <ol>
+            <li>Open the Modifier Wizard</li>
+            <li>Go to Step 2</li>
+            <li>Click "Export Schema..."</li>
+            <li>Choose format: JSON, Markdown, or Both</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>JSON Format</h2>
+        <p>The import/export uses <code>modifierGroups</code> as the root array key:</p>
+        <div class="code-block">{
+  "version": "3.0",
+  "exportDate": "2026-01-22",
+  "description": "Simple Attribute Forge Modifier System Export",
+  "modifierGroups": [
+    {
+      "name": "Strength Potion",
+      "description": "Temporarily increases Strength",
+      "tag": "consumable",
+      "duration": 30,
+      "priority": 100,
+      "stackable": false,
+      "maxStacks": 1,
+
+      "isDebuff": false,
+      "isHidden": false,
+      "canBeDispelled": true,
+      "persistsThroughDeath": false,
+      "refreshOnReapply": true,
+
+      "requiredLevel": 0,
+      "category": "buff",
+      "incompatibleModifiers": [],
+      "requiredModifiers": [],
+
+      "modifyRegenRate": false,
+      "regenRateType": "Flat",
+      "regenRateValue": 0,
+      "modifyRegenDelay": false,
+      "regenDelayType": "Flat",
+      "regenDelayValue": 0,
+      "disableRegeneration": false,
+
+      "modifications": [
+        {
+          "targetAttribute": "Strength",
+          "type": "Flat",
+          "value": 10,
+          "modifyBaseValue": true,
+          "modifyCurrentValue": false,
+          "modifyMinValue": false,
+          "modifyMaxValue": false,
+          "isPermanent": false,
+          "applyOverTime": false,
+          "tickInterval": 1.0,
+          "removeWhenConditionsMet": false,
+          "enableConditions": false,
+          "conditions": [],
+          "modifierConditions": []
+        }
+      ]
+    }
+  ]
+}</div>
+
+        <h3>Minimal Format</h3>
+        <p>Only required fields (defaults apply for omitted fields):</p>
+        <div class="code-block">{
+  "modifierGroups": [
+    {
+      "name": "Quick Buff",
+      "tag": "buff",
+      "duration": 10,
+      "modifications": [
+        {
+          "targetAttribute": "Strength",
+          "type": "Flat",
+          "value": 5
+        }
+      ]
+    }
+  ]
+}</div>
+    </div>
+
+    <div class="section">
+        <h2>Schema Exporter</h2>
+        <p>The schema exporter (<code>SimpleModifierSchemaExporter.cs</code>) generates comprehensive documentation including:</p>
+        <ul>
+            <li>All available fields and their types</li>
+            <li>Enum values for types like ModifierType and ComparisonType</li>
+            <li>Validation rules and constraints</li>
+            <li>Example modifiers</li>
+            <li>AI instructions for generating valid JSON</li>
+        </ul>
+    </div>
+
+    <div class="page-nav">
+        <a href="api-reference-ultimate.html">API Reference</a>
+        <a href="troubleshooting-ultimate.html">Troubleshooting</a>
+    </div>
+</body>
+</html>

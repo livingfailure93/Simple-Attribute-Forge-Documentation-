@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import/Export System - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html" class="active">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Import/Export System
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Import/Export System</h1>
+        <p>Share formulas, collaborate with teams, and backup your configurations</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="section">
+        <h2>Import/Export Overview</h2>
+        <p>The Ultimate system provides comprehensive import/export functionality for sharing formulas between projects, creating backups, and collaborating with team members using human-readable JSON format.</p>
+        
+        <div class="info">
+            <strong>Key Features:</strong>
+            <ul>
+                <li>Export individual formulas or complete collections</li>
+                <li>Human-readable JSON format for easy editing</li>
+                <li>Version compatibility checking during import</li>
+                <li>Automatic validation of attribute references</li>
+                <li>Clipboard integration with keyboard shortcuts</li>
+                <li>Markdown documentation generation</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Export System -->
+    <div class="section">
+        <h2>Export System</h2>
+        
+        <h3>Export Methods</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Single Formula Export</h4>
+                <ul>
+                    <li>Right-click formula in list → Export</li>
+                    <li>Includes all pipeline steps and breakpoints</li>
+                    <li>Compact JSON format for sharing</li>
+                    <li>Perfect for sharing specific mechanics</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Batch Collection Export</h4>
+                <ul>
+                    <li>Export button in Influence Wizard</li>
+                    <li>Exports all formulas with system metadata</li>
+                    <li>Preserves execution order and dependencies</li>
+                    <li>Ideal for complete system backup</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Documentation Export</h4>
+                <ul>
+                    <li>Generate markdown documentation</li>
+                    <li>Complete system overview</li>
+                    <li>Formula details and calculations</li>
+                    <li>Ready for wikis or design documents</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Export Workflow</h3>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Select Export Scope</strong>
+        </div>
+        <div class="code-block">Export Options:
+• Current Formula: Export only the selected formula
+• Selected Formulas: Export multiple selected formulas  
+• All Formulas: Export complete formula collection
+• System Documentation: Export as markdown reference</div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Choose Export Method</strong>
+        </div>
+        <ul>
+            <li><strong>Clipboard:</strong> Copy JSON to clipboard for immediate pasting</li>
+            <li><strong>File:</strong> Save to .json file for permanent storage</li>
+            <li><strong>Documentation:</strong> Generate .md file for team documentation</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Export Configuration</strong>
+        </div>
+        <div class="code-block">Export Settings:
+• Include Metadata: System name, version, creation date
+• Include Comments: Add descriptive comments to JSON
+• Minify JSON: Compact format vs. readable format
+• Include Dependencies: Export related formula dependencies</div>
+
+        <h3>Keyboard Shortcuts</h3>
+        <div class="code-block">Export Shortcuts:
+• Ctrl+C: Copy selected formula(s) to clipboard
+• Ctrl+E: Export selected formula to file
+• Ctrl+Shift+E: Export all formulas to file
+• Ctrl+M: Export system documentation to markdown</div>
+    </div>
+
+    <!-- Import System -->
+    <div class="section">
+        <h2>Import System</h2>
+        
+        <h3>Import Workflow</h3>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Prepare Import Data</strong>
+        </div>
+        <ul>
+            <li>Copy JSON to clipboard from file, email, or documentation</li>
+            <li>Ensure JSON is properly formatted</li>
+            <li>Verify source compatibility with your project</li>
+        </ul>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Initiate Import</strong>
+        </div>
+        <div class="code-block">Import Methods:
+• Import Button: Click Import in Influence Wizard
+• Keyboard Shortcut: Ctrl+V in formula list
+• Drag & Drop: Drag .json file into wizard
+• Load from File: Use file browser dialog</div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Validation Process</strong>
+        </div>
+        <p>The wizard automatically validates imported data:</p>
+        
+        <div class="code-block">Validation Checks:
+ JSON format validation
+ All source attributes exist in current project
+ Target attributes are valid
+ Numerical values within acceptable ranges
+ Enum values are valid
+ No circular dependencies created
+ Breakpoint conditions properly formatted</div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Conflict Resolution</strong>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Replace Mode</h4>
+                <ul>
+                    <li>Clear all existing formulas</li>
+                    <li>Import new formulas</li>
+                    <li>Complete system replacement</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Merge Mode</h4>
+                <ul>
+                    <li>Add new formulas to existing ones</li>
+                    <li>Handle name conflicts with prompts</li>
+                    <li>Preserve existing formula order</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Append Mode</h4>
+                <ul>
+                    <li>Add all formulas with auto-renaming</li>
+                    <li>No conflicts, duplicates get numbered</li>
+                    <li>Safe import for testing</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Import Validation Results</h3>
+        <div class="code-block">Validation Report Example:
+=== Import Validation Report ===
+ JSON format valid
+ 3 formulas found
+ All target attributes exist
+ 1 missing source attribute: "MagicPower"
+ No circular dependencies
+ All breakpoint conditions valid
+
+Options:
+• Continue Import (skip invalid formulas)
+• Cancel Import (fix source data first)
+• Create Missing Attributes (add "MagicPower" to project)</div>
+    </div>
+
+    <!-- JSON Format Reference -->
+    <div class="section">
+        <h2>JSON Format Reference</h2>
+        
+        <h3>Single Formula Structure</h3>
+        <div class="code-block">{
+  "name": "Strength Damage Bonus",
+  "targetAttribute": "Damage",
+  "enabled": true,
+  "executionOrder": 0,
+  "startMode": "Zero",
+  "applyMode": "AddToBase",
+  "alsoUpdateCurrent": false,
+  "flatRows": [
+    {
+      "source": "Strength",
+      "operation": "Add",
+      "value": 2.0
+    }
+  ],
+  "addPctRows": [
+    {
+      "source": "WeaponSkill", 
+      "operation": "Add",
+      "value": 1.5
+    }
+  ],
+  "subPctRows": [],
+  "mulRows": [
+    {
+      "label": "Class Bonus",
+      "factor": 1.25
+    }
+  ],
+  "postFlatRows": [
+    {
+      "label": "Base Weapon Damage",
+      "amount": 15,
+      "isAdditive": true
+    }
+  ],
+  "breakpoints": []
+}</div>
+
+        <h3>Breakpoint Structure</h3>
+        <div class="code-block">"breakpoints": [
+  {
+    "type": "Threshold",
+    "attribute": "Level",
+    "comparison": "GreaterOrEqual",
+    "value": 20,
+    "effectType": "Multiplier",
+    "effectValue": 1.5,
+    "operation": "Add",
+    "hasAdditionalConditions": true,
+    "globalLogicalOp": "And",
+    "additionalConditions": [
+      {
+        "attribute": "Strength",
+        "comparison": "GreaterOrEqual", 
+        "value": 30
+      },
+      {
+        "attribute": "Intelligence",
+        "comparison": "LessOrEqual",
+        "value": 15
+      }
+    ]
+  }
+]</div>
+
+        <h3>Collection Format</h3>
+        <div class="code-block">{
+  "version": "1.0",
+  "systemName": "CharacterInfluenceSystem",
+  "exportDate": "2024-01-15T10:30:00Z",
+  "sourceProject": "MyAwesomeRPG",
+  "availableAttributes": [
+    "Health", "Mana", "Strength", "Intelligence", 
+    "Dexterity", "Constitution", "Level", "Damage"
+  ],
+  "formulas": [
+    // Array of formula objects
+  ],
+  "metadata": {
+    "totalFormulas": 5,
+    "complexityScore": 12,
+    "dependencies": ["Strength→Damage", "Level→Health"]
+  }
+}</div>
+    </div>
+
+    <!-- Clipboard Operations -->
+    <div class="section">
+        <h2>Clipboard Operations</h2>
+        
+        <h3>Quick Copy/Paste Workflow</h3>
+        <div class="code-block">Copy Formula (Ctrl+C):
+1. Select formula in list
+2. Press Ctrl+C or right-click → Copy
+3. JSON is formatted and copied to clipboard
+4. Ready to paste in another project
+
+Paste Formula (Ctrl+V):
+1. Copy formula JSON from anywhere (file, email, chat)
+2. Focus formula list in destination project  
+3. Press Ctrl+V or right-click → Paste
+4. Review validation results and conflicts</div>
+
+        <h3>Supported Clipboard Formats</h3>
+        <ul>
+            <li><strong>Single Formula JSON:</strong> Complete formula configuration</li>
+            <li><strong>Formula Collection JSON:</strong> Multiple formulas with metadata</li>
+            <li><strong>Formula Parameters Only:</strong> Just the pipeline configuration</li>
+            <li><strong>Breakpoint Data:</strong> Standalone breakpoint configurations</li>
+        </ul>
+
+        <h3>Cross-Project Sharing</h3>
+        <div class="code-block">Team Collaboration Workflow:
+1. Designer creates formulas in test project
+2. Export formula collection to JSON file
+3. Share file via version control or messaging
+4. Programmers import into main project
+5. Test and iterate using JSON roundtrip</div>
+    </div>
+
+    <!-- Use Cases -->
+    <div class="section">
+        <h2>Import/Export Use Cases</h2>
+        
+        <h3>Team Collaboration</h3>
+        <div class="use-case">
+            <h4>Designer → Programmer Workflow</h4>
+            <div class="code-block">Scenario: Game designer creates complex RPG formulas
+
+Designer Process:
+1. Create test project with attribute system
+2. Design formulas using Influence Wizard
+3. Test and balance with preview panel  
+4. Export final formulas to JSON
+5. Share JSON with development team
+
+Programmer Process:
+1. Import JSON into main project
+2. Validate all attributes exist
+3. Test integration with game systems
+4. Provide feedback via exported JSON</div>
+        </div>
+
+        <h3>Formula Libraries</h3>
+        <div class="use-case">
+            <h4>Reusable Formula Collections</h4>
+            <div class="code-block">Common RPG Formula Library:
+• StandardCombat.json: Basic STR→DMG, CON→HP formulas
+• SpellcastingCore.json: INT→Mana, WIS→SpellPower formulas  
+• SkillProgression.json: Level-based skill advancement
+• StatusEffects.json: Buff/debuff calculation patterns
+
+Import library formulas as starting points for customization.</div>
+        </div>
+
+        <h3>Backup and Version Control</h3>
+        <div class="use-case">
+            <h4>Configuration Management</h4>
+            <div class="code-block">Version Control Strategy:
+1. Export complete system before major changes
+2. Store JSON files in version control alongside code
+3. Tag formula versions with game releases
+4. Restore previous configurations when needed
+5. Track formula evolution over development</div>
+        </div>
+
+        <h3>Documentation Generation</h3>
+        <div class="use-case">
+            <h4>Game Design Documentation</h4>
+            <div class="code-block">Documentation Export Features:
+• Complete formula reference in markdown
+• Mathematical relationship descriptions  
+• Breakpoint condition listings
+• Balance analysis and stat effectiveness
+• Integration examples for programmers</div>
+        </div>
+    </div>
+
+    <!-- Advanced Import Features -->
+    <div class="section">
+        <h2>Advanced Import Features</h2>
+        
+        <h3>Missing Attribute Handling</h3>
+        <p>When importing formulas that reference attributes not in your current project:</p>
+        
+        <div class="warning">
+            <strong>Missing Attribute Dialog:</strong>
+            <div class="code-block">Missing Attributes Detected:
+• "MagicPower" (used in 2 formulas)
+• "CraftingSkill" (used in 1 formula)
+• "Reputation" (used in 1 breakpoint)
+
+Options:
+1. Cancel Import - Fix source data first
+2. Skip Invalid Formulas - Import only valid ones
+3. Create Placeholder Attributes - Add missing attributes to project
+4. Manual Mapping - Map to existing attributes</div>
+        </div>
+
+        <h3>Attribute Mapping</h3>
+        <p>Remap source attributes to match your project's naming:</p>
+        
+        <div class="code-block">Attribute Mapping Dialog:
+Source Formula uses "Str" → Map to "Strength"
+Source Formula uses "HP" → Map to "Health"  
+Source Formula uses "MP" → Map to "Mana"
+
+This allows importing formulas from projects with different attribute naming conventions.</div>
+
+        <h3>Conflict Resolution</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Name Conflicts</h4>
+                <ul>
+                    <li>Detect duplicate formula names</li>
+                    <li>Offer rename suggestions</li>
+                    <li>Auto-increment naming (Formula, Formula_2, etc.)</li>
+                    <li>Preview merge results</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Order Conflicts</h4>
+                <ul>
+                    <li>Detect execution order conflicts</li>
+                    <li>Automatically reorder imported formulas</li>
+                    <li>Preserve dependency relationships</li>
+                    <li>Validate calculation sequence</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSON Format Details -->
+    <div class="section">
+        <h2>JSON Format Details</h2>
+        
+        <h3>Formula Pipeline Data</h3>
+        <div class="code-block">// Complete formula with all pipeline steps
+{
+  "name": "Advanced Combat Formula",
+  "targetAttribute": "Damage",
+  "enabled": true,
+  "executionOrder": 1,
+  "startMode": "Zero",
+  "applyMode": "AddToBase", 
+  "alsoUpdateCurrent": false,
+  
+  // Step 2: Flat bonuses
+  "flatRows": [
+    {
+      "source": "Strength",
+      "operation": "Add", 
+      "value": 2.5
+    },
+    {
+      "source": "Level",
+      "operation": "Add",
+      "value": 0.8
+    }
+  ],
+  
+  // Step 3: Additive percentages
+  "addPctRows": [
+    {
+      "source": "WeaponSkill",
+      "operation": "Add",
+      "value": 1.2
+    }
+  ],
+  
+  // Step 4: Subtractive percentages  
+  "subPctRows": [
+    {
+      "source": "Fatigue",
+      "operation": "Add",
+      "value": 0.5
+    }
+  ],
+  
+  // Step 5: Multipliers
+  "mulRows": [
+    {
+      "label": "Weapon Quality",
+      "factor": 1.3
+    },
+    {
+      "label": "Class Bonus", 
+      "factor": 1.15
+    }
+  ],
+  
+  // Step 6: Post-flat bonuses
+  "postFlatRows": [
+    {
+      "label": "Base Weapon Damage",
+      "amount": 20,
+      "isAdditive": true
+    }
+  ]
+}</div>
+
+        <h3>Breakpoint Data Structure</h3>
+        <div class="code-block">// Complex breakpoint with multiple conditions
+{
+  "type": "Threshold",
+  "attribute": "Level", 
+  "comparison": "GreaterOrEqual",
+  "value": 25,
+  "effectType": "Multiplier",
+  "effectValue": 1.8,
+  "operation": "Add",
+  "hasAdditionalConditions": true,
+  "globalLogicalOp": "And",
+  "additionalConditions": [
+    {
+      "attribute": "Strength",
+      "comparison": "GreaterOrEqual",
+      "value": 35
+    },
+    {
+      "attribute": "WeaponSkill", 
+      "comparison": "GreaterOrEqual",
+      "value": 50
+    }
+  ]
+}</div>
+
+        <h3>Collection Metadata</h3>
+        <div class="code-block">// System-level metadata for collections
+{
+  "version": "1.0",
+  "systemName": "AdvancedRPGSystem",
+  "exportDate": "2024-01-15T14:30:00Z",
+  "sourceProject": "FantasyQuestRPG",
+  "exportedBy": "GameDesigner",
+  "description": "Complete combat and progression system",
+  
+  "compatibilityInfo": {
+    "minimumVersion": "1.0",
+    "requiredAttributes": ["Health", "Mana", "Strength", "Intelligence"],
+    "optionalAttributes": ["WeaponSkill", "ArmorClass"],
+    "warnings": ["Uses complex breakpoint logic"]
+  },
+  
+  "statistics": {
+    "totalFormulas": 8,
+    "averageComplexity": 3.2,
+    "maxExecutionOrder": 2,
+    "breakpointCount": 12
+  }
+}</div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Import/Export Best Practices</h2>
+        
+        <div class="success">
+            <strong>Recommended Workflow:</strong>
+            <ol>
+                <li><strong>Export Before Changes:</strong> Always backup before major modifications</li>
+                <li><strong>Validate Before Import:</strong> Check attribute compatibility first</li>
+                <li><strong>Use Descriptive Names:</strong> Clear formula names improve shareability</li>
+                <li><strong>Document Dependencies:</strong> Note required attributes in comments</li>
+                <li><strong>Test After Import:</strong> Verify formulas work in target project</li>
+                <li><strong>Version Your Exports:</strong> Include version info in filenames</li>
+            </ol>
+        </div>
+
+        <h3>File Organization</h3>
+        <div class="code-block">Recommended File Structure:
+ProjectRoot/
+├── FormulaLibrary/
+│   ├── Core/
+│   │   ├── BasicCombat.json
+│   │   ├── HealthScaling.json
+│   │   └── LevelProgression.json
+│   ├── Advanced/
+│   │   ├── MagicSystem.json
+│   │   ├── CraftingFormulas.json
+│   │   └── PvPBalancing.json
+│   └── Experimental/
+│       ├── NewMechanics.json
+│       └── BalanceTests.json</div>
+
+        <h3>Team Collaboration Guidelines</h3>
+        <ul>
+            <li><strong>Consistent Naming:</strong> Establish attribute naming conventions across team</li>
+            <li><strong>Formula Documentation:</strong> Include design intent in export comments</li>
+            <li><strong>Testing Requirements:</strong> Specify test scenarios with formula exports</li>
+            <li><strong>Version Compatibility:</strong> Tag exports with compatible game versions</li>
+        </ul>
+
+        <h3>Performance Considerations</h3>
+        <div class="code-block">Large Import Optimization:
+• Import in smaller batches for better responsiveness
+• Use Append mode for testing large collections
+• Validate complex formulas individually first  
+• Monitor memory usage during bulk imports
+• Clear Unity console before large imports</div>
+    </div>
+
+    <!-- Automation Features -->
+    <div class="section">
+        <h2>Automation Features</h2>
+        
+        <h3>Automatic Backup</h3>
+        <p>The wizard automatically creates backups during generation:</p>
+        
+        <div class="code-block">Automatic Backup Process:
+1. Export current formulas to JSON before generation
+2. Save to Assets/Generated/InfluenceSystem/Backups/
+3. Filename: SystemName_YYYY-MM-DD_HH-MM.json
+4. Keeps last 10 backups automatically
+5. Purge older backups to save disk space</div>
+
+        <h3>Batch Operations</h3>
+        <div class="code-block">Batch Export Features:
+• Export All: Complete system to single JSON
+• Export by Category: Group related formulas
+• Export by Order: Export execution groups separately
+• Export Templates: Save common patterns for reuse
+
+Batch Import Features:  
+• Import Multiple Files: Process folder of JSON files
+• Template Application: Apply formula templates to multiple targets
+• Dependency Resolution: Automatically order imported formulas</div>
+
+        <h3>Integration with External Tools</h3>
+        <div class="code-block">External Tool Support:
+• CSV Export: For spreadsheet analysis
+• XML Export: For integration with game design tools
+• SQL Export: For database-driven formula management
+• API Integration: REST endpoints for external formula management</div>
+    </div>
+
+    <!-- Common Issues -->
+    <div class="section">
+        <h2>Common Import/Export Issues</h2>
+        
+        <h3>Import Failures</h3>
+        <div class="warning">
+            <strong>JSON Format Errors:</strong>
+            <ul>
+                <li>Invalid JSON syntax (missing commas, brackets)</li>
+                <li>Unrecognized property names</li>
+                <li>Incorrect data types (string instead of number)</li>
+                <li>Missing required fields</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Validate JSON using online JSON validators</li>
+                <li>Compare with working formula exports</li>
+                <li>Check for typos in property names</li>
+                <li>Ensure all required fields are present</li>
+            </ul>
+        </div>
+
+        <h3>Attribute Compatibility</h3>
+        <div class="warning">
+            <strong>Attribute Mismatch Issues:</strong>
+            <ul>
+                <li>Source project uses different attribute names</li>
+                <li>Target project missing required attributes</li>
+                <li>Attribute types don't match (Basic vs Vital)</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Use attribute mapping during import</li>
+                <li>Create missing attributes before import</li>
+                <li>Edit JSON to match target project naming</li>
+                <li>Import in test project first for compatibility checking</li>
+            </ul>
+        </div>
+
+        <h3>Performance Issues</h3>
+        <div class="warning">
+            <strong>Large Import Problems:</strong>
+            <ul>
+                <li>Unity freezes during large imports</li>
+                <li>Memory usage spikes</li>
+                <li>Editor becomes unresponsive</li>
+            </ul>
+            
+            <strong>Solutions:</strong>
+            <ul>
+                <li>Import in smaller batches (10-15 formulas max)</li>
+                <li>Close other Unity windows during import</li>
+                <li>Use Append mode for testing large collections</li>
+                <li>Monitor Task Manager for memory usage</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="section">
+        <h2>Advanced Export Features</h2>
+        
+        <h3>Template Export</h3>
+        <p>Export formulas as reusable templates:</p>
+        
+        <div class="code-block">Template Export Process:
+1. Create formula with placeholder values
+2. Export as Template (replaces specific values with variables)
+3. Import template into new projects
+4. Customize variables for specific use cases
+
+Example Template:
+"flatRows": [
+  {
+    "source": "{PRIMARY_STAT}",
+    "operation": "Add",
+    "value": "{SCALING_FACTOR}"
+  }
+]</div>
+
+        <h3>Conditional Export</h3>
+        <div class="code-block">Export Filters:
+• By Execution Order: Export only formulas in specific order range
+• By Target Attribute: Export formulas affecting specific attributes
+• By Complexity: Export simple or complex formulas only
+• By Status: Export only enabled/disabled formulas
+• By Tags: Export formulas with specific categories</div>
+
+        <h3>Documentation Integration</h3>
+        <div class="code-block">Documentation Export Options:
+• Markdown Reference: Complete system documentation
+• CSV Summary: Spreadsheet-compatible formula list
+• Wiki Format: Ready for game wikis or internal docs
+• API Documentation: Technical reference for programmers
+• Balance Analysis: Statistical breakdown of formula effectiveness</div>
+    </div>
+
+    <!-- Integration Examples -->
+    <div class="section">
+        <h2>Integration Examples</h2>
+        
+        <h3>Continuous Integration Workflow</h3>
+        <div class="code-block">// Automated formula validation in CI/CD
+public class FormulaValidator : EditorWindow
+{
+    [MenuItem("Tools/Validate Formula Exports")]
+    static void ValidateExports()
+    {
+        string exportPath = "Assets/Generated/InfluenceSystem/Exports/";
+        var jsonFiles = Directory.GetFiles(exportPath, "*.json");
+        
+        foreach (var file in jsonFiles)
+        {
+            var json = File.ReadAllText(file);
+            var validation = ValidateFormulaJSON(json);
+            
+            if (validation.isValid)
+            {
+                Debug.Log($" {Path.GetFileName(file)}: Valid");
+            }
+            else
+            {
+                Debug.LogError($"✗ {Path.GetFileName(file)}: {validation.error}");
+            }
+        }
+    }
+}</div>
+
+        <h3>Runtime Formula Loading</h3>
+        <div class="code-block">// Load formulas from JSON at runtime
+public class DynamicFormulaLoader : MonoBehaviour
+{
+    public void LoadFormulasFromServer()
+    {
+        StartCoroutine(FetchFormulasFromAPI());
+    }
+    
+    IEnumerator FetchFormulasFromAPI()
+    {
+        UnityWebRequest request = UnityWebRequest.Get("https://api.game.com/formulas");
+        yield return request.SendWebRequest();
+        
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            var formulaJSON = request.downloadHandler.text;
+            ImportFormulasFromJSON(formulaJSON);
+        }
+    }
+    
+    void ImportFormulasFromJSON(string json)
+    {
+        // Parse and apply formulas at runtime
+        var formulaData = JsonUtility.FromJson<FormulaCollection>(json);
+        ApplyFormulasToSystem(formulaData);
+    }
+}</div>
+
+        <h3>Automated Testing</h3>
+        <div class="code-block">// Automated formula testing after import
+[Test]
+public void TestImportedFormulas()
+{
+    // Load test formula collection
+    var testJSON = Resources.Load<TextAsset>("TestFormulas").text;
+    var testData = JsonUtility.FromJson<FormulaCollection>(testJSON);
+    
+    // Import into test system
+    var testSystem = CreateTestAttributeSystem();
+    ImportFormulas(testSystem, testData);
+    
+    // Validate calculations
+    Assert.AreEqual(42, CalculateStrengthDamage(testSystem, 20)); // STR 20 = 42 DMG
+    Assert.AreEqual(67, CalculateStrengthDamage(testSystem, 30)); // STR 30 = 67 DMG
+}</div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="section">
+        <h2>Import/Export Troubleshooting</h2>
+        
+        <h3>Common Error Messages</h3>
+        <div class="warning">
+            <strong>"Invalid JSON format":</strong>
+            <ul>
+                <li>Check for missing commas, brackets, or quotes</li>
+                <li>Validate JSON using online tools</li>
+                <li>Compare with working export examples</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>"Attribute 'X' not found":</strong>
+            <ul>
+                <li>Create missing attribute in base system first</li>
+                <li>Use attribute mapping to rename references</li>
+                <li>Edit JSON to match your project's attributes</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>"Circular dependency detected":</strong>
+            <ul>
+                <li>Review formula target and source relationships</li>
+                <li>Adjust execution order to break dependency loops</li>
+                <li>Split complex formulas into simpler components</li>
+            </ul>
+        </div>
+
+        <h3>Debug Tools</h3>
+        <div class="code-block">Import/Export Debug Features:
+• Verbose Logging: Detailed import/export process logging
+• JSON Validation: Step-by-step format validation
+• Dependency Analysis: Visual dependency graph generation
+• Performance Monitoring: Track import/export timing
+• Error Reporting: Detailed error messages with suggestions</div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="migration-guide.html">← Migration Guide</a>
+        <a href="troubleshooting-pro.html">Troubleshooting →</a>
+    </div>
+</body>
+</html>

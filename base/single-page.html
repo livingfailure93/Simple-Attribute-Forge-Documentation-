@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Attribute Forge - Complete Documentation</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link">Multi-Page</a>
+    <a href="single-page.html" class="format-link active">Single Page</a>
+  </div>
+
+  <nav class="navbar">
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#installation">Installation</a></li>
+      <li><a href="#quick-start">Quick Start</a></li>
+      <li><a href="#wizard-guide">Wizard Guide</a></li>
+      <li><a href="#runtime-usage">Runtime Usage</a></li>
+      <li><a href="#demo-manager">Demo Scene</a></li>
+      <li><a href="#import-export">Import/Export</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+      <li><a href="#api-reference">API Reference</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+
+  <div id="home" class="section">
+    <div class="hero">
+      <h1> Simple Attribute Forge</h1>
+      <p class="tagline">Eliminate RPG Boilerplate. Generate Complete Attribute Systems in Minutes.</p>
+    </div>
+
+    <h2> Transform Your Unity RPG Development</h2>
+    <p>Stop writing the same attribute code for every project. Generate complete, production-ready attribute systems in minutes instead of hours.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Rapid Development</h4>
+        <p>4-step wizard generates complete C# classes, enums, and ScriptableObjects automatically.</p>
+      </div>
+      <div class="feature-card">
+        <h4> Game-Ready</h4>
+        <p>Built-in regeneration, validation, and event systems for immediate game integration.</p>
+      </div>
+      <div class="feature-card">
+        <h4> Professional Tools</h4>
+        <p>Advanced property drawers, import/export workflows, and comprehensive validation.</p>
+      </div>
+      <div class="feature-card">
+        <h4> Performance Optimized</h4>
+        <p>Cached lookups, lazy initialization, and memory-efficient runtime management.</p>
+      </div>
+    </div>
+
+    <h2> Key Features</h2>
+    <ul>
+      <li> <strong>Three-Tier Value System</strong> - baseValue + formulaBonus + modifierBonus = totalValue</li>
+      <li> <strong>Automatic Regeneration</strong> - Coroutine-based system with delays and rates</li>
+      <li> <strong>Event System</strong> - Individual and component-level events for UI/gameplay</li>
+      <li> <strong>Runtime Modifiable</strong> - Change values, rates, and settings during gameplay</li>
+      <li> <strong>Behavior Types</strong> - Vital (HP/MP), Basic (Stats), Resource (Gold), Percentage</li>
+      <li> <strong>Type-Safe Interface</strong> - ISimpleAttributeDataSource for consistent integration</li>
+      <li> <strong>JSON Import/Export</strong> - Share templates and configurations</li>
+      <li> <strong>Validation</strong> - Automatic fixing of invalid configurations</li>
+      <li> <strong>Performance</strong> - Cached collections and optimized lookups</li>
+      <li> <strong>Ultimate Ready</strong> - Designed to work seamlessly with the Influence, Modifier, and Character Template systems in Simple Attribute Forge Ultimate</li>
+    </ul>
+  </div>
+
+  <div id="installation" class="section">
+    <h1> Installation</h1>
+    <p>Get Simple Attribute Forge installed and ready to use in your Unity project.</p>
+    
+    <h2>System Requirements</h2>
+    <ul>
+      <li><strong>Unity:</strong> 2021.3 LTS or newer</li>
+      <li><strong>Platform:</strong> All platforms supported</li>
+      <li><strong>.NET:</strong> .NET Standard 2.1</li>
+    </ul>
+    
+    <div class="success">
+      <strong>Installation Complete!</strong> The "Window → Simple Attribute Forge" menu should now be available.
+    </div>
+  </div>
+
+  <div id="quick-start" class="section">
+    <h1> Quick Start</h1>
+    <p>Create your first complete attribute system in under 5 minutes! This guide shows the current workflow for the modern Simple Attribute Forge system.</p>
+    
+    <h2> 4-Step Creation Process</h2>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Open the Attribute Data Wizard</strong><br>
+      Navigate to <code>Window → Simple Attribute Forge → Attribute Data Wizard</code>
+    </div>
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Configure Your Attribute System</strong><br>
+      Set up basic information and add your attributes
+    </div>
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Generate Code Files</strong><br>
+      Create enum, runtime class, and ScriptableObject automatically
+    </div>
+    <div class="step-container">
+      <span class="step-number">4</span>
+      <strong>Add to GameObject</strong><br>
+      Attach generated component and start using your attributes
+    </div>
+
+    <div class="success">
+      <strong> Congratulations!</strong> You now have a fully functional attribute system with the modern three-tier value architecture. Always use <code>totalValue</code> for gameplay logic!
+    </div>
+  </div>
+
+  <div id="wizard-guide" class="section">
+    <h1> Wizard Guide</h1>
+    <p>Complete guide to the 4-step attribute generation wizard that creates type-safe, feature-rich attribute systems with modern three-tier architecture.</p>
+    
+    <h2> What the Wizard Generates</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Three-Tier Value System</h4>
+        <p>Each attribute has baseValue, formulaBonus, modifierBonus, and calculated totalValue for clean separation of concerns.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Type-Safe Interface</h4>
+        <p>Generated components implement ISimpleAttributeDataSource for consistent integration across your project.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Automatic Regeneration</h4>
+        <p>Coroutine-based regeneration system for Vital attributes with configurable delays and rates.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Ultimate Ready</h4>
+        <p>Built-in support for Simple Attribute Forge Ultimate's Influence System through formulaBonus separation, and Modifier System through modifierBonus.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="runtime-usage" class="section">
+    <h1> Runtime Usage</h1>
+    <p>Complete guide for using generated attribute systems in your game with correct patterns and best practices.</p>
+    
+    <h2> Critical: Three-Tier Value System</h2>
+    <div class="warning">
+      <strong>Understanding this is crucial for proper gameplay programming!</strong>
+    </div>
+    <p>Every attribute uses a three-tier value architecture:</p>
+    <div class="code-block">
+totalValue = baseValue + formulaBonus + modifierBonus
+    </div>
+
+    <h2> Correct Usage Patterns</h2>
+    <div class="code-block">
+//  ALWAYS use totalValue for gameplay calculations
+float damage = strength.totalValue * weaponMultiplier;
+float defense = armor.totalValue;
+bool canCastSpell = mana.currentValue >= spellCost;
+
+//  ModifyValue() - For gameplay changes (triggers regeneration)
+health.ModifyValue(-damageAmount);    // Take damage
+mana.ModifyValue(-spellCost);         // Cast spell
+
+//  baseValue - For permanent upgrades
+strength.baseValue += 2;              // Permanent stat increase
+    </div>
+
+    <div class="warning">
+      <strong> Common Mistakes:</strong> Never use <code>baseValue</code> for gameplay (misses bonuses!), never modify <code>formulaBonus</code> manually, and don't use the old <code>.value</code> property.
+    </div>
+  </div>
+
+  <div id="demo-manager" class="section">
+    <h1> Base Demo Scene</h1>
+    <p>An interactive demo showcasing core attribute features with three panels: Character Stats, Stat Checks, and Combat Simulation.</p>
+
+    <h2> Quick Setup</h2>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Open the Demo Scene</strong><br>
+      Navigate to <code>Simple Attribute Forge/Base/FreeDemo/BaseDemo.unity</code>
+    </div>
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Hit Play</strong><br>
+      The demo is fully self-contained - creates all attributes from code at runtime
+    </div>
+
+    <h2> Three Panels</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Character Stats</h4>
+        <p>8 attributes (HP, Mana, Stamina + STR, DEX, INT, DEF, LCK) with real-time regeneration bars and damage/heal/rest buttons.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Stat Checks</h4>
+        <p>Random challenges testing your stats. Train to permanently increase stats or drink potions for temporary boosts via modifierBonus.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Combat Sim</h4>
+        <p>Auto-battle between Player and Goblin. Demonstrates attribute interaction patterns with STR-based damage and DEF-based mitigation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="import-export" class="section">
+    <h1> Import/Export System</h1>
+    <p>Share, backup, and create attribute configurations with JSON workflows.</p>
+    
+    <h2> Export Features</h2>
+    <p>Export your attribute configurations as comprehensive JSON files that include all settings, validation rules, and metadata for easy sharing between projects.</p>
+    
+    <h2> Import Features</h2>
+    <p>Import attribute configurations from JSON files to quickly set up new systems or share templates with team members.</p>
+  </div>
+
+  <div id="troubleshooting" class="section">
+    <h1> Troubleshooting</h1>
+    <p>Common issues and solutions for Simple Attribute Forge. Updated for the modern three-tier value system.</p>
+    
+    <h2> Most Common Issues</h2>
+    
+    <h3>Values Not Updating Correctly</h3>
+    <div class="code-block">
+//  WRONG - Common mistakes
+float damage = strength.baseValue * weapon;        // Missing bonuses!  
+float health = healthAttr.value;                  // Property doesn't exist
+strength.formulaBonus += 10;                      // Will be overwritten!
+
+//  CORRECT - Modern patterns
+float damage = strength.totalValue * weapon;      // Includes all bonuses
+float health = healthAttr.currentValue;           // For Vitals
+float maxHealth = healthAttr.totalValue;          // For max values
+    </div>
+    
+    <h3>Regeneration Not Working</h3>
+    <div class="success">
+      <strong>Checklist:</strong>
+      <ul>
+        <li><strong>Behavior Type:</strong> Must be set to "Vital"</li>
+        <li><strong>Can Regenerate:</strong> Must be enabled (true)</li>
+        <li><strong>Damage Method:</strong> Use <code>ModifyValue()</code>, not <code>SetValue()</code></li>
+      </ul>
+    </div>
+    
+    <div class="success">
+      <strong> Most Common Fix:</strong>
+      Many issues are resolved by updating code from the old <code>.value</code> property to the modern three-tier system using <code>.totalValue</code>, <code>.currentValue</code>, and <code>.baseValue</code> appropriately.
+    </div>
+  </div>
+
+  <div id="api-reference" class="section">
+    <h1> API Reference</h1>
+    <p>Complete reference for all Simple Attribute Forge classes, methods, and interfaces.</p>
+    
+    <h2> SimpleRuntimeAttribute</h2>
+    <h3>Properties - Core Values</h3>
+    <div class="code-block">
+// Three-Tier Value System
+public float baseValue { get; set; }        // Persistent value (saved with character)
+public float formulaBonus { get; set; }     // Calculated from influence formulas  
+public float modifierBonus { get; set; }    // Temporary effects (buffs/debuffs)
+public float totalValue { get; }            // CALCULATED: base + formula + modifier
+
+// For Vitals only
+public float currentValue { get; set; }     // Actual HP/MP within max bounds
+    </div>
+    
+    <h2> ISimpleAttributeDataSource Interface</h2>
+    <div class="code-block">
+public interface ISimpleAttributeDataSource
+{
+    SimpleRuntimeAttribute GetRuntimeAttribute(string attributeName);
+    SimpleRuntimeAttribute GetRuntimeAttribute(System.Enum attributeEnum);
+    Dictionary&lt;string, SimpleRuntimeAttribute&gt; GetAllRuntimeAttributes();
+    void InitializeAttributes();
+    // ... additional methods
+}
+    </div>
+    
+    <div class="warning">
+      <strong> Critical:</strong> Always use <code>totalValue</code> for gameplay logic (damage calculations, etc.). Use <code>baseValue</code> only for save/load and formula inputs.
+    </div>
+  </div>
+
+  <div id="about" class="section">
+    <h1> About Simple Attribute Forge</h1>
+    <p>Thank you for using Simple Attribute Forge! This system represents countless hours of development to create a robust, professional-grade attribute system for Unity developers.</p>
+    
+    <h2> Design Philosophy</h2>
+    <ul>
+      <li><strong>Code Generation Over Frameworks</strong> - Generate clean, readable code instead of complex abstractions</li>
+      <li><strong>Performance First</strong> - Cached lookups, minimal allocations, optimized for runtime efficiency</li>
+      <li><strong>Developer Experience</strong> - Visual wizards, comprehensive validation, and excellent debugging tools</li>
+      <li><strong>Future-Proof Architecture</strong> - Three-tier system designed for extensibility and Ultimate integration</li>
+    </ul>
+
+    <div class="success">
+      <strong> Ultimate Version Available:</strong> Simple Attribute Forge Ultimate adds the Influence System (formula-based attribute relationships), Modifier System (buff/debuff framework), and Character Template System (class-based starting attributes).
+    </div>
+  </div>
+
+</body>
+</html>

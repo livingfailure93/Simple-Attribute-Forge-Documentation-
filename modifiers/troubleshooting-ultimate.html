@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html" class="active">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Troubleshooting</h1>
+        <p>Common issues and solutions for the Ultimate tier systems.</p>
+    </div>
+
+    <div class="section">
+        <h2>Modifier System Issues</h2>
+
+        <h3>Modifier doesn't seem to apply</h3>
+        <ul>
+            <li><strong>Check target:</strong> Ensure the target has an ISimpleAttributeDataSource component</li>
+            <li><strong>Check attribute name:</strong> Verify the targetAttribute matches exactly</li>
+            <li><strong>Check conditions:</strong> If using conditions, verify they're being met</li>
+            <li><strong>Check requirements:</strong> Verify requiredLevel and requiredModifiers are satisfied</li>
+            <li><strong>Check incompatibilities:</strong> Ensure no incompatibleModifiers are active</li>
+        </ul>
+
+        <h3>Modifier values not showing in Inspector</h3>
+        <ul>
+            <li>Modifiers write to modifierBonus, not baseValue</li>
+            <li>Check that you're looking at the correct property</li>
+            <li>totalValue = baseValue + formulaBonus + modifierBonus</li>
+        </ul>
+
+        <h3>Conditions never evaluate to true</h3>
+        <ul>
+            <li>For percentage comparisons, threshold is 0-100 (not 0-1)</li>
+            <li>Check that the attribute exists and has valid values</li>
+            <li>Use the generated CanApply method to debug condition evaluation</li>
+        </ul>
+
+        <h3>Assets not auto-created after generation</h3>
+        <ul>
+            <li>Wait for Unity to finish compiling</li>
+            <li>Check the console for error messages</li>
+            <li>Try triggering a recompile (Ctrl+R or Assets > Reimport All)</li>
+            <li>Check the asset path in Step 3 settings</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Character Template Issues</h2>
+
+        <h3>Template doesn't apply all values</h3>
+        <ul>
+            <li>Check that UseOverride is enabled for each attribute</li>
+            <li>Vital-type attributes may be calculated by the Influence System</li>
+            <li>Only override base attributes, not derived ones</li>
+        </ul>
+
+        <h3>Template wizard shows "No attributes found"</h3>
+        <ul>
+            <li>Ensure you've selected a valid AttributeData asset</li>
+            <li>The asset must implement ISimpleAttributeDataSource</li>
+            <li>Check that the asset has attribute definitions</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Code Generation Issues</h2>
+
+        <h3>Compilation errors after generation</h3>
+        <ul>
+            <li>Check for namespace conflicts</li>
+            <li>Ensure the namespace is valid C# (no spaces, special chars)</li>
+            <li>Check the console for specific error messages</li>
+        </ul>
+
+        <h3>Generated code has wrong values</h3>
+        <ul>
+            <li>Regenerate the code from the wizard</li>
+            <li>Delete the Generated folder and regenerate</li>
+            <li>Check wizard configuration before generating</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Performance Issues</h2>
+
+        <h3>Modifier tracker causing lag</h3>
+        <ul>
+            <li>Call ClearAll() when changing scenes if not using persistent modifiers</li>
+            <li>Remove expired modifiers promptly</li>
+            <li>Avoid calling GetActiveModifiers() every frame</li>
+        </ul>
+
+        <h3>Too many modifiers active</h3>
+        <ul>
+            <li>Use maxStacks to limit stacking</li>
+            <li>Set appropriate durations</li>
+            <li>Remove unnecessary modifiers when done</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Getting Help</h2>
+        <p>If you can't resolve your issue:</p>
+        <ol>
+            <li>Check the console for error messages</li>
+            <li>Review the relevant documentation sections</li>
+            <li>Check the Asset Store Q&A for similar issues</li>
+            <li>Contact support with:
+                <ul>
+                    <li>Unity version</li>
+                    <li>Simple Attribute Forge version</li>
+                    <li>Steps to reproduce</li>
+                    <li>Console error messages</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="page-nav">
+        <a href="import-export.html">Import/Export</a>
+        <a href="demo-scene-guide.html">Demo Scene</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Scene Guide - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html" class="active">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Demo Scene Guide</h1>
+        <p>Walkthrough of the included SimpleAttributeForgeUltimate demo scene.</p>
+    </div>
+
+    <div class="section">
+        <h2>Opening the Demo</h2>
+        <ol>
+            <li>Navigate to: <code>Assets/Simple Attribute Forge Ultimate/Scenes/</code></li>
+            <li>Open <code>SimpleAttributeForgeUltimate.unity</code></li>
+            <li>Press Play</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Demo Features</h2>
+
+        <h3>Character Template Selection</h3>
+        <p>Use the dropdown to select different character classes. The starting attributes will update based on the selected template.</p>
+
+        <h3>Modifier Application</h3>
+        <p>Use the modifier dropdown to select and apply different modifiers. See how they affect attribute values in real-time.</p>
+
+        <h3>Attribute Display</h3>
+        <p>The UI shows all attributes with their current values, including:</p>
+        <ul>
+            <li>Base values</li>
+            <li>Formula bonuses (from Influence System)</li>
+            <li>Modifier bonuses (from active modifiers)</li>
+            <li>Total calculated values</li>
+        </ul>
+
+        <h3>Active Modifier List</h3>
+        <p>View all currently active modifiers with their remaining durations and stack counts.</p>
+    </div>
+
+    <div class="section">
+        <h2>Demo Components</h2>
+
+        <h3>SimpleAttributeUltimateDemoManager</h3>
+        <p>Main demo script that handles:</p>
+        <ul>
+            <li>Template dropdown population</li>
+            <li>Modifier dropdown population</li>
+            <li>Attribute value display updates</li>
+            <li>Modifier application/removal</li>
+        </ul>
+
+        <h3>Generated Assets Used</h3>
+        <ul>
+            <li>SoulslikeCharacterAttributeData</li>
+            <li>SoulslikeInfluenceSystem</li>
+            <li>12 modifier assets (Adrenaline Surge, Frostbite, etc.)</li>
+            <li>13 character template assets</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Experimenting</h2>
+        <p>Try these experiments to understand the system:</p>
+        <ol>
+            <li>Apply multiple modifiers and see how they stack</li>
+            <li>Try conditional modifiers (Adrenaline Surge) - lower health to see effects</li>
+            <li>Switch between character templates and observe starting stat differences</li>
+            <li>Check how Influence formulas calculate derived stats from base attributes</li>
+        </ol>
+    </div>
+
+    <div class="page-nav">
+        <a href="troubleshooting-ultimate.html">Troubleshooting</a>
+        <a href="about.html">About</a>
+    </div>
+</body>
+</html>

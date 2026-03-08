@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+  
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+      <li><a href="wizard-guide.html">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html">Runtime Usage</a></li>
+      <li><a href="demo-manager.html">Demo Scene</a></li>
+      <li><a href="import-export.html">Import/Export</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="api-reference.html" class="active">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / API Reference
+  </div>
+
+  <div class="section">
+    <h1> API Reference</h1>
+    <p>Complete reference for all Simple Attribute Forge classes, methods, and interfaces.</p>
+  </div>
+
+  <div class="section">
+    <h2> SimpleRuntimeAttribute</h2>
+    <p>The core runtime attribute class managing values, events, and regeneration.</p>
+
+    <h3>Properties - Core Values</h3>
+    <div class="code-block">
+// Three-Tier Value System
+public float baseValue { get; set; }        // Persistent value (saved with character)
+public float formulaBonus { get; set; }     // Calculated by Ultimate's Influence System
+public float modifierBonus { get; set; }    // Temporary effects (buffs/debuffs)
+public float totalValue { get; }            // CALCULATED: base + formula + modifier
+
+// For Vitals only
+public float currentValue { get; set; }     // Actual HP/MP within max bounds
+    </div>
+
+    <h3>Properties - Identity (Read Only)</h3>
+    <div class="code-block">
+public string attributeName { get; }        // Display name
+public string code { get; }                 // Short abbreviation for UI (HP, STR)
+public string enumName { get; }             // Type-safe identifier  
+public string description { get; }          // Purpose description
+public SimpleBehaviorType behaviorType { get; } // Basic/Vital/Resource/Percentage
+public bool forceInteger { get; }           // Round to whole numbers
+public float minValue { get; }              // Minimum boundary
+public float maxValue { get; }              // Maximum boundary
+    </div>
+
+    <h3>Properties - Modifiable at Runtime</h3>
+    <div class="code-block">
+// Visual
+public Sprite icon { get; set; }            // UI icon (for status effects)
+
+// Regeneration (Vitals only)
+public bool canRegenerate { get; set; }     // Enable auto-recovery
+public float regenerationRate { get; set; } // Recovery per second
+public float regenerationDelay { get; set; } // Cooldown before regen starts
+public bool IsRegenerating { get; }         // Current regen state
+    </div>
+
+    <h3>Core Methods</h3>
+    <div class="code-block">
+// Value Modification (CRITICAL DISTINCTION)
+void ModifyValue(float amount)              // Gameplay changes - FIRES regeneration
+void SetValue(float value)                  // Admin/loading - NO regeneration
+
+// Quick Actions
+void FillToMax()                            // Set to maximum value
+void EmptyToMin()                           // Set to minimum value
+
+// Value Access
+float GetCurrentValue()                     // Current display value
+float GetMaxValue()                         // Maximum possible value
+int GetIntValue()                           // Integer version
+float GetFloatValue()                       // Exact float value
+string GetDisplayValue()                    // Formatted string
+
+// State Queries
+float GetPercentage()                       // 0.0 to 1.0 percentage
+bool IsAtMax()                              // At maximum value
+bool IsAtMin()                              // At minimum value
+bool IsEmpty()                              // Convenience for IsAtMin()
+bool IsFull()                               // Convenience for IsAtMax()
+float GetMissingValue()                     // Deficit from maximum
+
+// UI Optimization
+bool IsDirty { get; }                       // Value changed since last update
+void ClearDirtyFlag()                       // Clear after UI update
+
+// Validation
+void ValidateAndFixConfiguration()          // Auto-fix invalid values
+bool ValidateConfiguration(out string error) // Detailed validation
+    </div>
+
+    <h3>Events</h3>
+    <div class="code-block">
+// Value Events
+System.Action OnValueChanged                // Any value change
+System.Action OnMaxValueChanged             // Max value changed
+System.Action&lt;SimpleRuntimeAttribute, float, float&gt; OnBaseValueChanged // For formulas
+
+// Boundary Events  
+System.Action OnReachedZero                 // Hit minimum/zero
+System.Action OnReachedMax                  // Hit maximum
+
+// Regeneration Events (Used by coroutine system)
+System.Action&lt;bool&gt; OnRegenerationStateChanged
+System.Action&lt;SimpleRuntimeAttribute&gt; OnShouldStartRegeneration
+System.Action&lt;SimpleRuntimeAttribute&gt; OnShouldStopRegeneration
+    </div>
+
+    <div class="warning">
+      <strong> Critical:</strong> Always use <code>totalValue</code> for gameplay logic (damage calculations, etc.). Use <code>baseValue</code> only for save/load and formula inputs.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> ISimpleAttributeDataSource Interface</h2>
+    <p>Required interface for all generated attribute containers.</p>
+
+    <div class="code-block">
+public interface ISimpleAttributeDataSource
+{
+    // Runtime attribute access
+    SimpleRuntimeAttribute GetRuntimeAttribute(string attributeName);
+    SimpleRuntimeAttribute GetRuntimeAttribute(System.Enum attributeEnum);
+    Dictionary&lt;string, SimpleRuntimeAttribute&gt; GetAllRuntimeAttributes();
+    void InitializeAttributes();
+    
+    // Definition access
+    SimpleAttributeValue[] GetAttributeDefinitions();
+    string[] GetAttributeNames();
+    SimpleAttributeValue? GetAttributeByName(string name);
+    int AttributeCount { get; }
+    bool HasAttribute(string name);
+    System.Type GetAttributeEnumType();
+}
+    </div>
+
+    <h3>Generated Component Methods</h3>
+    <div class="code-block">
+// Generated convenience methods
+public SimpleRuntimeAttribute GetAttribute(string attributeName);
+public bool ModifyAttribute(string attributeName, float amount);
+public bool SetAttribute(string attributeName, float value);
+
+// Type-safe enum access
+public Dictionary&lt;YourAttributeEnum, SimpleRuntimeAttribute&gt; GetAllAttributesByEnum();
+public SimpleRuntimeAttribute GetAttributeByEnum&lt;T&gt;(T enumValue) where T : System.Enum;
+
+// Performance helpers
+public List&lt;SimpleRuntimeAttribute&gt; GetAllAttributeInstances();
+Dictionary&lt;string, SimpleRuntimeAttribute&gt; GetAllAttributes(); // Cached lookup
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Behavior Types</h2>
+    <p>Each attribute has a behavior type that determines its features and limitations.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Basic</h4>
+        <p>Simple numeric values like STR, INT, DEX. No current/max separation, no regeneration.</p>
+        <div class="code-block">
+// Basic attribute usage
+float damage = strength.totalValue * 2f;
+strength.baseValue += 5; // Permanent upgrade
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Vital</h4>
+        <p>Has current and max values with regeneration support. Examples: Health, Mana, Stamina.</p>
+        <div class="code-block">
+// Vital attribute usage
+health.ModifyValue(-30f); // Take damage
+float healthPercent = health.GetPercentage();
+uiText.text = $"{health.currentValue}/{health.totalValue}";
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Resource</h4>
+        <p>Currency or countable items. Forced integer values, no regeneration. Examples: Gold, Experience.</p>
+        <div class="code-block">
+// Resource attribute usage
+gold.ModifyValue(100f); // Add gold
+int totalGold = gold.GetIntValue();
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h4>Percentage</h4>
+        <p>Values representing rates or chances. Typically 0-100 range. Examples: Critical Chance, Block Rate.</p>
+        <div class="code-block">
+// Percentage attribute usage
+float critChance = criticalChance.totalValue;
+if (Random.Range(0f, 100f) < critChance) {
+    // Critical hit!
+}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Component-Level Events</h2>
+    <p>Generated components provide aggregate events for all attributes.</p>
+
+    <div class="code-block">
+// Component-level events (on generated component)
+public event System.Action&lt;string, float&gt; OnAnyAttributeChanged;
+public event System.Action&lt;string&gt; OnAnyAttributeDepleted;
+public event System.Action&lt;string&gt; OnAnyAttributeMaxed;
+
+// Usage example
+void Start()
+{
+    var attributes = GetComponent&lt;CharacterAttributes&gt;();
+    attributes.OnAnyAttributeChanged += OnAttributeChanged;
+    attributes.OnAnyAttributeDepleted += OnAttributeDepleted;
+}
+
+void OnAttributeChanged(string attributeName, float newValue)
+{
+    Debug.Log($"{attributeName} changed to {newValue}");
+    UpdateUI(attributeName, newValue);
+}
+
+void OnAttributeDepleted(string attributeName)
+{
+    if (attributeName == "Health")
+    {
+        HandleDeath();
+    }
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Extension Methods</h2>
+    <p>Convenience methods for working with attribute systems.</p>
+
+    <div class="code-block">
+// MonoBehaviour extensions
+public static class SimpleAttributeSystemExtensions
+{
+    // Find attribute system on GameObject
+    public static MonoBehaviour FindAttributeSystem(this GameObject gameObject);
+    
+    // Get runtime attribute (works with old and new systems)
+    public static SimpleRuntimeAttribute GetRuntimeAttribute(
+        this MonoBehaviour component, string attributeName);
+    
+    // Get all runtime attributes
+    public static Dictionary&lt;string, SimpleRuntimeAttribute&gt; GetAllRuntimeAttributes(
+        this MonoBehaviour component);
+    
+    // Check if component is attribute system
+    public static bool IsAttributeSystem(this MonoBehaviour component);
+    
+    // Convenience value access
+    public static float GetAttributeValue(
+        this MonoBehaviour component, string attributeName, float defaultValue = 0f);
+    
+    // Set attribute value
+    public static bool SetAttributeValue(
+        this MonoBehaviour component, string attributeName, float value);
+}
+
+// Usage examples
+var health = gameObject.GetRuntimeAttribute("Health");
+float healthValue = gameObject.GetAttributeValue("Health", 100f);
+bool success = gameObject.SetAttributeValue("Health", 50f);
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Regeneration System API</h2>
+    <p>Automatic coroutine-based regeneration for Vital attributes.</p>
+
+    <h3>Configuration</h3>
+    <div class="code-block">
+// Enable/configure regeneration
+health.canRegenerate = true;
+health.regenerationRate = 5f;      // 5 HP per second
+health.regenerationDelay = 3f;     // 3 second delay after damage
+
+// Check regeneration state
+bool isRegenerating = health.IsRegenerating;
+    </div>
+
+    <h3>Generated Component Methods</h3>
+    <div class="code-block">
+// Context menu methods (for testing)
+[ContextMenu("Debug Active Regeneration")]
+private void DebugActiveRegeneration() // Shows active regen coroutines
+
+[ContextMenu("Log All Attributes")]  
+public void LogAllAttributes()        // Detailed attribute state
+
+// Runtime testing
+public void SetAttributeValue()       // Uses inspector test values
+    </div>
+
+    <div class="success">
+      <strong> Key Insight:</strong> Regeneration is completely automatic. Use <code>ModifyValue()</code> for gameplay damage and the system handles regeneration automatically.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Usage Patterns</h2>
+
+    <h3>Reading Values for Gameplay</h3>
+    <div class="code-block">
+//  CORRECT - Use totalValue for gameplay
+float damage = strength.totalValue * weaponDamage;
+float defense = armor.totalValue;
+bool canCast = mana.currentValue >= spellCost;
+
+//  WRONG - Don't use baseValue for gameplay
+float damage = strength.baseValue * weaponDamage; // Missing bonuses!
+    </div>
+
+    <h3>Modifying Values</h3>
+    <div class="code-block">
+//  Gameplay changes (triggers regeneration)
+health.ModifyValue(-damage);    // Take damage
+mana.ModifyValue(-spellCost);   // Cast spell
+strength.baseValue += 2;        // Permanent upgrade
+
+//  Administrative changes (no regeneration)
+health.SetValue(100f);          // Load save data
+health.FillToMax();             // Admin heal
+    </div>
+
+    <h3>Working with Formulas (Ultimate Only)</h3>
+    <div class="code-block">
+// Formulas automatically manage formulaBonus (requires Ultimate's Influence System)
+// DO NOT modify formulaBonus manually
+
+//  Let the Influence System handle it
+var orchestrator = GetComponent&lt;InfluenceSystem&gt;();
+orchestrator.RecalculateAll();
+
+//  Modify base values, formulas update automatically
+strength.baseValue += 5; // Formulas using STR will recalculate
+    </div>
+
+    <h3>UI Display Patterns</h3>
+    <div class="code-block">
+// Vital attributes (HP/MP)
+if (attr.behaviorType == SimpleBehaviorType.Vital)
+{
+    healthText.text = $"{attr.currentValue:F0}/{attr.totalValue:F0}";
+    healthBar.fillAmount = attr.GetPercentage();
+}
+else
+{
+    // Basic/Resource/Percentage attributes  
+    statText.text = attr.GetDisplayValue();
+}
+
+// Show bonus breakdown
+if (attr.formulaBonus != 0 || attr.modifierBonus != 0)
+{
+    tooltipText = $"{attr.baseValue:F1}";
+    if (attr.formulaBonus != 0) tooltipText += $" +{attr.formulaBonus:F1} (formulas)";
+    if (attr.modifierBonus != 0) tooltipText += $" +{attr.modifierBonus:F1} (effects)";
+    tooltipText += $" = {attr.totalValue:F1}";
+}
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <a href="troubleshooting.html">← Troubleshooting</a>
+    <a href="about.html">About →</a>
+  </div>
+
+</body>
+</html>

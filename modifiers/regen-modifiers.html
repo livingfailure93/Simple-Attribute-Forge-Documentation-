@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regen Modifiers - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html" class="active">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>ARPG Regeneration Modifiers</h1>
+        <p>Modify regeneration rates, delays, or completely disable regeneration.</p>
+    </div>
+
+    <div class="section">
+        <h2>Overview</h2>
+        <p>The Modifier System includes built-in support for modifying how Vital attributes regenerate. This is essential for ARPG-style status effects like Poison (disable regen) or Blessing (faster regen).</p>
+    </div>
+
+    <div class="section">
+        <h2>Regen Rate Modification</h2>
+        <p>Change how fast attributes regenerate per second.</p>
+
+        <div class="code-block">// +5 flat regen per second
+group.modifyRegenRate = true;
+group.regenRateType = ModifierType.Flat;
+group.regenRateValue = 5f;
+
+// +50% regen speed
+group.modifyRegenRate = true;
+group.regenRateType = ModifierType.Percentage;
+group.regenRateValue = 50f;
+
+// x2 regen multiplier
+group.modifyRegenRate = true;
+group.regenRateType = ModifierType.Multiply;
+group.regenRateValue = 2f;</div>
+    </div>
+
+    <div class="section">
+        <h2>Regen Delay Modification</h2>
+        <p>Change the delay before regeneration starts after taking damage.</p>
+
+        <div class="code-block">// -2 seconds faster recovery
+group.modifyRegenDelay = true;
+group.regenDelayType = ModifierType.Flat;
+group.regenDelayValue = -2f;
+
+// -50% delay reduction
+group.modifyRegenDelay = true;
+group.regenDelayType = ModifierType.Percentage;
+group.regenDelayValue = -50f;</div>
+    </div>
+
+    <div class="section">
+        <h2>Disable Regeneration</h2>
+        <p>Completely prevent regeneration while the modifier is active.</p>
+
+        <div class="code-block">// Poison effect - no health regen
+group.disableRegeneration = true;</div>
+
+        <div class="warning">
+            <strong>Note:</strong> disableRegeneration takes precedence over rate/delay modifications. If set to true, the attribute will not regenerate regardless of other bonuses.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Stacking Behavior</h2>
+        <p>Multiple modifiers affecting regeneration stack according to their types:</p>
+        <ul>
+            <li><strong>Flat bonuses:</strong> Add together (+5 + +3 = +8)</li>
+            <li><strong>Percentage bonuses:</strong> Add together (+50% + +25% = +75%)</li>
+            <li><strong>Multipliers:</strong> Multiply together (x1.5 x 1.2 = x1.8)</li>
+            <li><strong>Disable flags:</strong> Any single disable = no regen</li>
+        </ul>
+
+        <h3>Final Value Calculation</h3>
+        <p>The calculation order for regen rate and delay modifiers:</p>
+        <div class="code-block">// Regen Rate Formula
+Final Rate = (Base Rate + Total Flat Bonuses) × (1 + Total Percentage / 100) × Product of Multipliers
+
+// Example: Base 10 HP/sec + 5 flat + 50% + x1.5 multiplier
+Final Rate = (10 + 5) × (1 + 50/100) × 1.5
+           = 15 × 1.5 × 1.5
+           = 33.75 HP/sec
+
+// Regen Delay Formula (same structure)
+Final Delay = (Base Delay + Total Flat Bonuses) × (1 + Total Percentage / 100) × Product of Multipliers
+
+// Example: Base 5 sec delay - 2 flat - 50% delay
+Final Delay = (5 + (-2)) × (1 + (-50)/100) × 1.0
+            = 3 × 0.5
+            = 1.5 seconds</div>
+
+        <div class="info">
+            <strong>Note:</strong> If <code>disableRegeneration = true</code> on ANY active modifier, the attribute will not regenerate regardless of other bonuses. The disable check happens before any calculations.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Common Patterns</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Poison</h4>
+                <p>Disable regen + DoT damage</p>
+                <div class="code-block">disableRegeneration = true
+applyOverTime = true</div>
+            </div>
+            <div class="feature-card">
+                <h4>Blessing</h4>
+                <p>+100% regen rate</p>
+                <div class="code-block">regenRateType = Percentage
+regenRateValue = 100f</div>
+            </div>
+            <div class="feature-card">
+                <h4>Quick Recovery</h4>
+                <p>-50% regen delay</p>
+                <div class="code-block">regenDelayType = Percentage
+regenDelayValue = -50f</div>
+            </div>
+            <div class="feature-card">
+                <h4>Meditation</h4>
+                <p>x3 mana regen while still</p>
+                <div class="code-block">regenRateType = Multiply
+regenRateValue = 3f</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-nav">
+        <a href="modifier-conditions.html">Conditions</a>
+        <a href="character-templates.html">Templates</a>
+    </div>
+</body>
+</html>

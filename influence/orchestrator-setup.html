@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orchestrator Setup - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html" class="active">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Orchestrator Setup
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Orchestrator Setup</h1>
+        <p>Configuring and optimizing the generated orchestrator component</p>
+    </div>
+
+    <!-- Setup Process -->
+    <div class="section">
+        <h2>Initial Setup Process</h2>
+        
+        <h3>Adding Orchestrator to GameObject</h3>
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Locate Your GameObject</strong>
+        </div>
+        <p>Find the GameObject that contains your attribute system component (e.g., CharacterAttributes).</p>
+        
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Add Orchestrator Component</strong>
+        </div>
+        <ol>
+            <li>Select the GameObject</li>
+            <li>Click <strong>Add Component</strong></li>
+            <li>Search for your generated orchestrator (e.g., "CharacterInfluence")</li>
+            <li>Add the component</li>
+        </ol>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Configure References</strong>
+        </div>
+        <div class="code-block">Required Configuration:
+• Attribute System: Assign your attribute component (CharacterAttributes)
+• Formulas: Should auto-populate with generated formula assets</div>
+
+        <div class="success">
+            <strong>Auto-Detection:</strong> The orchestrator automatically finds and assigns formula assets from the generated folder.
+        </div>
+    </div>
+
+    <!-- Inspector Configuration -->
+    <div class="section">
+        <h2>Inspector Configuration</h2>
+        
+        <h3>System Configuration Section</h3>
+        <div class="code-block">Attribute System: Reference to your ISimpleAttributeDataSource component
+Formulas: List of FormulaAsset ScriptableObjects</div>
+
+        <h3>Update Configuration Section</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Update Mode</h4>
+                <ul>
+                    <li><strong>Smart:</strong> Event-driven updates (recommended)</li>
+                    <li><strong>Interval:</strong> Fixed-time recalculation</li>
+                    <li><strong>Manual:</strong> Only when explicitly called</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Recalculation Mode</h4>
+                <ul>
+                    <li><strong>Auto:</strong> Recalculate when baseValue changes</li>
+                    <li><strong>Manual:</strong> Only on explicit method calls</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="code-block">Performance Options:
+• Interval Update Rate: Seconds between updates (Interval mode only)
+• Enable Caching: Cache attribute references for performance
+• Debug Mode: Enable detailed calculation logging</div>
+
+        <h3>Formula Management</h3>
+        <p>The Formulas list shows all assigned formula assets:</p>
+        
+        <div class="code-block">Formula List Display:
+ StrengthDamage (Order: 0, Enabled)
+ LevelHealth (Order: 0, Enabled)  
+ IntelligenceMana (Order: 1, Enabled)
+ MissingFormula (Missing asset reference)
+
+Each formula shows:
+• Execution order
+• Enabled/disabled status
+• Validation state</div>
+    </div>
+
+    <!-- Performance Tuning -->
+    <div class="section">
+        <h2>Performance Tuning</h2>
+        
+        <h3>Update Mode Selection</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Smart Mode (Recommended)</h4>
+                <p><strong>Best for:</strong> Real-time games, action RPGs</p>
+                <ul>
+                    <li>Automatic recalculation when attributes change</li>
+                    <li>Zero overhead when values are stable</li>
+                    <li>Immediate response to value changes</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Interval Mode</h4>
+                <p><strong>Best for:</strong> High-frequency changes, performance-critical scenarios</p>
+                <ul>
+                    <li>Fixed-time recalculation intervals</li>
+                    <li>Predictable performance cost</li>
+                    <li>Batches multiple changes together</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Manual Mode</h4>
+                <p><strong>Best for:</strong> Turn-based games, explicit control</p>
+                <ul>
+                    <li>Only recalculates when explicitly called</li>
+                    <li>Maximum performance (no automatic updates)</li>
+                    <li>Perfect for turn-based mechanics</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Caching Configuration</h3>
+        <div class="code-block">Enable Caching: true
+• Caches attribute references for faster lookup
+• Reduces GetComponent calls during calculations
+• Automatically refreshes when attribute system changes
+• Small memory cost for significant performance gain
+
+Recommended: Enable for systems with 5+ formulas</div>
+
+        <h3>Performance Monitoring</h3>
+        <div class="code-block">Debug Mode Features:
+• Calculation timing logs
+• Formula execution order tracking  
+• Dependency resolution monitoring
+• Performance bottleneck identification
+
+Enable temporarily to profile your formula system performance.</div>
+    </div>
+
+    <!-- Integration Patterns -->
+    <div class="section">
+        <h2>Integration Patterns</h2>
+        
+        <h3>Standard Integration</h3>
+        <div class="code-block">// Most common setup
+GameObject: Player
+├── CharacterAttributes (Base System)
+│   ├── health, mana, strength, etc.
+│   └── Implements ISimpleAttributeDataSource
+└── CharacterInfluence (Pro System)
+    ├── attributeSystem → CharacterAttributes
+    └── formulas → Auto-assigned formula assets</div>
+
+        <h3>Multiple Character Types</h3>
+        <div class="code-block">// Different orchestrators for different entity types
+PlayerCharacter:
+├── PlayerAttributes + PlayerInfluence
+
+EnemyCharacter:  
+├── EnemyAttributes + EnemyInfluence
+
+NPCCharacter:
+├── NPCAttributes + NPCInfluence
+
+Each type can have specialized formula sets.</div>
+
+        <h3>Shared Formula Systems</h3>
+        <div class="code-block">// Multiple GameObjects using same formula assets
+GameManager:
+├── GlobalInfluence (manages shared formulas)
+└── References: List of all attribute systems
+
+Characters reference global formulas for consistency.</div>
+    </div>
+
+    <!-- Runtime Configuration -->
+    <div class="section">
+        <h2>Runtime Configuration</h2>
+        
+        <h3>Dynamic Mode Switching</h3>
+        <div class="code-block">public class GameStateManager : MonoBehaviour
+{
+    private CharacterInfluence orchestrator;
+    
+    void Start()
+    {
+        orchestrator = GetComponent&lt;CharacterInfluence&gt;();
+    }
+    
+    void EnterCombat()
+    {
+        // Switch to Smart mode for responsive combat
+        orchestrator.updateMode = UpdateMode.Smart;
+        orchestrator.recalculationMode = RecalculationMode.Auto;
+    }
+    
+    void EnterTownPhase()
+    {
+        // Switch to Manual mode for non-critical periods
+        orchestrator.updateMode = UpdateMode.Manual;
+        orchestrator.recalculationMode = RecalculationMode.Manual;
+    }
+}</div>
+
+        <h3>Runtime Formula Management</h3>
+        <div class="code-block">public class DynamicFormulas : MonoBehaviour
+{
+    private CharacterInfluence orchestrator;
+    
+    void ApplyTemporaryEffect()
+    {
+        // Create temporary formula for buff/debuff
+        var tempFormula = ScriptableObject.CreateInstance&lt;FormulaAsset&gt;();
+        tempFormula.formulaName = "TempBuff";
+        tempFormula.targetAttribute = "Damage";
+        // ... configure formula ...
+        
+        orchestrator.AddFormula(tempFormula);
+        
+        // Remove after duration
+        StartCoroutine(RemoveFormulaAfter("TempBuff", 30f));
+    }
+    
+    IEnumerator RemoveFormulaAfter(string formulaName, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        orchestrator.RemoveFormula(formulaName);
+    }
+}</div>
+    </div>
+
+    <!-- Advanced Configuration -->
+    <div class="section">
+        <h2>Advanced Configuration</h2>
+        
+        <h3>Execution Order Management</h3>
+        <p>Control formula calculation sequence for complex dependencies:</p>
+        
+        <div class="code-block">Execution Order Examples:
+Order 0: Base stat calculations (STR → Damage, INT → Mana)
+Order 1: Combined calculations (Physical + Magical → Total)  
+Order 2: Final modifiers (Difficulty scaling, global effects)
+
+Lower numbers execute first, higher numbers execute later.</div>
+
+        <h3>Validation Settings</h3>
+        <div class="code-block">Validation Configuration:
+• Strict Mode: Halt execution on any validation error
+• Warning Mode: Log warnings but continue execution
+• Silent Mode: Ignore validation issues (not recommended)
+
+Development: Use Strict Mode
+Production: Use Warning Mode</div>
+
+        <h3>Memory Management</h3>
+        <div class="code-block">Memory Optimization:
+• Formula asset preloading
+• Attribute reference caching
+• Calculation result pooling
+• Garbage collection minimization
+
+Automatically handled by the orchestrator.</div>
+    </div>
+
+    <!-- Debugging & Monitoring -->
+    <div class="section">
+        <h2>Debugging & Monitoring</h2>
+        
+        <h3>Debug Mode Output</h3>
+        <div class="code-block">// Enable detailed logging
+orchestrator.debugMode = true;
+
+// Console output:
+[Orchestrator] Recalculating all formulas...
+[Formula] StrengthDamage: STR(25) → Damage +50
+[Formula] LevelHealth: Level(10) → Health +200  
+[Validation] All formulas calculated successfully
+[Performance] Total calculation time: 0.2ms</div>
+
+        <h3>Performance Monitoring</h3>
+        <div class="code-block">// Monitor calculation frequency
+void Update()
+{
+    if (debugMode)
+    {
+        calculationsThisFrame++;
+        if (Time.frameCount % 60 == 0) // Log every second
+        {
+            Debug.Log($"Calculations per second: {calculationsThisFrame}");
+            calculationsThisFrame = 0;
+        }
+    }
+}</div>
+
+        <h3>Formula State Inspection</h3>
+        <div class="code-block">// Runtime inspection methods
+Debug.Log(orchestrator.GetFormulaNames());        // List all formulas
+Debug.Log(orchestrator.HasFormula("StrengthDamage")); // Check existence  
+Debug.Log(orchestrator.GetFormula("LevelHealth"));   // Get formula asset
+
+// Test individual formulas
+var testValues = new Dictionary&lt;string, float&gt; {{"Strength", 30}};
+float result = orchestrator.TestFormula("StrengthDamage", testValues);</div>
+    </div>
+
+    <!-- Integration Best Practices -->
+    <div class="section">
+        <h2>Integration Best Practices</h2>
+        
+        <h3>Component Order</h3>
+        <div class="info">
+            <strong>Recommended Order:</strong>
+            <ol>
+                <li>Attribute System Component (CharacterAttributes)</li>
+                <li>Orchestrator Component (CharacterInfluence)</li>
+                <li>Other game logic components</li>
+            </ol>
+        </div>
+
+        <h3>Initialization Sequence</h3>
+        <div class="code-block">// Proper initialization in your game scripts
+void Awake()
+{
+    // Get components in correct order
+    attributes = GetComponent&lt;CharacterAttributes&gt;();
+    orchestrator = GetComponent&lt;CharacterInfluence&gt;();
+}
+
+void Start()
+{
+    // Orchestrator is fully initialized here
+    // Safe to access calculated values
+    InitializeUI();
+    SetupEventListeners();
+}</div>
+
+        <h3>Event Handling</h3>
+        <div class="code-block">void SetupEventListeners()
+{
+    // Listen for attribute changes
+    attributes.strength.OnBaseValueChanged += OnStrengthChanged;
+    attributes.level.OnBaseValueChanged += OnLevelChanged;
+    
+    // Listen for total value changes (includes formula results)
+    attributes.health.OnValueChanged += UpdateHealthUI;
+}
+
+void OnStrengthChanged(SimpleRuntimeAttribute attr, float oldValue, float newValue)
+{
+    // Formulas automatically recalculate in Smart mode
+    Debug.Log($"Strength changed: {oldValue} → {newValue}");
+    // health.formulaBonus will update automatically
+}</div>
+    </div>
+
+    <!-- Common Issues -->
+    <div class="section">
+        <h2>Common Setup Issues</h2>
+        
+        <h3>Reference Assignment Problems</h3>
+        <div class="warning">
+            <strong>Attribute System Not Assigned:</strong>
+            <ul>
+                <li>Drag your attribute component to the Attribute System field</li>
+                <li>Verify the component implements ISimpleAttributeDataSource</li>
+                <li>Check console for interface implementation errors</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>Missing Formula Assets:</strong>
+            <ul>
+                <li>Check that formula assets exist in the generated folder</li>
+                <li>Verify formula asset references aren't broken</li>
+                <li>Regenerate system if assets are missing</li>
+            </ul>
+        </div>
+
+        <h3>Runtime Calculation Issues</h3>
+        <div class="warning">
+            <strong>Formulas Not Executing:</strong>
+            <ol>
+                <li>Verify Update Mode is set correctly</li>
+                <li>Check that formula assets are enabled</li>
+                <li>Ensure attribute system reference is valid</li>
+                <li>Look for validation errors in console</li>
+            </ol>
+        </div>
+
+        <h3>Performance Issues</h3>
+        <div class="warning">
+            <strong>High CPU Usage:</strong>
+            <ul>
+                <li>Enable caching for complex systems</li>
+                <li>Consider Interval mode for high-frequency changes</li>
+                <li>Review formula execution order</li>
+                <li>Check for unnecessary recalculations</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="section">
+        <h2>Advanced Features</h2>
+        
+        <h3>Custom Validation Rules</h3>
+        <div class="code-block">// Override validation in generated orchestrator
+protected override bool ValidateFormula(FormulaAsset formula)
+{
+    // Add custom validation logic
+    if (formula.targetAttribute == "CriticalChance")
+    {
+        // Ensure crit chance doesn't exceed 100%
+        return formula.Calculate(this) <= 100f;
+    }
+    
+    return base.ValidateFormula(formula);
+}</div>
+
+        <h3>Event Customization</h3>
+        <div class="code-block">// Custom events in your orchestrator
+public class CharacterInfluence : MonoBehaviour
+{
+    // Custom events for formula system
+    public UnityEvent OnSystemInitialized;
+    public UnityEvent&lt;string&gt; OnFormulaRecalculated;
+    public UnityEvent&lt;float&gt; OnMajorStatChange;
+    
+    void NotifyMajorChange(string attributeName, float change)
+    {
+        if (Mathf.Abs(change) > significantChangeThreshold)
+        {
+            OnMajorStatChange?.Invoke(change);
+        }
+    }
+}</div>
+
+        <h3>Multi-System Coordination</h3>
+        <div class="code-block">// Coordinating multiple influence systems
+public class SystemCoordinator : MonoBehaviour
+{
+    [SerializeField] private CharacterInfluence playerInfluence;
+    [SerializeField] private EquipmentInfluence equipmentInfluence;
+    [SerializeField] private EnvironmentInfluence environmentInfluence;
+    
+    void RecalculateAllSystems()
+    {
+        // Coordinate recalculation order
+        equipmentInfluence.RecalculateAll();    // Equipment first
+        environmentInfluence.RecalculateAll();  // Environment second
+        playerInfluence.RecalculateAll();       // Character last
+    }
+}</div>
+    </div>
+
+    <!-- Optimization Strategies -->
+    <div class="section">
+        <h2>Optimization Strategies</h2>
+        
+        <h3>For Real-Time Games</h3>
+        <ul>
+            <li><strong>Use Smart Mode:</strong> Event-driven updates for immediate response</li>
+            <li><strong>Enable Caching:</strong> Reduces component lookup overhead</li>
+            <li><strong>Minimize Formulas:</strong> Combine related calculations when possible</li>
+            <li><strong>Optimize Execution Order:</strong> Reduce dependency chains</li>
+        </ul>
+
+        <h3>For Turn-Based Games</h3>
+        <ul>
+            <li><strong>Use Manual Mode:</strong> Complete control over calculation timing</li>
+            <li><strong>Batch Recalculations:</strong> Single RecalculateAll() per turn</li>
+            <li><strong>Disable Auto Mode:</strong> Prevent mid-turn recalculations</li>
+            <li><strong>Use Complex Formulas:</strong> No performance penalty for complexity</li>
+        </ul>
+
+        <h3>For Mobile Platforms</h3>
+        <div class="code-block">Mobile Optimization Settings:
+• Update Mode: Interval (0.1-0.2 seconds)
+• Recalculation Mode: Manual
+• Enable Caching: true
+• Debug Mode: false (production builds)
+
+Reduces battery drain and improves performance on lower-end devices.</div>
+    </div>
+
+    <!-- Testing Setup -->
+    <div class="section">
+        <h2>Testing Your Setup</h2>
+        
+        <h3>Basic Functionality Test</h3>
+        <ol>
+            <li><strong>Enter Play Mode</strong></li>
+            <li><strong>Inspect Attributes:</strong> Check that formulaBonus values are calculated</li>
+            <li><strong>Modify Base Values:</strong> Change baseValue in inspector</li>
+            <li><strong>Verify Updates:</strong> Watch formulaBonus recalculate automatically</li>
+        </ol>
+
+        <h3>Performance Test</h3>
+        <div class="code-block">// Test performance with rapid changes
+void TestPerformance()
+{
+    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+    
+    for (int i = 0; i < 1000; i++)
+    {
+        attributes.strength.baseValue = Random.Range(10, 50);
+        // Formulas should recalculate automatically
+    }
+    
+    stopwatch.Stop();
+    Debug.Log($"1000 calculations took: {stopwatch.ElapsedMilliseconds}ms");
+}</div>
+
+        <h3>Integration Test</h3>
+        <div class="code-block">// Verify integration with gameplay systems  
+void TestGameplayIntegration()
+{
+    // Test damage calculation
+    float damage = attributes.strength.totalValue; // Should include formula bonus
+    
+    // Test UI updates
+    healthBar.fillAmount = attributes.health.currentValue / attributes.health.totalValue;
+    
+    // Test level up
+    attributes.level.baseValue += 1;
+    // Health should increase automatically via formula
+}</div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="influence-wizard.html">← Wizard Guide</a>
+        <a href="migration-guide.html">Migration Guide →</a>
+    </div>
+</body>
+</html>

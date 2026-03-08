@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html" class="active">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Quick Start Guide</h1>
+        <p>Get up and running with the Modifier System and Character Templates in minutes.</p>
+    </div>
+
+    <!-- Prerequisites -->
+    <div class="section">
+        <h2>Prerequisites</h2>
+
+        <div class="info">
+            <strong>Before You Start:</strong> You need a generated attribute system from the Base tier. If you haven't created one yet, use Window > Simple Attribute Forge > Attribute Wizard first.
+        </div>
+
+        <h3>Required</h3>
+        <ul>
+            <li>Unity 2021.3 or later</li>
+            <li>Simple Attribute Forge Ultimate package imported</li>
+            <li>Generated AttributeData ScriptableObject (e.g., SoulslikeCharacterAttributeData)</li>
+        </ul>
+
+        <h3>Optional (Recommended)</h3>
+        <ul>
+            <li>Pro tier Influence System for formula-driven derived stats</li>
+            <li>Existing game scene with player character</li>
+        </ul>
+    </div>
+
+    <!-- Part 1: First Modifier -->
+    <div class="section">
+        <h2>Part 1: Create Your First Modifier</h2>
+        <p>We'll create a simple "Strength Potion" modifier that adds +10 Strength for 30 seconds.</p>
+
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Open the Modifier Wizard</strong><br>
+            Go to <code>Window > Simple Attribute Forge > Modifier Wizard</code>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Step 1: Select Attribute Data</strong><br>
+            <ul>
+                <li>Click the object picker next to "Attribute Data Source"</li>
+                <li>Select your generated AttributeData asset (e.g., SoulslikeCharacterAttributeData)</li>
+                <li>The available attributes will populate automatically</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Step 2: Configure Modifier</strong><br>
+            <ul>
+                <li>Click "Add Modifier" to create a new modifier</li>
+                <li><strong>Name:</strong> Strength Potion</li>
+                <li><strong>Description:</strong> Temporarily increases Strength</li>
+                <li><strong>Tag:</strong> consumable</li>
+                <li><strong>Duration:</strong> 30 (seconds)</li>
+                <li><strong>Priority:</strong> 100</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Add Attribute Modification</strong><br>
+            <ul>
+                <li>Click "Add Modification"</li>
+                <li><strong>Target Attribute:</strong> Strength</li>
+                <li><strong>Type:</strong> Flat</li>
+                <li><strong>Value:</strong> 10</li>
+                <li>Leave "Enable Conditions" unchecked for now</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Step 3: Configure Generation Settings</strong><br>
+            <ul>
+                <li><strong>Namespace:</strong> MyGame.Modifiers</li>
+                <li><strong>Save Path:</strong> Assets/Generated/Modifiers/</li>
+                <li>Keep default subfolder names (Components, Helpers, Assets)</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">6</span>
+            <strong>Step 4: Generate Code</strong><br>
+            <ul>
+                <li>Click "Generate All Scripts"</li>
+                <li>Wait for Unity to compile (check console for progress)</li>
+                <li>Assets are automatically created after compilation</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <strong>Generated!</strong> You now have StrengthPotionAsset.cs, StrengthPotionComponent.cs, and StrengthPotionHelper.cs, plus a StrengthPotion.asset file ready to use.
+        </div>
+    </div>
+
+    <!-- Using the Modifier -->
+    <div class="section">
+        <h2>Using Your Modifier</h2>
+
+        <h3>Option 1: Using the Helper Class (Code)</h3>
+        <div class="code-block">using MyGame.Modifiers;
+
+public class ItemUseHandler : MonoBehaviour
+{
+    public void UseStrengthPotion(GameObject target)
+    {
+        // Apply the modifier
+        StrengthPotionHelper.ApplyStrengthPotion(target);
+    }
+
+    public void DispelStrengthPotion(GameObject target)
+    {
+        // Remove the modifier
+        StrengthPotionHelper.RemoveStrengthPotion(target);
+    }
+}</div>
+
+        <h3>Option 2: Using the Component (Inspector)</h3>
+        <ol>
+            <li>Create a new GameObject (or use existing item)</li>
+            <li>Add the <code>StrengthPotionComponent</code> script</li>
+            <li>Configure in Inspector:
+                <ul>
+                    <li><strong>Apply On Start:</strong> Check if you want it to apply immediately</li>
+                    <li><strong>Remove On Destroy:</strong> Check to auto-remove when destroyed</li>
+                    <li><strong>Target Override:</strong> Leave empty to target self, or assign a specific target</li>
+                </ul>
+            </li>
+            <li>Call <code>ApplyStrengthPotion()</code> from your code or use context menu</li>
+        </ol>
+
+        <h3>Option 3: Using the Asset (ScriptableObject)</h3>
+        <div class="code-block">public class ItemSystem : MonoBehaviour
+{
+    [SerializeField] private StrengthPotionAsset strengthPotionAsset;
+
+    public void UseItem(GameObject target)
+    {
+        // Apply using the asset's method
+        strengthPotionAsset.ApplyStrengthPotion(target);
+    }
+}</div>
+    </div>
+
+    <!-- Part 2: Conditional Modifier -->
+    <div class="section">
+        <h2>Part 2: Create a Conditional Modifier</h2>
+        <p>Now let's create "Berserker Rage" - a buff that only activates when Health is below 25%.</p>
+
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Add New Modifier in Wizard</strong><br>
+            <ul>
+                <li><strong>Name:</strong> Berserker Rage</li>
+                <li><strong>Description:</strong> Increased damage when near death</li>
+                <li><strong>Tag:</strong> passive</li>
+                <li><strong>Duration:</strong> 0 (permanent while conditions met)</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Add Conditional Modification</strong><br>
+            <ul>
+                <li>Click "Add Modification"</li>
+                <li><strong>Target Attribute:</strong> Strength (or Damage if you have it)</li>
+                <li><strong>Type:</strong> Percentage</li>
+                <li><strong>Value:</strong> 50 (50% increase)</li>
+                <li><strong>Enable Conditions:</strong> Check this box</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Add Attribute Condition</strong><br>
+            <ul>
+                <li>Click "Add Condition"</li>
+                <li><strong>Attribute:</strong> Health</li>
+                <li><strong>Comparison:</strong> LessThanPercent</li>
+                <li><strong>Threshold:</strong> 25</li>
+                <li><strong>Logic Operator:</strong> And</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Generate and Test</strong><br>
+            <ul>
+                <li>Generate the code as before</li>
+                <li>The modifier will only apply its effect when Health < 25%</li>
+                <li>Use <code>BerserkerRageHelper.CanApplyBerserkerRage(target)</code> to check conditions</li>
+            </ul>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Condition Check in Generated Code</div>
+            <div class="code-block">// Generated helper includes condition checking
+public static bool CanApplyBerserkerRage(GameObject target)
+{
+    var container = target.GetComponent<ISimpleAttributeDataSource>();
+    if (container == null) return false;
+
+    var healthAttr = GetAttributeHybrid(container, "Health");
+    if (healthAttr == null) return false;
+
+    // Check: Health < 25%
+    if (!(healthAttr.GetPercentage() < 25f)) return false;
+
+    return true;
+}</div>
+        </div>
+    </div>
+
+    <!-- Part 3: Character Template -->
+    <div class="section">
+        <h2>Part 3: Create a Character Template</h2>
+        <p>Let's create two character classes: Warrior and Mage with different starting stats.</p>
+
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Open the Character Template Wizard</strong><br>
+            Go to <code>Window > Simple Attribute Forge > Character Template Wizard</code>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Step 1: Select Attribute Data</strong><br>
+            Select the same AttributeData source you used for modifiers.
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Step 2: Define Character Classes</strong><br>
+
+            <strong>Add Warrior Class:</strong>
+            <ul>
+                <li>Click "Add Class"</li>
+                <li><strong>Class Name:</strong> Warrior</li>
+                <li><strong>Description:</strong> Melee fighter with high strength and endurance</li>
+                <li>Set attribute overrides:
+                    <ul>
+                        <li>Strength: 15 (check "Use Override")</li>
+                        <li>Endurance: 12 (check "Use Override")</li>
+                        <li>Vigor: 14 (check "Use Override")</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <strong>Add Mage Class:</strong>
+            <ul>
+                <li>Click "Add Class"</li>
+                <li><strong>Class Name:</strong> Mage</li>
+                <li><strong>Description:</strong> Spellcaster with high intelligence and attunement</li>
+                <li>Set attribute overrides:
+                    <ul>
+                        <li>Intelligence: 16 (check "Use Override")</li>
+                        <li>Attunement: 14 (check "Use Override")</li>
+                        <li>Faith: 10 (check "Use Override")</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Step 3: Configure Generation Settings</strong><br>
+            <ul>
+                <li><strong>System Name:</strong> Character Templates</li>
+                <li><strong>Namespace:</strong> MyGame</li>
+                <li><strong>Output Path:</strong> Assets/Generated/CharacterTemplates/</li>
+                <li>Check "Generate Manager Component"</li>
+                <li>Check "Generate Helper Class"</li>
+                <li>Check "Generate Enum Definitions"</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Step 4: Generate Code</strong><br>
+            Click "Generate" and wait for compilation.
+        </div>
+
+        <div class="success">
+            <strong>Generated!</strong> You now have [SystemName]CharacterTemplateEnum.cs, [SystemName]CharacterTemplateManager.cs, [SystemName]CharacterTemplatesHelper.cs, plus .asset files for Warrior and Mage. Replace [SystemName] with your configured system name.
+        </div>
+    </div>
+
+    <!-- Using Templates -->
+    <div class="section">
+        <h2>Using Character Templates</h2>
+
+        <h3>Apply Template at Character Creation</h3>
+        <div class="code-block">using UnityEngine;
+using SimpleAttributeForge.CharacterTemplate;
+// Use your generated namespace, e.g.:
+// using Soulslike.CharacterTemplates;
+// using MyGame.CharacterTemplates;
+
+public class CharacterCreation : MonoBehaviour
+{
+    public void CreateWarrior(GameObject character)
+    {
+        // Find template by name and apply to GameObject
+        var template = CharacterTemplatesHelper.FindTemplateByName("Warrior");
+        CharacterTemplatesHelper.ApplyTemplateToGameObject(character, template);
+    }
+
+    public void CreateMage(GameObject character)
+    {
+        var template = CharacterTemplatesHelper.FindTemplateByName("Mage");
+        CharacterTemplatesHelper.ApplyTemplateToGameObject(character, template);
+    }
+}</div>
+
+        <h3>Get Template Data</h3>
+        <div class="code-block">// Get all available templates (static helper method)
+var allTemplates = CharacterTemplatesHelper.GetAllTemplates();
+foreach (var template in allTemplates)
+{
+    Debug.Log($"Available class: {template.templateName}");
+    Debug.Log($"Description: {template.description}");
+}
+
+// Find a specific template by name
+var warriorTemplate = CharacterTemplatesHelper.FindTemplateByName("Warrior");
+if (warriorTemplate != null)
+{
+    Debug.Log($"Found: {warriorTemplate.templateName}");
+}
+
+// Get attribute value from a template
+float strength = CharacterTemplatesHelper.GetAttributeValue(warriorTemplate, "Strength");</div>
+
+        <div class="info">
+            <strong>Note:</strong> The Helper class is static and can be called from anywhere. The Manager class is an optional MonoBehaviour component you can attach to GameObjects for Inspector-based template management.
+        </div>
+    </div>
+
+    <!-- Complete Example -->
+    <div class="section">
+        <h2>Complete Integration Example</h2>
+        <p>Here's how all systems work together:</p>
+
+        <div class="code-block">using UnityEngine;
+using SimpleAttributeForge;
+using SimpleAttributeForge.CharacterTemplate;
+using SimpleForgeFramework;
+// Use your generated namespaces, e.g.:
+// using Soulslike.CharacterTemplates;
+// using Soulslike.Modifiers;
+
+public class RPGCharacter : MonoBehaviour
+{
+    [SerializeField] private string characterClassName = "Warrior";
+    [SerializeField] private SimpleCharacterTemplateData startingTemplate;
+    private ISimpleAttributeDataSource attributes;
+
+    void Start()
+    {
+        attributes = GetComponent&lt;ISimpleAttributeDataSource&gt;();
+
+        // Option 1: Apply template from serialized reference
+        if (startingTemplate != null)
+        {
+            CharacterTemplatesHelper.ApplyTemplateToGameObject(gameObject, startingTemplate);
+        }
+        // Option 2: Apply template by name
+        else
+        {
+            var template = CharacterTemplatesHelper.FindTemplateByName(characterClassName);
+            if (template != null)
+            {
+                CharacterTemplatesHelper.ApplyTemplateToGameObject(gameObject, template);
+            }
+        }
+
+        // Apply permanent passive modifier
+        BerserkerRageHelper.ApplyBerserkerRage(gameObject);
+    }
+
+    public void UseStrengthPotion()
+    {
+        // Apply temporary buff
+        StrengthPotionHelper.ApplyStrengthPotion(gameObject);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        var health = attributes.GetRuntimeAttribute("Health");
+        health.currentValue -= damage;
+
+        // Berserker Rage conditions are evaluated when the modifier was applied
+    }
+
+    public void CheckActiveBuffs()
+    {
+        // Query active modifiers
+        var activeModifiers = SimpleModifierTracker.GetActiveModifiers(attributes);
+        foreach (var modifier in activeModifiers)
+        {
+            Debug.Log($"Active: {modifier.name} ({modifier.tag})");
+        }
+
+        // Check for specific modifier
+        if (SimpleModifierTracker.HasModifierByName(attributes, "Strength Potion"))
+        {
+            Debug.Log("Strength potion is active!");
+        }
+    }
+}</div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="section">
+        <h2>Next Steps</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><a href="modifier-conditions.html">Learn About Conditions</a></h4>
+                <p>Explore all 12 comparison types, percentage vs absolute checks, and condition chaining with AND/OR/NOT.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="regen-modifiers.html">Regen Modifiers</a></h4>
+                <p>Learn how to modify regeneration rates, add delays, or completely disable regeneration.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="modifier-wizard.html">Master the Wizard</a></h4>
+                <p>Deep dive into all wizard options including behavior flags, requirements, and JSON import/export.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><a href="api-reference-ultimate.html">API Reference</a></h4>
+                <p>Complete documentation of all classes, methods, and enums in the Ultimate system.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="index.html">Home</a>
+        <a href="modifier-system.html">Modifier System</a>
+    </div>
+</body>
+</html>

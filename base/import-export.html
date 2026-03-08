@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Import/Export - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+      <li><a href="wizard-guide.html">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html">Runtime Usage</a></li>
+      <li><a href="demo-manager.html">Demo Scene</a></li>
+      <li><a href="import-export.html" class="active">Import/Export</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / Import/Export
+  </div>
+
+  <div class="section">
+    <h1> Import/Export System</h1>
+    <p>Share, backup, and create attribute configurations with AI-friendly JSON workflows.</p>
+  </div>
+
+  <div class="section">
+    <h2> Export Features</h2>
+
+    <h3>Complete Attribute Export</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Wizard Configuration</h4>
+        <ul>
+          <li>Data name and description</li>
+          <li>Namespace and class prefixes</li>
+          <li>All naming conventions</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h4> Attribute Data</h4>
+        <ul>
+          <li>Complete attribute definitions</li>
+          <li>Behavior types and settings</li>
+          <li>Icons and codes</li>
+          <li>Regeneration configurations</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h4> AI-Friendly Metadata</h4>
+        <ul>
+          <li>Validation rules and constraints</li>
+          <li>Field descriptions and examples</li>
+          <li>Behavior type explanations</li>
+          <li>Template structure guidance</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Export Options</h3>
+    <div class="code-block">
+      // Access export from Attribute Builder step
+      1. Configure your attributes in the wizard
+      2. Navigate to "Attribute Configuration" step
+      3. Click "Import/Export" section
+      4. Choose export type:
+      - "Export JSON" - Current configuration
+      - "Export Template" - AI-ready template with examples
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Import Features</h2>
+
+    <h3>Flexible Import Options</h3>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Replace All</strong><br>
+      Completely replace current attributes with imported ones
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Add to Existing</strong><br>
+      Merge imported attributes with current configuration (skips duplicates)
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Automatic Validation</strong><br>
+      All imported data validated and corrected automatically
+    </div>
+
+    <h3>Import Process</h3>
+    <div class="code-block">
+      // Import workflow
+      1. Click "Import JSON" in the wizard
+      2. Select your .json file
+      3. Choose import strategy (Replace/Add)
+      4. Review validation results
+      5. Confirm import operation
+
+      // The system handles:
+      - Icon path resolution
+      - Validation and auto-correction
+      - Duplicate detection
+      - Error reporting
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> JSON Structure</h2>
+
+    <h3>Basic JSON Format</h3>
+    <div class="code-block">
+      {
+      "dataName": "Character Attributes",
+      "dataDescription": "RPG character stat system",
+      "namespacePrefix": "Game.Attributes",
+      "classNamePrefix": "Character",
+      "attributeSuffix": "Attributes",
+      "enumSuffix": "Enum",
+      "attributes": [
+      {
+      "name": "Health",
+      "code": "HP",
+      "iconPath": "Assets/Icons/Health.png",
+      "description": "Hit points - if this reaches 0, you die",
+      "behaviorType": "Vital",
+      "forceInteger": false,
+      "value": 100.0,
+      "minValue": 0.0,
+      "maxValue": 999.0,
+      "canRegenerate": true,
+      "regenerationRate": 1.5,
+      "regenerationDelay": 5.0
+      }
+      ]
+      }
+    </div>
+
+    <h3>AI-Enhanced Template</h3>
+    <div class="code-block">
+      {
+      "_metadata": {
+      "format": "Simple Attribute Forge Template v1.0",
+      "available_behavior_types": {
+      "Basic": "Core stats like Strength, Dexterity",
+      "Vital": "Resources with regeneration like Health, Mana",
+      "Percentage": "Rates and chances like Critical Rate",
+      "Resource": "Currencies and XP (auto-integer)"
+      },
+      "validation_rules": [
+      "Only Vital attributes can have regeneration enabled",
+      "Resource attributes automatically force integer values",
+      "MinValue must be less than MaxValue",
+      "Default value must be within Min/Max range"
+      ],
+      "field_reference": {
+      "name": "Full display name for the attribute",
+      "code": "Short 2-4 character abbreviation (VIG, STR, DEX)",
+      "behaviorType": "Basic/Vital/Percentage/Resource",
+      "canRegenerate": "True allows auto-recovery (Vital only)"
+      }
+      },
+      "attributes": [
+      // Example attributes with comprehensive configurations
+      ]
+      }
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> AI-Assisted Workflows</h2>
+
+    <div class="warning">
+      <strong> Generative AI Disclaimer:</strong><br>
+      The AI-assisted workflow features are provided for convenience only. Users are solely responsible for ensuring
+      ethical use of generative AI tools and compliance with all applicable terms of service, licensing agreements, and
+      legal requirements. The developer and Unity Asset Store disclaim all responsibility for content generated using
+      external AI services. Users must verify all AI-generated content for accuracy, appropriateness, and compliance
+      with their specific use case requirements.
+    </div>
+
+    <h3>Using Templates with AI</h3>
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Export Template</strong><br>
+      Export a template with examples and documentation
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>AI Content Generation</strong><br>
+      Use ChatGPT, Claude, or other AI with the template to generate attributes
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">3</span>
+      <strong>Import Generated Content</strong><br>
+      Import the AI-generated JSON back into the wizard
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">4</span>
+      <strong>Validation & Refinement</strong><br>
+      Review and adjust the imported attributes as needed
+    </div>
+
+    <h3>AI Prompt Example</h3>
+    <div class="code-block">
+      "Using this Simple Attribute Forge template, create attributes for a
+      sci-fi space combat game. I need attributes for:
+
+      - Ship hull integrity and shields
+      - Weapon systems and targeting
+      - Engine power and maneuverability
+      - Crew skills and morale
+
+      Follow the template structure exactly and use appropriate
+      behavior types for each attribute category."
+
+      [Attach exported template JSON]
+    </div>
+
+    <div class="success">
+      <strong> AI Benefits:</strong>
+      <ul>
+        <li>Generate dozens of thematic attributes quickly</li>
+        <li>Maintain consistent naming and balance</li>
+        <li>Explore creative attribute combinations</li>
+        <li>Rapidly prototype different game systems</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Common Use Cases</h2>
+
+    <h3> Project Backup & Sharing</h3>
+    <div class="code-block">
+      // Workflow for backing up configurations
+      1. Complete attribute setup in wizard
+      2. Export JSON for backup
+      3. Store in version control with project
+      4. Share with team members
+      5. Import on different machines/projects
+
+      // Benefits:
+      - Version control for attribute configs
+      - Easy team collaboration
+      - Backup and restore capability
+      - Cross-project reuse
+    </div>
+
+    <h3> Game Variant Creation</h3>
+    <div class="code-block">
+      // Create multiple game variants
+      1. Base Game: Export "FantasyRPG.json"
+      2. Sci-Fi Variant: Modify attribute names/values
+      3. Horror Variant: Adjust for survival mechanics
+      4. Each variant maintains same structure
+      5. Easy switching between game themes
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Validation & Auto-Correction</h2>
+
+    <h3>Automatic Fixes</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4> Naming Issues</h4>
+        <ul>
+          <li>Invalid characters removed</li>
+          <li>Reserved keywords avoided</li>
+          <li>Empty names given defaults</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h4> Value Problems</h4>
+        <ul>
+          <li>Min/Max boundaries enforced</li>
+          <li>Default values clamped to range</li>
+          <li>Resource types force integers</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <h4> Asset Resolution</h4>
+        <ul>
+          <li>Icon paths validated</li>
+          <li>Missing icons handled gracefully</li>
+          <li>Asset references updated</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Error Messages</h3>
+    <div class="code-block">
+      // Common validation messages
+       "Imported 12 attributes successfully"
+       "Attribute 'Health Points' renamed to 'HealthPoints' (invalid spaces)"
+       "Icon 'Assets/Missing.png' not found - will be cleared"
+       "Invalid JSON format - check syntax"
+       "No valid attributes found in file"
+
+      // The system provides:
+      - Clear error descriptions
+      - Suggested corrections
+      - Graceful fallbacks
+      - Detailed import reports
+    </div>
+
+    <div class="warning">
+      <strong> Best Practices:</strong>
+      <ul>
+        <li>Always review imported attributes before generating code</li>
+        <li>Test import on small JSON files first</li>
+        <li>Keep backup copies of working configurations</li>
+        <li>Validate AI-generated content before importing</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2> Import/Export Checklist</h2>
+
+    <h3>Before Exporting</h3>
+    <ul>
+      <li> All attribute names are meaningful</li>
+      <li> Descriptions are complete and helpful</li>
+      <li> Behavior types are correctly assigned</li>
+      <li> Values and ranges make sense for your game</li>
+      <li> Icons are assigned where needed</li>
+    </ul>
+
+    <h3>Before Importing</h3>
+    <ul>
+      <li> JSON file is from a trusted source</li>
+      <li> Backup your current configuration</li>
+      <li> Understand the import strategy (Replace vs Add)</li>
+      <li> Review the JSON structure for validity</li>
+      <li> Check for potential naming conflicts</li>
+    </ul>
+
+    <h3>After Import</h3>
+    <ul>
+      <li> Review all imported attributes</li>
+      <li> Check validation messages</li>
+      <li> Verify behavior types are correct</li>
+      <li> Test the wizard workflow end-to-end</li>
+      <li> Generate code to verify everything works</li>
+    </ul>
+  </div>
+
+  <div class="page-nav">
+    <a href="ui-binding.html">← Previous: UI Binding</a>
+    <a href="troubleshooting.html">Next: Troubleshooting →</a>
+  </div>
+</body>
+
+</html>

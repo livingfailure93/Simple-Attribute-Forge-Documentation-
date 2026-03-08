@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formula Pipeline - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html">Quick Start</a></li>
+            <li><a href="formula-pipeline.html" class="active">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Formula Pipeline
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Formula Pipeline</h1>
+        <p>Understanding the 7-step mathematical calculation system</p>
+    </div>
+
+    <!-- Pipeline Overview -->
+    <div class="section">
+        <h2>Pipeline Overview</h2>
+        
+        <div class="formula-container">
+            <div class="formula-header">Complete Mathematical Formula</div>
+            <div class="formula-breakdown">Result = PostFlat + ((Start + Flat) × (1 + AddPct% - SubPct%) × Multipliers)</div>
+        </div>
+        
+        <p>Every formula in the Ultimate system follows this exact 7-step pipeline, ensuring consistent and predictable calculations across all attribute relationships.</p>
+        
+        <h3>Pipeline Flow Visualization</h3>
+        <div class="pipeline-step">Step 1: Starting Point (Zero or TargetBase)</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 2: Flat Bonuses (Add/Subtract)</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 3: Additive Percentages</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 4: Subtractive Percentages</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 5: Multipliers</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 6: Post-Flat Bonuses</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-step">Step 7: Apply Mode (Override/Add/Subtract)</div>
+    </div>
+
+    <!-- Step 1: Starting Point -->
+    <div class="section">
+        <h2>Step 1: Starting Point</h2>
+        <p>Determines the initial value for all subsequent calculations.</p>
+        
+        <h3>Start Modes</h3>
+        <div class="code-block">public enum StartMode
+{
+    Zero,        // Begin calculation from 0
+    TargetBase   // Begin from target attribute's baseValue
+}</div>
+
+        <h3>When to Use Each Mode</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Zero Mode</h4>
+                <p><strong>Use for:</strong> Creating new calculated values</p>
+                <ul>
+                    <li>Damage calculations based on STR</li>
+                    <li>Spell power based on INT</li>
+                    <li>Movement speed based on AGI</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>TargetBase Mode</h4>
+                <p><strong>Use for:</strong> Modifying existing values</p>
+                <ul>
+                    <li>Level-based health scaling</li>
+                    <li>Equipment bonuses to existing stats</li>
+                    <li>Percentage modifications</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Practical Examples</h3>
+        <div class="calculation-step">
+            <strong>Zero Mode:</strong> STR 15 → Damage calculation starts at 0, adds STR bonuses
+        </div>
+        <div class="calculation-step">
+            <strong>TargetBase Mode:</strong> Health 100 → Level scaling starts at 100, adds level bonuses
+        </div>
+    </div>
+
+    <!-- Step 2: Flat Bonuses -->
+    <div class="section">
+        <h2>Step 2: Flat Bonuses</h2>
+        <p>Add or subtract flat values based on source attributes.</p>
+        
+        <h3>Formula Structure</h3>
+        <div class="code-block">flatTotal = Σ(sourceValue × multiplier × operation)</div>
+        
+        <h3>Configuration</h3>
+        <div class="code-block">public class FormulaRow
+{
+    public string source;           // Source attribute (e.g., "Strength")
+    public MathOperation operation; // Add or Subtract
+    public float value;             // Multiplier (e.g., 2.0 for "2 per point")
+}</div>
+
+        <h3>Real Examples</h3>
+        <div class="calculation-step">
+            <strong>STR → Damage:</strong> Strength 15 × 2.0 = +30 damage
+        </div>
+        <div class="calculation-step">
+            <strong>Multiple Sources:</strong> STR 15 × 1.5 + END 12 × 0.8 = 22.5 + 9.6 = +32.1
+        </div>
+        <div class="calculation-step">
+            <strong>Subtractive:</strong> Weight 50 × -0.1 = -5 movement speed
+        </div>
+
+        <h3>Step-by-Step Calculation</h3>
+        <div class="formula-container">
+            <div class="formula-header">Example: Multi-Source Damage Formula</div>
+            <div class="code-block">Sources:
+• Strength: 20 (×1.5 multiplier)
+• Dexterity: 15 (×0.8 multiplier)  
+• Intelligence: 10 (×-0.2 multiplier, reduces physical damage)
+
+Calculation:
+(20 × 1.5) + (15 × 0.8) + (10 × -0.2) = 30 + 12 - 2 = 40</div>
+        </div>
+    </div>
+
+    <!-- Step 3: Additive Percentages -->
+    <div class="section">
+        <h2>Step 3: Additive Percentages</h2>
+        <p>Percentage increases based on source attributes. Values are in percentage points (10 = 10%).</p>
+        
+        <h3>Formula Structure</h3>
+        <div class="code-block">addPctTotal = Σ(sourceValue × percentage) / 100</div>
+        
+        <h3>Typical Use Cases</h3>
+        <ul>
+            <li><strong>Critical Chance:</strong> Each Luck point adds 0.5% crit chance</li>
+            <li><strong>Spell Damage:</strong> Each INT point adds 2% spell damage</li>
+            <li><strong>Attack Speed:</strong> Each AGI point adds 1% attack speed</li>
+        </ul>
+
+        <h3>Calculation Example</h3>
+        <div class="formula-container">
+            <div class="formula-header">Intelligence → Spell Damage Bonus</div>
+            <div class="code-block">Configuration:
+• Source: Intelligence
+• Percentage: 2 (means 2% per point)
+
+With Intelligence = 25:
+addPctTotal = (25 × 2) / 100 = 50 / 100 = 0.5 (50% increase)</div>
+        </div>
+    </div>
+
+    <!-- Step 4: Subtractive Percentages -->
+    <div class="section">
+        <h2>Step 4: Subtractive Percentages</h2>
+        <p>Percentage decreases based on source attributes. Combined with additive percentages in final calculation.</p>
+        
+        <h3>Formula Structure</h3>
+        <div class="code-block">subPctTotal = Σ(sourceValue × percentage) / 100
+combinedPct = (1 + addPct - subPct)</div>
+        
+        <h3>Common Applications</h3>
+        <ul>
+            <li><strong>Encumbrance:</strong> Each point of overweight reduces movement by 1%</li>
+            <li><strong>Fatigue:</strong> Low stamina reduces accuracy</li>
+            <li><strong>Armor Penalty:</strong> Heavy armor reduces casting speed</li>
+        </ul>
+
+        <h3>Combined Percentage Example</h3>
+        <div class="formula-container">
+            <div class="formula-header">Movement Speed with Bonuses and Penalties</div>
+            <div class="code-block">Additive: AGI 20 × 1% = +20%
+Subtractive: Encumbrance 15 × 0.5% = -7.5%
+Combined: 1 + 0.20 - 0.075 = 1.125 (12.5% net increase)
+
+Final calculation: baseSpeed × 1.125</div>
+        </div>
+    </div>
+
+    <!-- Step 5: Multipliers -->
+    <div class="section">
+        <h2>Step 5: Multipliers</h2>
+        <p>Static multiplication factors that compound with each other.</p>
+        
+        <h3>Formula Structure</h3>
+        <div class="code-block">multiplierTotal = factor1 × factor2 × factor3...</div>
+        
+        <h3>Configuration</h3>
+        <div class="code-block">public class MultiplierRow
+{
+    public string label;    // Description (e.g., "Equipment Bonus")
+    public float factor;    // Multiplication value (e.g., 1.2 for 20% increase)
+}</div>
+
+        <h3>Common Multiplier Sources</h3>
+        <ul>
+            <li><strong>Equipment Sets:</strong> Wearing full armor set provides ×1.15 defense</li>
+            <li><strong>Class Bonuses:</strong> Warrior class gets ×1.25 melee damage</li>
+            <li><strong>Legendary Effects:</strong> Rare items provide ×1.5 effectiveness</li>
+            <li><strong>Difficulty Scaling:</strong> Hard mode ×0.8 player health</li>
+        </ul>
+
+        <h3>Compounding Example</h3>
+        <div class="formula-container">
+            <div class="formula-header">Multiple Multipliers</div>
+            <div class="code-block">Equipment Bonus: ×1.2
+Class Specialization: ×1.15  
+Legendary Item: ×1.3
+
+Total Multiplier: 1.2 × 1.15 × 1.3 = 1.794 (79.4% increase)</div>
+        </div>
+    </div>
+
+    <!-- Step 6: Post-Flat Bonuses -->
+    <div class="section">
+        <h2>Step 6: Post-Flat Bonuses</h2>
+        <p>Final flat adjustments applied after all percentage and multiplier calculations.</p>
+        
+        <h3>Formula Structure</h3>
+        <div class="code-block">postFlatTotal = Σ(amount × additive_flag)</div>
+        
+        <h3>Configuration</h3>
+        <div class="code-block">public class PostFlatRow
+{
+    public string label;        // Description
+    public float amount;        // Flat value
+    public bool isAdditive;     // true = add, false = subtract
+}</div>
+
+        <h3>Ideal Use Cases</h3>
+        <ul>
+            <li><strong>Base Values:</strong> Every character has 50 base health</li>
+            <li><strong>Set Bonuses:</strong> Armor set adds flat +25 defense after all calculations</li>
+            <li><strong>Minimum Guarantees:</strong> Ensure weapons deal at least 10 damage</li>
+            <li><strong>Fixed Penalties:</strong> Curse effect always removes 20 points</li>
+        </ul>
+
+        <h3>Why Post-Flat Matters</h3>
+        <div class="formula-container">
+            <div class="formula-header">Comparison: Flat vs Post-Flat</div>
+            <div class="code-block">Example: 20% multiplier applied
+
+Flat Bonus (+10): (10 + 10) × 1.2 = 24
+Post-Flat Bonus (+10): (10 × 1.2) + 10 = 22
+
+Post-flat ensures the +10 is never multiplied by other effects.</div>
+        </div>
+    </div>
+
+    <!-- Step 7: Apply Mode -->
+    <div class="section">
+        <h2>Step 7: Apply Mode</h2>
+        <p>Determines how the calculated result affects the target attribute's formulaBonus.</p>
+        
+        <h3>Apply Modes</h3>
+        <div class="code-block">public enum ApplyMode
+{
+    OverrideBase,      // formulaBonus = result - baseValue
+    AddToBase,         // formulaBonus = result  
+    SubtractFromBase   // formulaBonus = -result
+}</div>
+
+        <h3>Mode Explanations</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>OverrideBase</h4>
+                <p><strong>Effect:</strong> Sets totalValue to exactly the calculated result</p>
+                <p><strong>Use for:</strong> Level-scaled attributes where the formula determines the final value</p>
+                <div class="code-block">// Level 5 → Health should be exactly 200
+// baseValue: 100, result: 200
+// formulaBonus = 200 - 100 = 100
+// totalValue = 100 + 100 = 200 </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>AddToBase</h4>
+                <p><strong>Effect:</strong> Adds calculated result as a bonus to baseValue</p>
+                <p><strong>Use for:</strong> Bonus calculations that stack with base values</p>
+                <div class="code-block">// STR 10 → adds 20 damage bonus  
+// baseValue: 50, result: 20
+// formulaBonus = 20
+// totalValue = 50 + 20 = 70 </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>SubtractFromBase</h4>
+                <p><strong>Effect:</strong> Subtracts calculated result from baseValue</p>
+                <p><strong>Use for:</strong> Penalty systems and encumbrance effects</p>
+                <div class="code-block">// Weight 30 → reduces speed by 15
+// baseValue: 100, result: 15  
+// formulaBonus = -15
+// totalValue = 100 + (-15) = 85 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete Pipeline Example -->
+    <div class="section">
+        <h2>Complete Pipeline Example</h2>
+        <p>Let's trace through a complex formula that uses multiple pipeline steps.</p>
+        
+        <div class="formula-container">
+            <div class="formula-header">Complex Spell Damage Formula</div>
+            <div class="code-block">Target: Spell Damage
+Source Attributes: Intelligence 25, Level 8, Magic Weapon +15
+
+Configuration:
+• Start Mode: Zero
+• Flat: Intelligence × 2.0 = 50
+• Add%: Level × 3% = 24%  
+• Multiplier: Magic Weapon Bonus ×1.3
+• Post-Flat: Base Spell Power +20
+• Apply: Add to Base</div>
+        </div>
+
+        <h3>Step-by-Step Calculation</h3>
+        
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Starting Point:</strong> Zero Mode → start = 0
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Flat Bonuses:</strong> Intelligence 25 × 2.0 = 50 → total = 0 + 50 = 50
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Additive %:</strong> Level 8 × 3% = 24% → addPct = 0.24
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Subtractive %:</strong> None → subPct = 0
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Multipliers:</strong> Magic Weapon ×1.3 → mul = 1.3
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">6</span>
+            <strong>Post-Flat:</strong> Base Spell Power +20 → postFlat = 20
+        </div>
+        
+        <div class="step-container">
+            <span class="step-number">7</span>
+            <strong>Final Calculation:</strong> 20 + ((0 + 50) × (1 + 0.24 - 0) × 1.3) = 20 + (50 × 1.24 × 1.3) = 20 + 80.6 = 100.6
+        </div>
+
+        <div class="success">
+            <strong>Result:</strong> The Spell Damage attribute gains 100.6 points of formulaBonus, added to its baseValue.
+        </div>
+    </div>
+
+    <!-- Pipeline Design Principles -->
+    <div class="section">
+        <h2>Pipeline Design Principles</h2>
+        
+        <h3>Order of Operations</h3>
+        <p>The pipeline order is carefully designed to produce intuitive results:</p>
+        
+        <ol>
+            <li><strong>Flat bonuses first:</strong> Raw attribute scaling</li>
+            <li><strong>Percentages next:</strong> Modify the flat total proportionally</li>
+            <li><strong>Multipliers after:</strong> Apply equipment and class bonuses</li>
+            <li><strong>Post-flat last:</strong> Guaranteed minimums and set bonuses</li>
+        </ol>
+
+        <h3>Mathematical Properties</h3>
+        <div class="info">
+            <strong>Additive vs Multiplicative:</strong>
+            <ul>
+                <li>Flat bonuses are additive with each other</li>
+                <li>Percentage bonuses are additive with each other, then multiplied</li>
+                <li>Multipliers are multiplicative with each other</li>
+                <li>Post-flat bonuses are additive and never multiplied</li>
+            </ul>
+        </div>
+
+        <h3>Preventing Common Issues</h3>
+        <div class="warning">
+            <strong>Feedback Loop Prevention:</strong> Formulas always read from baseValue, never totalValue, preventing infinite loops and accumulation errors.
+        </div>
+        
+        <div class="code-block">//  CORRECT - Formula reads baseValue
+float sourceValue = attributes.GetAttributeValue("Strength"); // Returns baseValue
+
+//  INCORRECT - Would create feedback
+float sourceValue = attributes.strength.totalValue; // Includes formula results</div>
+    </div>
+
+    <!-- Advanced Pipeline Features -->
+    <div class="section">
+        <h2>Advanced Pipeline Features</h2>
+        
+        <h3>Conditional Breakpoints</h3>
+        <p>Breakpoints can modify any step of the pipeline based on conditions:</p>
+        
+        <div class="calculation-step">
+            <strong>Threshold Breakpoint:</strong> When Level ≥ 20, add ×1.5 multiplier to damage formulas
+        </div>
+        <div class="calculation-step">
+            <strong>Step Breakpoint:</strong> Every 5 STR points adds +10 flat damage bonus
+        </div>
+
+        <h3>Multiple Formula Integration</h3>
+        <p>Multiple formulas can target the same attribute - their results are summed:</p>
+        
+        <div class="code-block">Health Total Formula Bonus:
+• LevelHealth formula: +80
+• ConstitutionHealth formula: +30  
+• SetBonusHealth formula: +50
+• Total formulaBonus: 160
+
+Final Health: baseValue(100) + formulaBonus(160) = 260</div>
+
+        <h3>Execution Order</h3>
+        <p>Use execution order to create formula dependencies:</p>
+        
+        <div class="code-block">Order 0: Calculate base damage (STR → Damage)
+Order 1: Calculate spell power (INT → SpellPower)  
+Order 2: Calculate total DPS (Damage + SpellPower → DPS)</div>
+    </div>
+
+    <!-- Pipeline Testing -->
+    <div class="section">
+        <h2>Testing the Pipeline</h2>
+        
+        <h3>Wizard Test Preview</h3>
+        <p>The Influence Wizard includes a live test panel that shows pipeline calculations in real-time:</p>
+        
+        <ol>
+            <li>Set test values for all source attributes</li>
+            <li>Select a formula to test</li>
+            <li>View step-by-step breakdown in the preview panel</li>
+            <li>Modify values to test edge cases</li>
+        </ol>
+
+        <h3>Runtime Testing</h3>
+        <div class="code-block">// Test specific formula with custom values
+var testValues = new Dictionary&lt;string, float&gt;
+{
+    {"Strength", 20},
+    {"Intelligence", 15},
+    {"Level", 10}
+};
+
+float result = orchestrator.TestFormula("MyFormula", testValues);
+Debug.Log($"Formula result: {result}");</div>
+
+        <h3>Debug Mode Output</h3>
+        <div class="code-block">// Enable detailed logging
+orchestrator.debugMode = true;
+
+// Console output:
+[Pipeline] StrengthDamage calculation:
+ Step 1 (Start): 0
+ Step 2 (Flat): Strength(20) × 1.5 = 30 → total: 30
+ Step 3 (Add%): None → 0%
+ Step 4 (Sub%): None → 0%  
+ Step 5 (Mul): Equipment ×1.2 → total: 36
+ Step 6 (PostFlat): Base +10 → total: 46
+ Step 7 (Apply): AddToBase → formulaBonus = 46</div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Pipeline Best Practices</h2>
+        
+        <h3>Step Selection Guidelines</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Use Flat Bonuses For</h4>
+                <ul>
+                    <li>Direct attribute scaling (STR → damage)</li>
+                    <li>Linear progressions</li>
+                    <li>Multiple source combinations</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Use Percentages For</h4>
+                <ul>
+                    <li>Proportional scaling effects</li>
+                    <li>Stat-based efficiency bonuses</li>
+                    <li>Diminishing returns simulation</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Use Multipliers For</h4>
+                <ul>
+                    <li>Equipment and class bonuses</li>
+                    <li>Situational modifiers</li>
+                    <li>Difficulty scaling</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Use Post-Flat For</h4>
+                <ul>
+                    <li>Minimum value guarantees</li>
+                    <li>Set bonuses</li>
+                    <li>Fixed additions</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Performance Tips</h3>
+        <ul>
+            <li>Use fewer pipeline steps when possible - empty steps are skipped automatically</li>
+            <li>Group related calculations into single formulas rather than multiple simple ones</li>
+            <li>Use execution order to minimize recalculation chains</li>
+            <li>Consider Manual update mode for turn-based games</li>
+        </ul>
+
+        <h3>Common Mistakes</h3>
+        <div class="warning">
+            <strong>Avoid These Patterns:</strong>
+            <ul>
+                <li>Using totalValue as source in formulas (creates feedback)</li>
+                <li>Multiple formulas doing the same calculation</li>
+                <li>Overly complex single formulas (split into multiple simpler ones)</li>
+                <li>Ignoring execution order for dependent calculations</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="api-reference-pro.html">← API Reference</a>
+        <a href="formula-examples.html">Formula Examples →</a>
+    </div>
+</body>
+</html>

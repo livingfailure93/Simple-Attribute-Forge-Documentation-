@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start Guide - Simple Attribute Forge - Influence System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-pro.html" class="active">Quick Start</a></li>
+            <li><a href="formula-pipeline.html">Formula Pipeline</a></li>
+            <li><a href="formula-examples.html">Examples</a></li>
+            <li><a href="breakpoints.html">Breakpoints</a></li>
+            <li><a href="influence-wizard.html">Wizard Guide</a></li>
+            <li><a href="orchestrator-setup.html">Setup</a></li>
+            <li><a href="api-reference-pro.html">API Reference</a></li>
+            <li><a href="migration-guide.html">Migration</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-pro.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <span class="version-link current">Influence System</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Simple Attribute Forge - Influence System</a> / Quick Start Guide
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+    
+    <div class="section">
+        <h1>Quick Start Guide</h1>
+        <p>Create your first formula system in 15 minutes</p>
+    </div>
+
+    <!-- Prerequisites -->
+    <div class="section">
+        <h2>Before You Begin</h2>
+        
+        <div class="warning">
+            <strong>Important:</strong> The Ultimate system extends the base Simple Attribute Forge system. You must have the base system installed and at least one attribute container generated before proceeding.
+        </div>
+        
+        <h3>Prerequisites Checklist</h3>
+        <ul>
+            <li> Simple Attribute Forge (base system) installed</li>
+            <li> Attribute container generated (e.g., CharacterAttributes.cs)</li>
+            <li> AttributeData ScriptableObject created</li>
+            <li> GameObject with attribute container component</li>
+        </ul>
+        
+        <h3>Verify Your Base System</h3>
+        <p>Check that your attribute container has the three-tier value system:</p>
+        
+        <div class="code-block">// Your generated component should look like this:
+public class CharacterAttributes : MonoBehaviour, ISimpleAttributeDataSource
+{
+    public SimpleRuntimeAttribute health;
+    public SimpleRuntimeAttribute mana;
+    public SimpleRuntimeAttribute strength;
+    public SimpleRuntimeAttribute intelligence;
+    
+    // Three-tier values available:
+    // health.baseValue     - Base value
+    // health.formulaBonus  - Pro system calculations
+    // health.totalValue    - Final combined value
+}</div>
+    </div>
+
+    <!-- Complete Tutorial -->
+    <div class="section">
+        <h2>Complete Tutorial: RPG Character Progression</h2>
+        <p>We'll create a complete RPG character system where Level affects Health, and Strength affects Damage, with breakpoint bonuses.</p>
+        
+        <!-- Step 1 -->
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Open the Influence Wizard</strong>
+        </div>
+        
+        <p>Navigate to <strong>Window → Simple Attribute Forge → Influence Wizard</strong></p>
+        
+        <div class="info">
+            The Influence Wizard is a 4-step process: Setup → Formulas → Configuration → Generate
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Setup Tab: Connect Your Attributes</strong>
+        </div>
+        
+        <ol>
+            <li>Click the <strong>Setup</strong> tab</li>
+            <li>In <strong>Attribute Data Source</strong>, select your AttributeData ScriptableObject</li>
+            <li>Verify your attributes appear in the "Available Attributes" list</li>
+        </ol>
+        
+        <div class="code-block">Available Attributes Found:
+• Health (Vital)
+• Mana (Vital) 
+• Strength (Basic)
+• Intelligence (Basic)
+• Level (Resource)</div>
+
+        <!-- Step 3 -->
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Formulas Tab: Create Your First Formula</strong>
+        </div>
+        
+        <h4>Formula 1: Level Affects Health</h4>
+        <ol>
+            <li>Click the <strong>Formulas</strong> tab</li>
+            <li>Click <strong>Add Formula</strong></li>
+            <li>Set <strong>Name:</strong> "LevelHealth"</li>
+            <li>Set <strong>Target Attribute:</strong> "Health"</li>
+            <li>Set <strong>Start Mode:</strong> "Zero"</li>
+            <li>In <strong>Flat Bonuses</strong>, click <strong>Add Row</strong></li>
+            <li>Set <strong>Source:</strong> "Level", <strong>Operation:</strong> "Add", <strong>Value:</strong> 20</li>
+            <li>Set <strong>Apply Mode:</strong> "Add to Base"</li>
+        </ol>
+        
+        <div class="formula-container">
+            <div class="formula-header">LevelHealth Formula Result</div>
+            <div class="calculation-step">Each level adds 20 health points</div>
+            <div class="calculation-step">Level 1: +20 health, Level 5: +100 health, Level 10: +200 health</div>
+        </div>
+
+        <h4>Formula 2: Strength Affects Damage</h4>
+        <ol>
+            <li>Click <strong>Add Formula</strong> again</li>
+            <li>Set <strong>Name:</strong> "StrengthDamage"</li>
+            <li>Set <strong>Target Attribute:</strong> "Damage" (if you have it, or any Basic attribute)</li>
+            <li>In <strong>Flat Bonuses</strong>, add: Source "Strength", Value 1.5</li>
+            <li>In <strong>Post-Flat Bonuses</strong>, add: Label "Base Damage", Amount 10</li>
+        </ol>
+        
+        <div class="formula-container">
+            <div class="formula-header">StrengthDamage Formula Result</div>
+            <div class="calculation-step">Base damage: 10 points</div>
+            <div class="calculation-step">Each STR point adds 1.5 damage</div>
+            <div class="calculation-step">STR 10: 10 + (10 × 1.5) = 25 damage</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Test Your Formulas</strong>
+        </div>
+        
+        <p>Use the Test Preview panel on the right side of the Formulas tab:</p>
+        <ol>
+            <li>Set test values for your attributes (Level: 5, Strength: 10)</li>
+            <li>Select your formula in the list</li>
+            <li>View the real-time calculation breakdown</li>
+        </ol>
+        
+        <div class="success">
+            The test panel shows live calculations as you adjust values, letting you validate formulas before generation.
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Configuration Tab: System Settings</strong>
+        </div>
+        
+        <ol>
+            <li>Click the <strong>Configuration</strong> tab</li>
+            <li>Set <strong>System Name:</strong> "CharacterInfluence"</li>
+            <li>Set <strong>Namespace:</strong> "MyGame" (optional)</li>
+            <li>Keep default paths or customize output locations</li>
+            <li>Set <strong>Update Mode:</strong> "Smart" (recommended)</li>
+        </ol>
+
+        <!-- Step 6 -->
+        <div class="step-container">
+            <span class="step-number">6</span>
+            <strong>Generate Tab: Create Your System</strong>
+        </div>
+        
+        <ol>
+            <li>Click the <strong>Generate</strong> tab</li>
+            <li>Review the generation summary</li>
+            <li>Click <strong>Generate System</strong></li>
+            <li>Wait for compilation to complete</li>
+        </ol>
+        
+        <div class="info">
+            <strong>Generated Files:</strong>
+            <ul>
+                <li>CharacterInfluence.cs - Orchestrator MonoBehaviour</li>
+                <li>Formula assets in Assets/Generated/InfluenceSystem/</li>
+                <li>Backup JSON export for version control</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Integration -->
+    <div class="section">
+        <h2>Integration with Your GameObject</h2>
+        
+        <h3>Add the Orchestrator</h3>
+        <ol>
+            <li>Select your GameObject with the CharacterAttributes component</li>
+            <li>Click <strong>Add Component</strong></li>
+            <li>Search for and add <strong>CharacterInfluence</strong></li>
+            <li>In the inspector, assign the <strong>Attribute System</strong> field to your CharacterAttributes component</li>
+            <li>The <strong>Formulas</strong> list should auto-populate with your created formula assets</li>
+        </ol>
+        
+        <div class="code-block">// Your GameObject now has:
+CharacterAttributes (Base System)
+├── health.baseValue = 100
+├── strength.baseValue = 10
+└── level.baseValue = 5
+
+CharacterInfluence (Pro System)
+├── LevelHealth.asset
+└── StrengthDamage.asset</div>
+
+        <h3>Test the Integration</h3>
+        <ol>
+            <li>Enter Play mode</li>
+            <li>Check your attribute values in the inspector</li>
+            <li>Modify the Level attribute's baseValue</li>
+            <li>Watch Health's formulaBonus update automatically</li>
+        </ol>
+        
+        <div class="success">
+            <strong>Success!</strong> Your formulas are now automatically calculating and integrating with your attribute system.
+        </div>
+    </div>
+
+    <!-- Using in Code -->
+    <div class="section">
+        <h2>Using in Your Code</h2>
+        
+        <h3>Accessing Calculated Values</h3>
+        <div class="code-block">public class PlayerController : MonoBehaviour
+{
+    private CharacterAttributes attributes;
+    
+    void Start()
+    {
+        attributes = GetComponent&lt;CharacterAttributes&gt;();
+    }
+    
+    void AttackEnemy()
+    {
+        // Use totalValue for gameplay calculations
+        // This includes base + formula + modifier bonuses
+        float damage = attributes.strength.totalValue * weaponMultiplier;
+        
+        // For Vitals, show current/max
+        if (attributes.health.behaviorType == SimpleBehaviorType.Vital)
+        {
+            healthUI.text = $"{attributes.health.currentValue}/{attributes.health.totalValue}";
+        }
+    }
+    
+    void LevelUp()
+    {
+        // Modify baseValue for permanent changes
+        attributes.level.baseValue += 1;
+        
+        // Formulas automatically recalculate in Smart mode
+        // health.formulaBonus will update automatically
+    }
+}</div>
+
+        <h3>Manual Recalculation</h3>
+        <div class="code-block">public class TurnBasedManager : MonoBehaviour
+{
+    private CharacterInfluence orchestrator;
+    
+    void Start()
+    {
+        orchestrator = GetComponent&lt;CharacterInfluence&gt;();
+        // Set to Manual mode for turn-based games
+        orchestrator.recalculationMode = RecalculationMode.Manual;
+    }
+    
+    void EndTurn()
+    {
+        // Apply all stat changes during turn
+        ApplyEquipmentChanges();
+        ApplyLevelUps();
+        ApplyBuffs();
+        
+        // Single recalculation at turn end
+        orchestrator.RecalculateAll();
+    }
+}</div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="section">
+        <h2>Next Steps</h2>
+        
+        <h3>Expand Your System</h3>
+        <ul>
+            <li><strong>Add Breakpoints:</strong> Create level-based bonuses that activate at specific thresholds</li>
+            <li><strong>Complex Formulas:</strong> Use multiple pipeline steps for sophisticated calculations</li>
+            <li><strong>Conditional Logic:</strong> Create formulas that activate only under certain conditions</li>
+            <li><strong>Performance Tuning:</strong> Optimize update modes for your game type</li>
+        </ul>
+        
+        <h3>Learn More</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><a href="formula-pipeline.html">Formula Pipeline</a></h4>
+                <p>Deep dive into the 7-step mathematical system</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="formula-examples.html">Formula Examples</a></h4>
+                <p>Extensive collection of real-world formula patterns</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="breakpoints.html">Breakpoint System</a></h4>
+                <p>Advanced conditional effects and threshold bonuses</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4><a href="orchestrator-setup.html">Orchestrator Setup</a></h4>
+                <p>Advanced configuration and performance tuning</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Common First Questions -->
+    <div class="section">
+        <h2>Common First Questions</h2>
+        
+        <h3>Q: Can I modify formula assets after generation?</h3>
+        <p><strong>A:</strong> Yes! Formula assets are ScriptableObjects that can be edited in the Inspector. Changes take effect immediately in Smart mode or on next manual recalculation.</p>
+        
+        <h3>Q: How do I add temporary buffs?</h3>
+        <p><strong>A:</strong> Use the modifierBonus field on attributes for temporary effects. The Ultimate system only manages formulaBonus.</p>
+        
+        <div class="code-block">// Temporary buff example
+attributes.strength.modifierBonus += 5;  // +5 STR buff
+// Remove after duration
+StartCoroutine(RemoveBuffAfter(attributes.strength, 5, 30f));</div>
+        
+        <h3>Q: Can formulas reference other formulas?</h3>
+        <p><strong>A:</strong> Formulas read from baseValue and write to formulaBonus, preventing direct formula-to-formula references. Use execution order for formula dependencies.</p>
+        
+        <h3>Q: What happens if I change attribute names?</h3>
+        <p><strong>A:</strong> Regenerate your influence system after changing attribute names. The wizard will detect missing references and prompt for updates.</p>
+    </div>
+
+    <!-- Troubleshooting Quick Fixes -->
+    <div class="section">
+        <h2>Quick Troubleshooting</h2>
+        
+        <div class="warning">
+            <strong>Formulas not calculating?</strong>
+            <ol>
+                <li>Check that orchestrator's Attribute System field is assigned</li>
+                <li>Verify formula assets are in the Formulas list</li>
+                <li>Ensure Update Mode is set to Smart or Manual recalculation is called</li>
+            </ol>
+        </div>
+        
+        <div class="info">
+            <strong>Values seem wrong?</strong>
+            <ol>
+                <li>Use the Test Preview panel in the wizard to verify calculations</li>
+                <li>Check Apply Mode setting (Override vs Add vs Subtract)</li>
+                <li>Verify source attribute names match exactly</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="index.html">← Back to Home</a>
+        <a href="formula-pipeline.html">Formula Pipeline →</a>
+    </div>
+</body>
+</html>

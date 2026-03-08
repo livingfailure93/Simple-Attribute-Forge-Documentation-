@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Scene - Simple Attribute Forge</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <!-- Format Selector -->
+  <div class="format-selector">
+    <span class="format-label">View Format:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+      <li><a href="wizard-guide.html">Wizard Guide</a></li>
+      <li><a href="runtime-usage.html">Runtime Usage</a></li>
+      <li><a href="demo-manager.html" class="active">Demo Scene</a></li>
+      <li><a href="import-export.html">Import/Export</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <span class="version-link current">Base (Free)</span>
+        <a href="../modifiers/index.html" class="version-link ultimate">Ultimate (sold separately)</a>
+    </div>
+
+  <!-- Header Image -->
+  <div class="header"></div>
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / Demo Scene
+  </div>
+
+  <div class="section">
+    <h1>Base Demo Scene</h1>
+    <p>An interactive demo showcasing core attribute features with three panels: Character Stats, Stat Checks, and Combat Simulation. No generated code or ScriptableObjects required - everything runs from code.</p>
+  </div>
+
+  <div class="section">
+    <h2>Quick Setup</h2>
+
+    <div class="step-container">
+      <span class="step-number">1</span>
+      <strong>Open the Demo Scene</strong><br>
+      Navigate to <code>Simple Attribute Forge/Base/FreeDemo/BaseDemo.unity</code> and open it
+    </div>
+
+    <div class="step-container">
+      <span class="step-number">2</span>
+      <strong>Hit Play</strong><br>
+      The demo is fully self-contained - just press Play to see it in action
+    </div>
+
+    <div class="success">
+      <strong>That's it!</strong> The demo creates all attributes from code at runtime. No wizard setup, no generated ScriptableObjects needed.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Three-Panel Layout</h2>
+    <p>The demo scene features three side-by-side panels, each demonstrating different aspects of the attribute system:</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Character Stats (Left)</h4>
+        <p>Live attribute display with interactive controls:</p>
+        <ul>
+          <li>8 attributes: HP, Mana, Stamina (Vitals) + STR, DEX, INT, DEF, LCK (Basic)</li>
+          <li>Real-time regeneration with visual bars</li>
+          <li>Take Damage (-35 HP)</li>
+          <li>Heal (+50 HP)</li>
+          <li>Cast Spell (-25 MP)</li>
+          <li>Rest (Restore All)</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Stat Checks (Middle)</h4>
+        <p>Random challenges that test your attributes:</p>
+        <ul>
+          <li>Random stat check with difficulty rating</li>
+          <li>Pass/fail based on your current stat values</li>
+          <li>Train (+2 Base) to permanently increase stats</li>
+          <li>Drink Potion (+8 for 5 seconds) for temporary boost</li>
+          <li>Shows modifierBonus in action</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h4>Combat Sim (Right)</h4>
+        <p>Auto-battle between Player and a Goblin enemy:</p>
+        <ul>
+          <li>Turn-based combat log</li>
+          <li>Damage based on STR vs DEF</li>
+          <li>Enemy has its own attribute set</li>
+          <li>Start Fight / Reset buttons</li>
+          <li>Demonstrates attribute interaction patterns</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>What It Demonstrates</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Regeneration System</h4>
+        <p>Take damage and watch HP regenerate automatically after a delay. Stamina and Mana also regenerate. The demo uses <code>ModifyValue()</code> which triggers the regen system.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Three-Tier Values</h4>
+        <p>The potion button adds to <code>modifierBonus</code> temporarily, showing the base + modifier = total calculation in real time. Train adds to <code>baseValue</code> permanently.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Creating Attributes in Code</h4>
+        <p>All attributes are created programmatically using <code>SimpleRuntimeAttribute</code> constructors - no wizard generation needed for simple use cases.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Behavior Types</h4>
+        <p>Vitals (HP/Mana/Stamina) show current/max with regeneration. Basic stats (STR/DEX/INT) show totalValue. Demonstrates when to use each type.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Key Code Patterns</h2>
+
+    <h3>Creating Attributes from Code</h3>
+    <div class="code-block">
+// Vital attribute with regeneration
+var hpDef = new SimpleAttributeValue {
+    attributeName = "Health", code = "HP",
+    behaviorType = SimpleBehaviorType.Vital,
+    baseValue = 100, minValue = 0, maxValue = 200,
+    canRegenerate = true, regenerationRate = 3f, regenerationDelay = 2f
+};
+var hp = new SimpleRuntimeAttribute(hpDef);
+
+// Basic stat (no regeneration)
+var strDef = new SimpleAttributeValue {
+    attributeName = "Strength", code = "STR",
+    behaviorType = SimpleBehaviorType.Basic,
+    baseValue = 12, minValue = 1, maxValue = 99
+};
+var str = new SimpleRuntimeAttribute(strDef);
+    </div>
+
+    <h3>Temporary Buffs via modifierBonus</h3>
+    <div class="code-block">
+// Apply temporary potion buff
+attribute.modifierBonus += 8f;
+
+// Remove after duration (via coroutine)
+yield return new WaitForSeconds(5f);
+attribute.modifierBonus -= 8f;
+    </div>
+
+    <h3>Manual Regeneration Tick</h3>
+    <div class="code-block">
+// The demo implements manual regen since attributes aren't on a MonoBehaviour
+// In a real game, the generated component handles this automatically
+if (attr.canRegenerate &amp;&amp; attr.currentValue &lt; attr.totalValue)
+{
+    attr.RegenerateStep(Time.deltaTime);
+}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Customization</h2>
+    <p>The demo source code is in <code>FreeDemo/BaseDemo.cs</code>. You can:</p>
+    <ul>
+      <li>Modify attribute definitions (change starting values, add new attributes)</li>
+      <li>Adjust regeneration rates and delays</li>
+      <li>Change damage/heal amounts on the buttons</li>
+      <li>Add new stat check challenges</li>
+      <li>Modify the combat simulation logic</li>
+    </ul>
+
+    <div class="success">
+      <strong>Remember:</strong> This demo creates attributes from code for simplicity. In a real game, you would use the Attribute Data Wizard to generate a proper attribute component with automatic regeneration management, events, and type-safe access.
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <a href="runtime-usage.html">&larr; Previous: Runtime Usage</a>
+    <a href="import-export.html">Next: Import/Export &rarr;</a>
+  </div>
+</body>
+
+</html>

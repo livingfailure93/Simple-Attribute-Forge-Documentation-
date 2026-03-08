@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Templates - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html" class="active">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Character Template System</h1>
+        <p>Define starting attribute configurations for character classes in your RPG.</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="section">
+        <h2>Overview</h2>
+        <p>The Character Template System allows you to define distinct starting configurations for different character classes (Warrior, Mage, Rogue, etc.). Each template specifies which attributes to override from their default values.</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Visual Wizard</h4>
+                <p>4-step wizard for creating character classes with per-attribute overrides.</p>
+            </div>
+            <div class="feature-card">
+                <h4>Code Generation</h4>
+                <p>Generates enum, manager, helper, and validator classes automatically.</p>
+            </div>
+            <div class="feature-card">
+                <h4>ScriptableObject Assets</h4>
+                <p>Each template is a .asset file that can be edited in the Inspector.</p>
+            </div>
+            <div class="feature-card gold">
+                <h4>Vital Attribute Filtering</h4>
+                <p>Automatically identifies derived attributes (Vital type) that shouldn't be manually overridden.</p>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Integration:</strong> Character Templates set base attribute values. The Influence System then calculates derived stats, and the Modifier System applies temporary effects on top.
+        </div>
+    </div>
+
+    <!-- Core Classes -->
+    <div class="section">
+        <h2>Core Classes</h2>
+
+        <h3>SimpleCharacterTemplateData</h3>
+        <p>ScriptableObject that stores template configuration. Created via the wizard, not manually.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>systemName</td><td>string</td><td>Name of the template system</td></tr>
+                <tr><td>templateName</td><td>string</td><td>Display name for the template</td></tr>
+                <tr><td>description</td><td>string</td><td>Human-readable description</td></tr>
+                <tr><td>templateIcon</td><td>Sprite</td><td>Optional icon for UI display</td></tr>
+                <tr><td>baseAttributeOverrides</td><td>List&lt;AttributeValueOverride&gt;</td><td>Attribute value overrides</td></tr>
+            </table>
+        </div>
+
+        <h3>SimpleCharacterClass</h3>
+        <p>Individual character class configuration used in the wizard.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>ClassName</td><td>string</td><td>Name of the class (e.g., "Warrior")</td></tr>
+                <tr><td>Description</td><td>string</td><td>Class description</td></tr>
+                <tr><td>ClassIcon</td><td>Sprite</td><td>Optional class icon</td></tr>
+                <tr><td>BaseAttributeOverrides</td><td>List&lt;AttributeValueOverride&gt;</td><td>Starting attribute values</td></tr>
+            </table>
+        </div>
+
+        <h3>AttributeValueOverride</h3>
+        <p>Individual attribute override configuration.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>AttributeName</td><td>string</td><td>Name of the attribute to override</td></tr>
+                <tr><td>OverrideValue</td><td>float</td><td>Value to set</td></tr>
+                <tr><td>UseOverride</td><td>bool</td><td>Whether to apply this override</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Using the Wizard -->
+    <div class="section">
+        <h2>Using the Template Wizard</h2>
+
+        <div class="step-container">
+            <span class="step-number">1</span>
+            <strong>Open the Wizard</strong><br>
+            Go to <code>Window > Simple Attribute Forge > Character Template Wizard</code>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">2</span>
+            <strong>Step 1: Select Attribute Data</strong><br>
+            <ul>
+                <li>Select your generated AttributeData ScriptableObject</li>
+                <li>Available attributes will populate automatically</li>
+                <li>Vital-type attributes are identified for filtering</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">3</span>
+            <strong>Step 2: Define Character Classes</strong><br>
+            <ul>
+                <li>Click "Add Class" to create a new template</li>
+                <li>Set class name and description</li>
+                <li>For each attribute, check "Use Override" and set the starting value</li>
+                <li>Leave unchecked to use the default value from AttributeData</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">4</span>
+            <strong>Step 3: Configure Generation Settings</strong><br>
+            <ul>
+                <li><strong>System Name:</strong> Name for the generated system</li>
+                <li><strong>Namespace:</strong> C# namespace for generated code</li>
+                <li><strong>Output Path:</strong> Where to save generated .cs files</li>
+                <li><strong>Template Assets Path:</strong> Where to save .asset files</li>
+                <li><strong>Generate Manager Component:</strong> MonoBehaviour for Inspector-based template management</li>
+                <li><strong>Generate Helper Class:</strong> Static utility methods for code-driven template operations</li>
+                <li><strong>Generate Enum Definitions:</strong> Type-safe enum for template identifiers</li>
+                <li><strong>Generate Runtime Validator:</strong> Static validation utilities</li>
+            </ul>
+        </div>
+
+        <div class="step-container">
+            <span class="step-number">5</span>
+            <strong>Step 4: Generate Code</strong><br>
+            <ul>
+                <li>Click "Generate" to create all code and assets</li>
+                <li>Wait for Unity to compile</li>
+                <li>Template .asset files are created automatically</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Generated Code -->
+    <div class="section">
+        <h2>Generated Code</h2>
+        <p>The wizard generates four files, each serving a different purpose:</p>
+
+        <h3>Enum</h3>
+        <p>Type-safe identifiers for each character class. Useful for code readability and IntelliSense.</p>
+        <div class="code-block">// Generated: SoulslikeCharacterTemplateEnum.cs
+public enum SoulslikeCharacterTemplateEnum
+{
+    AshKnight,
+    BlightRogue,
+    BloodHerald,
+    BoneArcher,
+    DuskPriest,
+    EmberSeer,
+    GraveWarden,
+    HollowPilgrim,
+    HollowScholar,
+    IronWanderer,
+    Oathbreaker,
+    PaleWitch,
+    VeilDancer
+}</div>
+
+        <h3>Helper (Static Utility Class)</h3>
+        <p>Static methods for applying templates from anywhere in your code. This is the primary API for template operations.</p>
+        <div class="code-block">// Get all available templates in the project
+List&lt;SimpleCharacterTemplateData&gt; templates = SoulslikeCharacterTemplatesHelper.GetAllTemplates();
+
+// Find a specific template by name
+SimpleCharacterTemplateData template = SoulslikeCharacterTemplatesHelper.FindTemplateByName("Ash Knight");
+
+// Apply template to a GameObject with an attribute system
+SoulslikeCharacterTemplatesHelper.ApplyTemplateToGameObject(playerGameObject, template);
+
+// Apply template to multiple GameObjects at once
+SoulslikeCharacterTemplatesHelper.ApplyTemplateToGameObjects(enemyArray, template);
+
+// Get an attribute value from a template (returns default 10 if not overridden)
+float strength = SoulslikeCharacterTemplatesHelper.GetAttributeValue(template, "Strength");
+
+// Check if template is compatible with an attribute system
+bool compatible = SoulslikeCharacterTemplatesHelper.IsTemplateCompatible(template, attributeSource);
+
+// Compare two templates and get attribute differences
+Dictionary&lt;string, float&gt; diff = SoulslikeCharacterTemplatesHelper.GetAttributeDifferences(templateA, templateB);
+
+// Get total attribute points used by a template
+float totalPoints = SoulslikeCharacterTemplatesHelper.GetTotalAttributePoints(template);
+
+// Switch templates while optionally preserving non-overridden values
+SoulslikeCharacterTemplatesHelper.SwitchTemplate(playerGameObject, newTemplate, preserveCurrentValues: true);</div>
+
+        <h3>Manager (MonoBehaviour Component)</h3>
+        <p>Optional component you attach to a GameObject. Provides Inspector configuration, auto-discovery, and convenient instance methods for that specific GameObject.</p>
+
+        <div class="info">
+            <strong>When to use the Manager:</strong> Attach it to your player or NPC prefabs when you want Inspector-configurable template management, auto-apply on Start, or runtime template switching buttons in the editor.
+        </div>
+
+        <div class="code-block">// The Manager is a MonoBehaviour - attach it to a GameObject in the Inspector
+// or add it via code:
+var manager = player.AddComponent&lt;SoulslikeCharacterTemplateManager&gt;();
+
+// Apply a template to THIS GameObject (uses Helper internally)
+manager.ApplyTemplate(template);
+
+// Apply template by name
+manager.ApplyTemplate("Ash Knight");
+
+// Get template by name from the manager's available templates list
+SimpleCharacterTemplateData t = manager.GetTemplateByName("Ash Knight");
+
+// Get the template that best matches current attribute values
+SimpleCharacterTemplateData current = manager.GetCurrentTemplate();
+
+// Switch to a new template
+manager.SwitchTemplate(newTemplate, preserveCurrentValues: true);
+
+// Validate template compatibility
+bool valid = manager.ValidateTemplate(template);</div>
+
+        <p><strong>Manager Inspector Features:</strong></p>
+        <ul>
+            <li><strong>Available Templates</strong> - List of templates this manager can apply</li>
+            <li><strong>Default Template</strong> - Template to auto-apply on Start (if enabled)</li>
+            <li><strong>Auto Apply Default On Start</strong> - Automatically apply default template when game starts</li>
+            <li><strong>Allow Runtime Template Change</strong> - Enable/disable template switching at runtime</li>
+            <li><strong>Auto Discover Templates</strong> - Automatically find all template assets in project</li>
+        </ul>
+
+        <h3>Validator (Static Validation Utilities)</h3>
+        <p>Runtime validation to check template compatibility with attribute systems.</p>
+        <div class="code-block">// Validate a single template against an attribute source
+List&lt;string&gt; errors;
+bool isValid = SoulslikeCharacterTemplatesValidator.ValidateTemplate(
+    template,
+    attributeSource,  // ISimpleAttributeDataSource
+    out errors
+);
+
+if (!isValid)
+{
+    foreach (var error in errors)
+        Debug.LogError(error);
+}
+
+// Validate all templates in a list
+bool allValid = SoulslikeCharacterTemplatesValidator.ValidateAllTemplates(
+    templateList,
+    attributeSource
+);</div>
+    </div>
+
+    <!-- Two Approaches -->
+    <div class="section">
+        <h2>Two Approaches: Helper vs Manager</h2>
+        <p>You can use either approach depending on your needs:</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Static Helper Approach</h4>
+                <p><strong>Best for:</strong> Code-driven template application, systems where you control when templates are applied.</p>
+                <div class="code-block">// Apply from anywhere in code
+var template = SoulslikeCharacterTemplatesHelper
+    .FindTemplateByName("Ash Knight");
+
+SoulslikeCharacterTemplatesHelper
+    .ApplyTemplateToGameObject(player, template);</div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Manager Component Approach</h4>
+                <p><strong>Best for:</strong> Inspector-based setup, auto-apply on Start, runtime testing in editor.</p>
+                <div class="code-block">// Attach manager to player prefab
+// Configure in Inspector:
+// - Set default template
+// - Enable auto-apply on Start
+// - Done! No code needed.</div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>Note:</strong> The Manager uses the Helper internally. Both approaches achieve the same result - choose based on your workflow preference.
+        </div>
+    </div>
+
+    <!-- Example: Soulslike Templates -->
+    <div class="section">
+        <h2>Example: Soulslike Character Classes</h2>
+        <p>The Ultimate demo includes 13 pre-built Soulslike-style character templates:</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Included Templates</div>
+            <table>
+                <tr><th>Template</th><th>Focus</th><th>Key Attributes</th></tr>
+                <tr><td>Ash Knight</td><td>Balanced melee</td><td>STR, END, VIG</td></tr>
+                <tr><td>Blight Rogue</td><td>Poison & stealth</td><td>DEX, LCK, ARC</td></tr>
+                <tr><td>Blood Herald</td><td>Blood magic</td><td>ARC, VIG, END</td></tr>
+                <tr><td>Bone Archer</td><td>Ranged combat</td><td>DEX, STR, END</td></tr>
+                <tr><td>Dusk Priest</td><td>Faith healing</td><td>FAI, ATT, VIG</td></tr>
+                <tr><td>Ember Seer</td><td>Fire sorcery</td><td>INT, ATT, DEX</td></tr>
+                <tr><td>Grave Warden</td><td>Tank & defense</td><td>VIG, END, STR</td></tr>
+                <tr><td>Hollow Pilgrim</td><td>Starting class</td><td>Balanced</td></tr>
+                <tr><td>Hollow Scholar</td><td>Pure caster</td><td>INT, ATT, FAI</td></tr>
+                <tr><td>Iron Wanderer</td><td>Heavy melee</td><td>STR, VIG, END</td></tr>
+                <tr><td>Oathbreaker</td><td>Dark knight</td><td>STR, FAI, VIG</td></tr>
+                <tr><td>Pale Witch</td><td>Moon sorcery</td><td>INT, ARC, ATT</td></tr>
+                <tr><td>Veil Dancer</td><td>Agile fighter</td><td>DEX, END, LCK</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Integration Example -->
+    <div class="section">
+        <h2>Complete Integration Example</h2>
+
+        <h3>Character Creation Screen</h3>
+        <div class="code-block">using UnityEngine;
+using UnityEngine.UI;
+using SimpleAttributeForge;
+using SimpleAttributeForge.CharacterTemplate;
+using Soulslike.CharacterTemplates;
+
+public class CharacterCreationUI : MonoBehaviour
+{
+    [SerializeField] private Transform classButtonContainer;
+    [SerializeField] private GameObject classButtonPrefab;
+    [SerializeField] private GameObject playerObject;
+
+    void Start()
+    {
+        PopulateClassButtons();
+    }
+
+    void PopulateClassButtons()
+    {
+        // Get all available templates using the static Helper
+        var templates = SoulslikeCharacterTemplatesHelper.GetAllTemplates();
+
+        foreach (var template in templates)
+        {
+            var button = Instantiate(classButtonPrefab, classButtonContainer);
+
+            // Setup button text
+            button.GetComponentInChildren&lt;Text&gt;().text = template.templateName;
+
+            // Capture template in closure and add click handler
+            var capturedTemplate = template;
+            button.GetComponent&lt;Button&gt;().onClick.AddListener(() =>
+                SelectClass(capturedTemplate)
+            );
+        }
+    }
+
+    void SelectClass(SimpleCharacterTemplateData template)
+    {
+        // Apply the template to player GameObject
+        bool success = SoulslikeCharacterTemplatesHelper.ApplyTemplateToGameObject(
+            playerObject,
+            template
+        );
+
+        if (success)
+        {
+            Debug.Log($"Selected class: {template.templateName}");
+            // The Influence System will automatically recalculate derived stats
+            // (Health from Vigor, Stamina from Endurance, etc.)
+        }
+    }
+}</div>
+
+        <h3>Using Template Manager on Player Prefab</h3>
+        <div class="code-block">using UnityEngine;
+using SimpleAttributeForge.CharacterTemplate;
+using Soulslike.CharacterTemplates;
+
+public class PlayerSetup : MonoBehaviour
+{
+    // Reference to the manager component on this GameObject
+    private SoulslikeCharacterTemplateManager templateManager;
+
+    void Awake()
+    {
+        templateManager = GetComponent&lt;SoulslikeCharacterTemplateManager&gt;();
+    }
+
+    // Called from UI when player selects a class
+    public void OnClassSelected(string className)
+    {
+        templateManager.ApplyTemplate(className);
+    }
+
+    // Called when player wants to respec
+    public void OnRespec(SimpleCharacterTemplateData newTemplate)
+    {
+        // Switch template while keeping any leveled-up attributes
+        templateManager.SwitchTemplate(newTemplate, preserveCurrentValues: true);
+    }
+}</div>
+    </div>
+
+    <!-- Vital Attribute Filtering -->
+    <div class="section">
+        <h2>Vital Attribute Filtering</h2>
+        <p>The wizard automatically identifies "Vital" type attributes (Health, Stamina, Mana, etc.) and marks them as derived. These attributes shouldn't be directly overridden because they're calculated by the Influence System.</p>
+
+        <div class="warning">
+            <strong>Best Practice:</strong> Override base stats (Vigor, Strength, Intelligence) and let the Influence System calculate derived stats (Health, Damage, Defense).
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Attribute Types</div>
+            <table>
+                <tr><th>Type</th><th>Override?</th><th>Examples</th></tr>
+                <tr><td>Basic</td><td class="included">Yes</td><td>Strength, Dexterity, Intelligence</td></tr>
+                <tr><td>Resource</td><td class="included">Yes</td><td>Level, Souls, Humanity</td></tr>
+                <tr><td>Vital</td><td class="not-included">No (Derived)</td><td>Health, Stamina, Mana, Focus</td></tr>
+                <tr><td>Percentage</td><td>Depends</td><td>Equipment Load (may be derived)</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Best Practices</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Use Meaningful Names</h4>
+                <p>Class names should be evocative: "Ash Knight", "Pale Witch", not "Class1", "Class2".</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Balance Starting Stats</h4>
+                <p>Keep total stat points similar across classes. Different distributions, similar power levels.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Write Good Descriptions</h4>
+                <p>Help players understand each class's playstyle: "Agile fighter specializing in dodging and quick strikes."</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Use Icons for UI</h4>
+                <p>Set template icons for character selection screens. Makes the UI more professional.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="regen-modifiers.html">Regen Modifiers</a>
+        <a href="api-reference-ultimate.html">API Reference</a>
+    </div>
+</body>
+</html>

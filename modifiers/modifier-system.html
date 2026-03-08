@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier System - Simple Attribute Forge Ultimate</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start-ultimate.html">Quick Start</a></li>
+            <li><a href="modifier-system.html" class="active">Modifier System</a></li>
+            <li><a href="modifier-wizard.html">Modifier Wizard</a></li>
+            <li><a href="modifier-conditions.html">Conditions</a></li>
+            <li><a href="regen-modifiers.html">Regen Modifiers</a></li>
+            <li><a href="character-templates.html">Templates</a></li>
+            <li><a href="api-reference-ultimate.html">API Reference</a></li>
+            <li><a href="import-export.html">Import/Export</a></li>
+            <li><a href="troubleshooting-ultimate.html">Troubleshooting</a></li>
+            <li><a href="demo-scene-guide.html">Demo</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Version Switcher -->
+    <div class="version-switcher">
+        <span class="version-switcher-label">Documentation Version:</span>
+        <a href="../base/index.html" class="version-link base">Base (Free)</a>
+        <a href="../influence/index.html" class="version-link pro">Influence System</a>
+        <span class="version-link current">Ultimate</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header"><img src="assets/header-ultimate.png" alt="Simple Attribute Forge Ultimate"></div>
+
+    <div class="section">
+        <h1>Modifier System</h1>
+        <p>Deep dive into the core architecture for creating buffs, debuffs, and attribute modifications.</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="section">
+        <h2>System Overview</h2>
+
+        <p>The Modifier System allows you to create temporary or permanent changes to attributes with full conditional logic support. It integrates with the Base tier's three-value architecture:</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Three-Value Architecture</div>
+            <div class="code-block">totalValue = baseValue + formulaBonus + modifierBonus
+
+Where:
+- baseValue     = Equipment, upgrades, permanent stat changes
+- formulaBonus  = Influence System calculations
+- modifierBonus = Modifier System (buffs, debuffs, status effects)</div>
+        </div>
+
+        <p>Modifiers write to <code>modifierBonus</code>, keeping them separate from base stats and formula calculations. This prevents feedback loops and allows clean removal.</p>
+    </div>
+
+    <!-- Core Classes -->
+    <div class="section">
+        <h2>Core Classes</h2>
+
+        <h3>SimpleAttributeModifierGroup</h3>
+        <p>The main container class for a modifier. Each group can contain multiple AttributeModifications and defines the modifier's identity, timing, and behavior.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Identity Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>name</td><td>string</td><td>Display name for the modifier</td></tr>
+                <tr><td>description</td><td>string</td><td>Human-readable description</td></tr>
+                <tr><td>tag</td><td>string</td><td>Category tag for grouping (e.g., "buff", "curse", "equipment")</td></tr>
+                <tr><td>id</td><td>string</td><td>Unique GUID assigned at runtime</td></tr>
+            </table>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Timing Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>duration</td><td>float</td><td>Duration in seconds. 0 or negative = permanent</td></tr>
+                <tr><td>priority</td><td>int</td><td>Application order. Higher = applied later</td></tr>
+                <tr><td>stackable</td><td>bool</td><td>Can multiple instances stack?</td></tr>
+                <tr><td>maxStacks</td><td>int</td><td>Maximum stack count (if stackable)</td></tr>
+                <tr><td>timeRemaining</td><td>float</td><td>Runtime: remaining duration</td></tr>
+                <tr><td>currentStacks</td><td>int</td><td>Runtime: current stack count</td></tr>
+            </table>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Behavior Flags</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>isDebuff</td><td>bool</td><td>Marks as negative effect (for UI/dispel logic)</td></tr>
+                <tr><td>isHidden</td><td>bool</td><td>Hide from player-facing UI</td></tr>
+                <tr><td>canBeDispelled</td><td>bool</td><td>Can be removed by cleanse/dispel effects</td></tr>
+                <tr><td>persistsThroughDeath</td><td>bool</td><td>Survives character death/respawn</td></tr>
+                <tr><td>refreshOnReapply</td><td>bool</td><td>Resets duration when reapplied</td></tr>
+            </table>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Requirements System</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>requiredLevel</td><td>int</td><td>Minimum character level to apply (0 = no requirement)</td></tr>
+                <tr><td>category</td><td>string</td><td>Category string (offensive, defensive, utility, passive)</td></tr>
+                <tr><td>incompatibleModifiers</td><td>List&lt;string&gt;</td><td>Modifier names that block this one</td></tr>
+                <tr><td>requiredModifiers</td><td>List&lt;string&gt;</td><td>Modifier names required for this one to apply</td></tr>
+            </table>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Events</div>
+            <table>
+                <tr><th>Event</th><th>Type</th><th>Description</th></tr>
+                <tr><td>onApply</td><td>UnityEvent</td><td>Fired when modifier is applied</td></tr>
+                <tr><td>onRemove</td><td>UnityEvent</td><td>Fired when modifier is removed</td></tr>
+                <tr><td>onExpire</td><td>UnityEvent</td><td>Fired when modifier expires (duration ends)</td></tr>
+                <tr><td>onTick</td><td>UnityEvent&lt;float&gt;</td><td>Fired on each tick for DoT/HoT effects</td></tr>
+            </table>
+        </div>
+
+        <h3>Key Methods</h3>
+        <div class="code-block">// Apply modifier to target
+bool success = group.ApplyTo(ISimpleAttributeDataSource target);
+
+// Remove modifier from target
+bool success = group.RemoveFrom(ISimpleAttributeDataSource target);
+
+// Update duration (call in Update loop for timed modifiers)
+bool expired = group.UpdateTime(float deltaTime);
+
+// Check state
+bool isPermanent = group.IsPermanent();  // duration <= 0
+bool isExpired = group.IsExpired();       // duration > 0 && timeRemaining <= 0</div>
+    </div>
+
+    <!-- AttributeModification -->
+    <div class="section">
+        <h2>AttributeModification</h2>
+        <p>Represents a single attribute change within a modifier group. Each modification targets one attribute with a specific change type and value.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Basic Configuration</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>targetAttribute</td><td>string</td><td>Attribute name to modify</td></tr>
+                <tr><td>type</td><td>ModifierType</td><td>How to apply the value (Flat, Percentage, Multiply)</td></tr>
+                <tr><td>value</td><td>float</td><td>The modification amount</td></tr>
+            </table>
+        </div>
+
+        <h3>ModifierType Enum</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Flat</h4>
+                <p>Add/subtract a fixed value.<br><code>+50 Health</code>, <code>-10 Stamina</code></p>
+            </div>
+            <div class="feature-card">
+                <h4>Percentage</h4>
+                <p>Add/subtract a percentage of base.<br><code>+25% Health</code>, <code>-15% Speed</code></p>
+            </div>
+            <div class="feature-card">
+                <h4>Multiply</h4>
+                <p>Multiply the total value.<br><code>x1.5 Damage</code>, <code>x0.5 Defense</code></p>
+            </div>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Value Targeting</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>modifyBaseValue</td><td>bool</td><td>Affects base stat (standard behavior)</td></tr>
+                <tr><td>modifyCurrentValue</td><td>bool</td><td>Affects current value (healing/damage)</td></tr>
+                <tr><td>modifyMinValue</td><td>bool</td><td>Affects minimum boundary</td></tr>
+                <tr><td>modifyMaxValue</td><td>bool</td><td>Affects maximum boundary</td></tr>
+            </table>
+        </div>
+
+        <div class="info">
+            <strong>Value Targeting:</strong> Most modifiers use <code>modifyBaseValue = true</code>. Use <code>modifyCurrentValue</code> for instant damage/healing effects. Use <code>modifyMaxValue</code> to change maximum health/mana caps.
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Effect Behavior</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>isPermanent</td><td>bool</td><td>Survives scene changes</td></tr>
+                <tr><td>applyOverTime</td><td>bool</td><td>Apply effect over time (DoT/HoT)</td></tr>
+                <tr><td>tickInterval</td><td>float</td><td>Seconds between ticks for DoT/HoT</td></tr>
+                <tr><td>removeWhenConditionsMet</td><td>bool</td><td>Auto-remove when conditions become false</td></tr>
+            </table>
+        </div>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Conditional Logic</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>enableConditions</td><td>bool</td><td>Enable condition checking</td></tr>
+                <tr><td>conditions</td><td>List&lt;AttributeCondition&gt;</td><td>Attribute-based conditions</td></tr>
+                <tr><td>modifierConditions</td><td>List&lt;ModifierCondition&gt;</td><td>Modifier presence conditions</td></tr>
+            </table>
+        </div>
+
+        <p>See <a href="modifier-conditions.html">Conditions System</a> for detailed documentation on AttributeCondition and ModifierCondition.</p>
+    </div>
+
+    <!-- ARPG Regen System -->
+    <div class="section">
+        <h2>ARPG Regeneration System</h2>
+        <p>SimpleAttributeModifierGroup includes built-in support for modifying regeneration rates and delays - essential for ARPG status effects.</p>
+
+        <div class="modifier-container">
+            <div class="modifier-header">Regen Modification Properties</div>
+            <table>
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td>modifyRegenRate</td><td>bool</td><td>Enable regen rate modification</td></tr>
+                <tr><td>regenRateType</td><td>ModifierType</td><td>Flat, Percentage, or Multiply</td></tr>
+                <tr><td>regenRateValue</td><td>float</td><td>Value for regen rate modification</td></tr>
+                <tr><td>modifyRegenDelay</td><td>bool</td><td>Enable regen delay modification</td></tr>
+                <tr><td>regenDelayType</td><td>ModifierType</td><td>Flat, Percentage, or Multiply</td></tr>
+                <tr><td>regenDelayValue</td><td>float</td><td>Value for regen delay modification</td></tr>
+                <tr><td>disableRegeneration</td><td>bool</td><td>Completely disable regeneration</td></tr>
+            </table>
+        </div>
+
+        <h3>Examples</h3>
+        <div class="code-block">// Poison: Disable health regeneration
+group.disableRegeneration = true;
+
+// Blessing: +50% regen rate
+group.modifyRegenRate = true;
+group.regenRateType = ModifierType.Percentage;
+group.regenRateValue = 50f;
+
+// Quick Recovery: -2 seconds regen delay
+group.modifyRegenDelay = true;
+group.regenDelayType = ModifierType.Flat;
+group.regenDelayValue = -2f;</div>
+
+        <p>See <a href="regen-modifiers.html">Regen Modifiers</a> for detailed documentation and stacking behavior.</p>
+    </div>
+
+    <!-- SimpleModifierTracker -->
+    <div class="section">
+        <h2>SimpleModifierTracker</h2>
+        <p>Static utility class for tracking and querying active modifiers across all targets. Essential for ModifierCondition evaluation and modifier management.</p>
+
+        <h3>Querying Modifiers</h3>
+        <div class="code-block">// Check if target has a specific modifier
+bool hasPoison = SimpleModifierTracker.HasModifierByName(attributes, "Poison");
+
+// Check if target has any modifier with tag
+bool hasCurse = SimpleModifierTracker.HasModifierByTag(attributes, "curse");
+
+// Get all active modifiers
+List<SimpleAttributeModifierGroup> active = SimpleModifierTracker.GetActiveModifiers(attributes);
+
+// Get modifiers by name (can have multiple stacks)
+List<SimpleAttributeModifierGroup> poisons = SimpleModifierTracker.GetModifiersByName(attributes, "Poison");
+
+// Get count of active modifiers
+int count = SimpleModifierTracker.GetActiveModifierCount(attributes);</div>
+
+        <h3>Removing Modifiers</h3>
+        <div class="code-block">// Remove all modifiers with name
+int removed = SimpleModifierTracker.RemoveModifiersByName(attributes, "Poison");
+
+// Remove all modifiers with tag
+int removed = SimpleModifierTracker.RemoveModifiersByTag(attributes, "curse");
+
+// Remove all modifiers from target
+SimpleModifierTracker.RemoveAllModifiers(attributes);
+
+// Clear entire tracker (use with caution)
+SimpleModifierTracker.ClearAll();</div>
+
+        <div class="warning">
+            <strong>Note:</strong> Modifiers are automatically registered/unregistered when <code>ApplyTo()</code> and <code>RemoveFrom()</code> are called. You don't need to manually register modifiers.
+        </div>
+    </div>
+
+    <!-- Modifier Lifecycle -->
+    <div class="section">
+        <h2>Modifier Lifecycle</h2>
+
+        <div class="pipeline-step">1. Creation - Modifier group is instantiated</div>
+        <div class="pipeline-arrow">v</div>
+        <div class="pipeline-step">2. Application - ApplyTo() called, registered with tracker</div>
+        <div class="pipeline-arrow">v</div>
+        <div class="pipeline-step">3. Active - Modifier effects applied to attributes</div>
+        <div class="pipeline-arrow">v</div>
+        <div class="pipeline-step">4. Update - UpdateTime() called for duration tracking</div>
+        <div class="pipeline-arrow">v</div>
+        <div class="pipeline-step">5. Expiration/Removal - RemoveFrom() called or duration expires</div>
+
+        <h3>Managing Timed Modifiers</h3>
+        <div class="code-block">public class ModifierManager : MonoBehaviour
+{
+    private List<SimpleAttributeModifierGroup> activeModifiers = new List<SimpleAttributeModifierGroup>();
+
+    void Update()
+    {
+        // Update all timed modifiers
+        for (int i = activeModifiers.Count - 1; i >= 0; i--)
+        {
+            var modifier = activeModifiers[i];
+
+            if (!modifier.IsPermanent())
+            {
+                bool expired = modifier.UpdateTime(Time.deltaTime);
+
+                if (expired)
+                {
+                    modifier.RemoveFrom(target);
+                    activeModifiers.RemoveAt(i);
+                }
+            }
+        }
+    }
+
+    public void AddModifier(SimpleAttributeModifierGroup modifier)
+    {
+        if (modifier.ApplyTo(target))
+        {
+            activeModifiers.Add(modifier);
+        }
+    }
+}</div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Best Practices</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Use Tags for Categories</h4>
+                <p>Group related modifiers with tags: "buff", "debuff", "curse", "equipment", "consumable". Makes bulk operations easy.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Set Appropriate Priorities</h4>
+                <p>Use priority to control application order. Equipment (100) -> Buffs (200) -> Debuffs (300) -> Ultimate abilities (400).</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Use Requirements for Synergies</h4>
+                <p>requiredModifiers for combo effects, incompatibleModifiers to prevent stacking similar buffs.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Leverage Behavior Flags</h4>
+                <p>isDebuff for dispel targeting, canBeDispelled for cleanseable effects, persistsThroughDeath for permanent curses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-nav">
+        <a href="quick-start-ultimate.html">Quick Start</a>
+        <a href="modifier-wizard.html">Modifier Wizard</a>
+    </div>
+</body>
+</html>
