@@ -85,13 +85,13 @@
     public string formulaName;           // Unique identifier
     public string targetAttribute;       // Attribute to modify
     public int executionOrder;           // Calculation priority
-    public bool enabled;                 // Enable/disable toggle
-    
+
     [Header("Pipeline Configuration")]
     public StartMode startMode;          // Zero or TargetBase
     public ApplyMode applyMode;          // How to apply result
+    public FormulaTarget targetProperty; // Which property to write to
     public bool alsoUpdateCurrent;       // Update currentValue for Vitals
-    
+
     [Header("Formula Steps")]
     public List&lt;FormulaRow&gt; flatRows;     // Step 2: Flat bonuses
     public List&lt;FormulaRow&gt; addPctRows;   // Step 3: Additive percentages
@@ -99,7 +99,7 @@
     public List&lt;MultiplierRow&gt; mulRows;  // Step 5: Multipliers
     public List&lt;PostFlatRow&gt; postFlatRows; // Step 6: Post-flat bonuses
     public List&lt;Breakpoint&gt; breakpoints; // Conditional effects
-    
+
     // Calculation method
     public float Calculate(IAttributeProvider attributes);
 }</div>
@@ -126,15 +126,19 @@ public enum ApplyMode
         <h3>FormulaRow (Flat and Percentage Bonuses)</h3>
         <div class="code-block">public class FormulaRow
 {
+    public string id;                   // Unique identifier
     public string source;               // Source attribute name
-    public MathOperation operation;     // Add or Subtract
+    public MathOperation operation;     // Math operation to apply
     public float value;                 // Multiplier/percentage value
 }
 
 public enum MathOperation
 {
-    Add,      // Positive contribution
-    Subtract  // Negative contribution
+    Add,        // Positive contribution
+    Divide,     // Division
+    Multiply,   // Multiplication
+    Percentage, // Percentage-based
+    Subtract    // Negative contribution
 }</div>
 
         <h3>MultiplierRow (Step 5)</h3>
@@ -224,7 +228,6 @@ public enum LogicalOperator
     
     [Header("Update Configuration")]
     [SerializeField] private UpdateMode updateMode;
-    [SerializeField] private RecalculationMode recalculationMode;
     [SerializeField] private float intervalUpdateRate;
     [SerializeField] private bool enableCaching;
     [SerializeField] private bool debugMode;
@@ -254,15 +257,11 @@ public bool HasAttribute(string attributeName);</div>
         <h3>Configuration Enums</h3>
         <div class="code-block">public enum UpdateMode
 {
-    Smart,      // Event-driven updates (recommended)
-    Interval,   // Fixed time interval updates
-    Manual      // Only on explicit RecalculateAll() calls
-}
-
-public enum RecalculationMode
-{
-    Auto,       // Recalculate when attribute values change
-    Manual      // Only when explicitly called
+    Manual,      // Only on explicit RecalculateAll() calls
+    Update,      // Recalculate every Update frame
+    FixedUpdate, // Recalculate every FixedUpdate frame
+    Smart,       // Event-driven updates (recommended)
+    Interval     // Fixed time interval updates
 }</div>
     </div>
 
@@ -273,7 +272,7 @@ public enum RecalculationMode
         
         <div class="code-block">public static class FormulaCalculator
 {
-    // Main calculation pipeline
+    // Main calculation pipeline (single entry point)
     public static float CalculatePipeline(
         float startValue,
         List&lt;FormulaRow&gt; flatRows,
@@ -285,26 +284,6 @@ public enum RecalculationMode
         IAttributeProvider attributes,
         float? levelOverride = null
     );
-    
-    // Individual step calculations
-    public static float CalculateFlatBonuses(
-        List&lt;FormulaRow&gt; rows, IAttributeProvider attributes);
-    
-    public static float CalculatePercentageBonuses(
-        List&lt;FormulaRow&gt; rows, IAttributeProvider attributes);
-    
-    public static float CalculateMultipliers(
-        List&lt;MultiplierRow&gt; rows);
-    
-    public static float CalculatePostFlatBonuses(
-        List&lt;PostFlatRow&gt; rows);
-    
-    // Breakpoint evaluation
-    public static List&lt;Breakpoint&gt; GetActiveBreakpoints(
-        List&lt;Breakpoint&gt; breakpoints, IAttributeProvider attributes);
-    
-    public static bool EvaluateBreakpoint(
-        Breakpoint breakpoint, IAttributeProvider attributes);
 }</div>
     </div>
 
@@ -354,59 +333,82 @@ float damage = attributes.strength.totalValue;</div>
         <h2>Formula Data Classes</h2>
         
         <h3>SimpleInfluenceData</h3>
-        <p>Container for complete influence system configuration, used by the wizard.</p>
-        
-        <div class="code-block">public class SimpleInfluenceData : ScriptableObject
+        <p>[Serializable] data container for complete influence system configuration, used by the wizard.</p>
+
+        <div class="code-block">[Serializable]
+public class SimpleInfluenceData
 {
-    [Header("System Configuration")]
-    public string systemName;
-    public string namespacePrefix;
-    public string exportPath;
-    
-    [Header("Update Settings")]
-    public UpdateMode updateMode;
-    public RecalculationMode recalculationMode;
-    public float intervalUpdateRate;
-    public bool enableCaching;
-    public bool enableDebugMode;
-    
-    [Header("Formula Data")]
-    public List&lt;SimpleFormulaData&gt; formulas;
-    
+    // System Configuration
+    public string SystemName { get; set; }
+    public string Namespace { get; set; }
+    public string OutputPath { get; set; }
+    public string AssetSubfolder { get; set; }
+    public string AttributeSourceClass { get; set; }
+
+    // Update Settings
+    public UpdateMode UpdateMode { get; set; }
+    public float UpdateInterval { get; set; }
+    public bool EnableCaching { get; set; }
+    public int MaxCalculationsPerFrame { get; set; }
+    public string UpdateTrigger { get; set; }
+
+    // Level Scaling
+    public bool EnableLevelScaling { get; set; }
+    public string LevelSourceAttribute { get; set; }
+
+    // Attribute Info
+    public List&lt;string&gt; AvailableAttributes { get; set; }
+    public List&lt;string&gt; VitalAttributes { get; set; }
+    public bool IsVitalAttribute(string attributeName);
+
+    // Formula Data
+    public List&lt;SimpleFormulaData&gt; Formulas { get; set; }
+
     // Validation and utility methods
-    public bool ValidateConfiguration(out List&lt;string&gt; errors);
-    public string[] GetAllDependencies();
-    public bool HasCircularDependencies();
+    public bool Validate(out List&lt;string&gt; errors, out List&lt;string&gt; warnings);
+    public List&lt;SimpleFormulaData&gt; GetEnabledFormulas();
+    public List&lt;SimpleFormulaData&gt; GetFormulasTargeting(string attributeName);
 }</div>
 
         <h3>SimpleFormulaData</h3>
-        <p>Individual formula configuration data used by the wizard and code generation.</p>
-        
-        <div class="code-block">public class SimpleFormulaData
+        <p>[Serializable] individual formula configuration data used by the wizard and code generation.</p>
+
+        <div class="code-block">[Serializable]
+public class SimpleFormulaData
 {
-    [Header("Identity")]
-    public string Name;
-    public string TargetAttribute;
-    public int ExecutionOrder;
-    public bool Enabled;
-    
-    [Header("Calculation Settings")]
-    public StartMode StartMode;
-    public ApplyMode ApplyMode;
-    public bool AlsoUpdateCurrent;
-    
-    [Header("Pipeline Steps")]
-    public List&lt;SimpleInfluenceRow&gt; FlatRows;
-    public List&lt;SimpleInfluenceRow&gt; AddPctRows;
-    public List&lt;SimpleInfluenceRow&gt; SubPctRows;
-    public List&lt;SimpleInfluenceRow&gt; MulRows;
-    public List&lt;SimpleInfluenceRow&gt; PostFlatRows;
-    public List&lt;SimpleInfluenceRow&gt; Breakpoints;
-    
+    // Identity
+    public string Name { get; set; }
+    public string TargetAttribute { get; set; }
+    public int ExecutionOrder { get; set; }
+    public bool Enabled { get; set; }
+
+    // Calculation Settings
+    public StartMode StartMode { get; set; }
+    public ApplyMode ApplyMode { get; set; }
+    public FormulaTarget TargetProperty { get; set; }
+    public bool AlsoUpdateCurrent { get; set; }
+
+    // Pipeline Steps
+    public List&lt;FormulaRow&gt; FlatRows;
+    public List&lt;FormulaRow&gt; AddPctRows;
+    public List&lt;FormulaRow&gt; SubPctRows;
+    public List&lt;MultiplierRow&gt; MulRows;
+    public List&lt;PostFlatRow&gt; PostFlatRows;
+    public List&lt;Breakpoint&gt; Breakpoints;
+
+    // Code Generation Flags
+    public bool GenerateMonoBehaviour { get; set; }
+    public bool GenerateScriptableObject { get; set; }
+    public bool GenerateStaticHelper { get; set; }
+    public bool HasAnyGenerationType();
+
     // Utility methods
-    public string[] GetSourceAttributes();
-    public bool ContainsSelfReference();
-    public float CalculateTestValue(Dictionary&lt;string, float&gt; testValues);
+    public float Calculate(Dictionary&lt;string, float&gt; attributeValues);
+    public bool Validate(string[] availableAttributes,
+        out List&lt;string&gt; errors, out List&lt;string&gt; warnings);
+    public HashSet&lt;string&gt; GetAllDependencies();
+    public bool HasCircularDependency(
+        Dictionary&lt;string, HashSet&lt;string&gt;&gt; allFormulaDependencies);
 }</div>
     </div>
 
@@ -619,12 +621,9 @@ SimpleRuntimeAttribute GetCachedAttribute(string name)
         if (attr != null)
         {
             attr.baseValue += delta;
-            
-            // Manual recalculation if needed
-            if (orchestrator.recalculationMode == RecalculationMode.Manual)
-            {
-                orchestrator.RecalculateAttribute(attrName);
-            }
+
+            // Manual recalculation if using Manual update mode
+            orchestrator.RecalculateAttribute(attrName);
         }
     }
 }</div>
