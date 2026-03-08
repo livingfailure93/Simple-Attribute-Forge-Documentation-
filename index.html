@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Attribute Forge - Documentation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f8f9fa;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 8px;
+      font-size: 2.2em;
+    }
+
+    .tagline {
+      text-align: center;
+      color: #666;
+      font-size: 1.1em;
+      margin-bottom: 50px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-left: 4px solid #3498db;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    .card.influence {
+      border-left-color: #e67e22;
+    }
+
+    .card.modifiers {
+      border-left-color: #9b59b6;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 1.3em;
+    }
+
+    .card .label {
+      display: inline-block;
+      font-size: 0.75em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .card .label.free {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .card .label.paid {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .card p {
+      color: #666;
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      color: #999;
+      font-size: 0.85em;
+    }
+
+    footer a {
+      color: #3498db;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Simple Attribute Forge</h1>
+  <p class="tagline">No-Code Stats, Formulas, Buffs & Classes for Unity</p>
+
+  <div class="cards">
+    <a href="base/index.html" class="card">
+      <h2>Base Attributes</h2>
+      <span class="label free">FREE</span>
+      <p>Core attribute system with 4 behavior types, regeneration, events, and code generation. Define your stats and generate complete MonoBehaviour components.</p>
+    </a>
+
+    <a href="influence/index.html" class="card influence">
+      <h2>Influence System</h2>
+      <span class="label paid">ULTIMATE</span>
+      <p>Formula pipelines for derived stats. Breakpoints, conditions, soft/hard caps, and automatic recalculation. Make STR affect damage without writing formulas by hand.</p>
+    </a>
+
+    <a href="modifiers/index.html" class="card modifiers">
+      <h2>Modifier System</h2>
+      <span class="label paid">ULTIMATE</span>
+      <p>Buffs, debuffs, and status effects with duration, stacking, conditions, prerequisites, and ARPG-style regeneration modifiers. One line to apply, one line to remove.</p>
+    </a>
+  </div>
+
+  <footer>
+    <p>By <a href="https://assetstore.unity.com/publishers/61332">Living Failure</a> | <a href="mailto:livingfailuregames@gmail.com">livingfailuregames@gmail.com</a></p>
+  </footer>
+</body>
+
+</html>
