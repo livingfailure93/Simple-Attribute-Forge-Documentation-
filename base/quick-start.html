@@ -68,7 +68,7 @@
     <div class="step-container">
       <span class="step-number">1</span>
       <strong>Open the Attribute Data Wizard</strong><br>
-      Navigate to <code>Window → Simple Attribute Forge → Attribute Data Wizard</code>
+      Navigate to <code>Window → Living Failure → Simple Attribute Forge → Attribute Data Wizard</code>
     </div>
 
     <div class="step-container">
@@ -105,10 +105,11 @@
       </ul>
       <p><strong>Generated Files:</strong></p>
       <ul>
-        <li>CharacterAttributesEnum.cs</li>
-        <li>CharacterAttributes.cs (MonoBehaviour)</li>
-        <li>CharacterAttributeData.asset (ScriptableObject)</li>
+        <li>CharacterAttributeEnum.cs (type-safe attribute IDs)</li>
+        <li>CharacterAttributes.cs (MonoBehaviour component &mdash; this is what you put on your GameObject)</li>
+        <li>CharacterAttributeData.cs + CharacterAttributeData.asset (a ScriptableObject data source, created automatically after compilation)</li>
       </ul>
+      <p><em>Note: the MonoBehaviour component is self-contained &mdash; your attributes are baked into it directly. The generated ScriptableObject is a separate, optional data container (it implements <code>ISimpleAttributeDataSource</code>) for systems that want to read attribute definitions without a scene component. You do not need to wire the asset into the component.</em></p>
     </div>
 
     <h3>Step 2: Add Essential Attributes</h3>
@@ -165,7 +166,7 @@
         <h4>Gold (Resource)</h4>
         <ul>
           <li><strong>Name:</strong> Gold</li>
-          <li><strong>Code:</strong> G</li>
+          <li><strong>Code:</strong> GLD <em>(codes are 2-4 uppercase characters)</em></li>
           <li><strong>Base Value:</strong> 0</li>
           <li><strong>Min/Max:</strong> 0/999999</li>
           <li><strong>Force Integer:</strong> </li>
@@ -187,20 +188,20 @@
     <h3>Step 3: Generate and Integrate</h3>
     <div class="step-container">
       <span class="step-number">1</span>
-      <strong>Generate Code:</strong> Click "Generate Files" - compilation happens automatically
+      <strong>Generate Code:</strong> Click "Generate" on the final step. Unity writes the scripts, compiles them, and creates the ScriptableObject asset automatically. The wizard keeps your data through the recompile &mdash; when it finishes, the "Finish" button becomes available.
     </div>
     <div class="step-container">
       <span class="step-number">2</span>
-      <strong>Create GameObject:</strong> Create new GameObject named "Player"
+      <strong>Create GameObject:</strong> Create a new GameObject named "Player"
     </div>
     <div class="step-container">
       <span class="step-number">3</span>
-      <strong>Add Component:</strong> Add the generated "Character Attributes" component
+      <strong>Add Component:</strong> Add the generated "Character Attributes" component. That is all &mdash; the component is self-contained, with your attributes already baked in. There is no Data Asset field to fill; it works the moment you add it.
     </div>
-    <div class="step-container">
-      <span class="step-number">4</span>
-      <strong>Assign Asset:</strong> Drag "CharacterAttributeData.asset" to the Data Asset field
-    </div>
+  </div>
+
+  <div class="note" style="border-left:4px solid #d9a300; padding:10px 14px; background:#fff8e1; margin-top:10px;">
+    <strong>Tip &mdash; save your JSON to re-edit later.</strong> Before you finish, use the Import/Export controls to save your configuration as a JSON file (named after your data, e.g. <code>CharacterAttributes.json</code>). Once code is generated the wizard does not reload your setup automatically &mdash; to make changes later, reopen the wizard and import that JSON. Keep it next to your generated files so you always know which JSON matches which system.
   </div>
 
   <div class="section">
@@ -379,7 +380,7 @@ strength.baseValue += 5; // Upgrade
 var health = attributes.health;
 
 // Enum-based access
-var attr = attributes.GetAttributeByEnum(CharacterAttributesEnum.Health);
+var attr = attributes.GetAttributeByEnum(CharacterAttributeEnum.Health);
         </div>
       </div>
 
@@ -406,21 +407,23 @@ attributes.OnAnyAttributeChanged += LogChanges;
 Assets/
 ├── Generated/
 │   └── CharacterAttributes/
-│       ├── CharacterAttributesEnum.cs
-│       ├── CharacterAttributes.cs
-│       └── CharacterAttributeData.asset
+│       ├── CharacterAttributeEnum.cs
+│       ├── CharacterAttributes.cs        (MonoBehaviour component)
+│       ├── CharacterAttributeData.cs     (ScriptableObject class)
+│       └── CharacterAttributeData.asset  (the data asset instance)
     </div>
 
     <h3>Generated Enum</h3>
+    <p>The enum is generated in declaration order (no explicit numeric values are written &mdash; C# assigns them automatically starting at 0):</p>
     <div class="code-block">
-public enum CharacterAttributesEnum
+public enum CharacterAttributeEnum
 {
-    Health = 0,
-    Mana = 1,
-    Strength = 2,
-    Intelligence = 3,
-    Gold = 4,
-    Level = 5
+    Health,
+    Mana,
+    Strength,
+    Intelligence,
+    Gold,
+    Level
 }
     </div>
 
